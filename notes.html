@@ -330,17 +330,25 @@
     .custom-icon-content {
       background: #1e293b;
       border-radius: 12px;
-      padding: 2rem;
+      padding: 1.5rem;
       width: 90%;
       max-width: 500px;
       border: 1px solid #0ea5e9;
+      max-height: 80vh;
+      overflow-y: auto;
     }
     
     .custom-icon-grid {
       display: grid;
-      grid-template-columns: repeat(5, 1fr);
+      grid-template-columns: repeat(4, 1fr);
       gap: 0.75rem;
       margin: 1rem 0;
+    }
+    
+    @media (max-width: 480px) {
+      .custom-icon-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
     }
     
     .custom-icon-item {
@@ -370,6 +378,27 @@
       border-radius: 12px;
       padding: 1rem;
       margin-top: 1rem;
+    }
+    
+    .selected-icon-preview {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 10px;
+      padding: 8px 12px;
+      background: rgba(14, 165, 233, 0.1);
+      border-radius: 8px;
+      border: 1px dashed #0ea5e9;
+    }
+    
+    .selected-icon-label {
+      font-size: 0.85rem;
+      color: #7dd3fc;
+    }
+    
+    .export-btn {
+      padding: 0.5rem 1rem;
+      font-size: 0.9rem;
     }
   </style>
 </head>
@@ -520,6 +549,10 @@
                 <i class="fas fa-icons mr-2"></i> Выбрать значок
               </button>
             </div>
+            <div id="selectedIconContainer" class="selected-icon-preview hidden">
+              <i id="selectedIconPreview" class="fas fa-pickaxe text-xl text-minecraft"></i>
+              <div class="selected-icon-label">Вы выбрали этот значок</div>
+            </div>
             <input type="hidden" id="noteIcon" value="fas fa-pickaxe">
           </div>
           
@@ -569,9 +602,9 @@
         
         <button 
           id="exportAllBtn" 
-          class="btn-minecraft px-4 py-2 rounded-lg font-medium text-white flex items-center"
+          class="btn-minecraft export-btn rounded-lg font-medium text-white flex items-center"
         >
-          <i class="fas fa-download mr-2"></i> Скачать все (TXT)
+          <i class="fas fa-download mr-2"></i> Экспорт TXT
         </button>
       </div>
       
@@ -667,6 +700,8 @@
     const customIconModal = document.getElementById('customIconModal');
     const closeIconModal = document.getElementById('closeIconModal');
     const customIconGrid = document.getElementById('customIconGrid');
+    const selectedIconContainer = document.getElementById('selectedIconContainer');
+    const selectedIconPreview = document.getElementById('selectedIconPreview');
     
     let notes = [];
     
@@ -713,6 +748,8 @@
         iconItem.addEventListener('click', function() {
           const selected = this.getAttribute('data-icon');
           noteIcon.value = selected;
+          selectedIconPreview.className = selected;
+          selectedIconContainer.classList.remove('hidden');
           customIconModal.classList.remove('active');
         });
         
