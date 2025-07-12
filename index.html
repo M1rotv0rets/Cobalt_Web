@@ -153,7 +153,7 @@
         <h1 class="text-2xl font-bold text-white">Cobalt Web</h1>
       </div>
       
-      <div class="desktop-menu">
+      <div class="hidden lg:flex space-x-8">
         <a href="index.html" class="hover:text-primary transition-colors flex items-center">
           <i class="fas fa-home mr-2"></i> Главная
         </a> 
@@ -163,12 +163,15 @@
         <a href="tools.html" class="hover:text-primary transition-colors flex items-center">
           <i class="fas fa-tools mr-2"></i> Инструменты
         </a>
+        <a href="#" class="hover:text-primary transition-colors flex items-center">
+          <i class="fas fa-rocket mr-2"></i> Лаунчер
+        </a>
         <a href="https://t.me/atlantis_studio_chat" class="hover:text-primary transition-colors flex items-center">
           <i class="fas fa-users mr-2"></i> Сообщество
         </a>
       </div>
       
-      <div class="burger-btn-container">
+      <div class="block lg:hidden">
         <button id="burgerBtn" class="text-white focus:outline-none z-50">
           <div class="burger-line"></div>
           <div class="burger-line"></div>
@@ -177,7 +180,7 @@
       </div>
     </div>
     
-    <div id="mobileMenu" class="mobile-menu bg-gray-900">
+    <div id="mobileMenu" class="mobile-menu bg-gray-900 lg:hidden">
       <div class="flex flex-col px-6 py-4">
         <a href="index.html" class="py-3 hover:text-primary transition-colors flex items-center">
           <i class="fas fa-home mr-3 w-5"></i> Главная
@@ -187,6 +190,9 @@
         </a>
         <a href="tools.html" class="py-3 hover:text-primary transition-colors flex items-center">
           <i class="fas fa-tools mr-3 w-5"></i> Инструменты
+        </a>
+        <a href="#" class="py-3 hover:text-primary transition-colors flex items-center">
+          <i class="fas fa-rocket mr-3 w-5"></i> Лаунчер
         </a>
         <a href="https://t.me/atlantis_studio_chat" class="py-3 hover:text-primary transition-colors flex items-center">
           <i class="fas fa-users mr-3 w-5"></i> Сообщество
@@ -208,7 +214,7 @@
             <p class="text-gray-300 mb-5">
               Ваш персональный помощник в мире Minecraft. Отвечает на вопросы и дает советы по игре.
             </p>
-            <a href="assistant.html" class="btn-download inline-block px-6 py-3 rounded-full font-medium text-white">
+            <a href="#" class="btn-download inline-block px-6 py-3 rounded-full font-medium text-white">
               Использовать <i class="fas fa-arrow-right ml-2"></i>
             </a>
           </div>
@@ -221,9 +227,9 @@
             </div>
             <h3 class="text-xl font-bold mb-3 text-white">Бот-Анализатор</h3>
             <p class="text-gray-300 mb-5">
-              Анализирует ваш лог и краш-репорт. Предоставляет понятное объяснение ошибок и способы их исправления.
+              Анализирует ваш лог и краш-репорт. Предоставляет объяснение ошибок и способы их исправления.
             </p>
-            <a href="analyzer.html" class="btn-download inline-block px-6 py-3 rounded-full font-medium text-white">
+            <a href="#" class="btn-download inline-block px-6 py-3 rounded-full font-medium text-white">
               Использовать <i class="fas fa-arrow-right ml-2"></i>
             </a>
           </div>
@@ -238,7 +244,7 @@
             <p class="text-gray-300 mb-5">
               Находит лучшие моды, ресурспаки, датапаки и шейдеры для вашей версии Minecraft. Сортировка по рейтингу и совместимости.
             </p>
-            <a href="mods.html" class="btn-download inline-block px-6 py-3 rounded-full font-medium text-white">
+            <a href="#" class="btn-download inline-block px-6 py-3 rounded-full font-medium text-white">
               Использовать <i class="fas fa-arrow-right ml-2"></i>
             </a>
           </div>
@@ -251,9 +257,9 @@
             </div>
             <h3 class="text-xl font-bold mb-3 text-white">Энциклопедия</h3>
             <p class="text-gray-300 mb-5">
-              Полная информация о предметах, мобах, блоках и их характеристиках. Идеально для новичков и опытных игроков.
+              Информация о предметах, мобах, блоках и их характеристиках. Для новичков и опытных игроков.
             </p>
-            <a href="wiki.html" class="btn-download inline-block px-6 py-3 rounded-full font-medium text-white">
+            <a href="#" class="btn-download inline-block px-6 py-3 rounded-full font-medium text-white">
               Использовать <i class="fas fa-arrow-right ml-2"></i>
             </a>
           </div>
@@ -266,9 +272,9 @@
             </div>
             <h3 class="text-xl font-bold mb-3 text-white">Новостной Бот</h3>
             <p class="text-gray-300 mb-5">
-              Следите за последними новостями Minecraft, обновлениями, ивентами и анонсами. Получайте уведомления о выходе новых версий и модов.
+              Следите за новостями Minecraft, обновлениями, ивентами и анонсами. Уведомления о новых версиях и модах.
             </p>
-            <a href="news.html" class="btn-download inline-block px-6 py-3 rounded-full font-medium text-white">
+            <a href="#" class="btn-download inline-block px-6 py-3 rounded-full font-medium text-white">
               Использовать <i class="fas fa-arrow-right ml-2"></i>
             </a>
           </div>
@@ -281,9 +287,9 @@
             </div>
             <h3 class="text-xl font-bold mb-3 text-white">Бот Поиска</h3>
             <p class="text-gray-300 mb-5">
-              Ищет информацию в реддите, форумах и сообществах. Находит ответы на ваши вопросы по игре, модам и серверам.
+              Ищет информацию в реддите, форумах и сообществах. Находит ответы на вопросы по игре, модам и серверам.
             </p>
-            <a href="searth.html" class="btn-download inline-block px-6 py-3 rounded-full font-medium text-white">
+            <a href="#" class="btn-download inline-block px-6 py-3 rounded-full font-medium text-white">
               Использовать <i class="fas fa-arrow-right ml-2"></i>
             </a>
           </div>
@@ -296,9 +302,9 @@
             </div>
             <h3 class="text-xl font-bold mb-3 text-white">Бот Проектов</h3>
             <p class="text-gray-300 mb-5">
-              Найдите нужный себе проект: карты, моды, плагины. Фильтры по версии, сложности и типу проекта.
+              Найдите нужный проект: карты, моды, плагины. Фильтры по версии, сложности и типу проекта.
             </p>
-            <a href="projects.html" class="btn-download inline-block px-6 py-3 rounded-full font-medium text-white">
+            <a href="#" class="btn-download inline-block px-6 py-3 rounded-full font-medium text-white">
               Использовать <i class="fas fa-arrow-right ml-2"></i>
             </a>
           </div>
@@ -311,9 +317,9 @@
             </div>
             <h3 class="text-xl font-bold mb-3 text-white">Библиотека</h3>
             <p class="text-gray-300 mb-5">
-              Полная коллекция книг, руководств и ресурсов для Minecraft. Изучайте новые механики, техники строительства и стратегии выживания.
+              Коллекция книг, руководств, историй и ресурсов для Minecraft. Изучайте механики, техники строительства и стратегии.
             </p>
-            <a href="libraly.html" class="btn-download inline-block px-6 py-3 rounded-full font-medium text-white">
+            <a href="#" class="btn-download inline-block px-6 py-3 rounded-full font-medium text-white">
               Использовать <i class="fas fa-arrow-right ml-2"></i>
             </a>
           </div>
