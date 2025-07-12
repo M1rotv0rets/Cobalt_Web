@@ -4,8 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Cobalt Заметки</title>
+  <link rel="icon" href="icon.png">
   <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="icon" href="Images/icon.png">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <script>
     tailwind.config = {
@@ -16,7 +16,8 @@
             dark: '#0f172a',
             reminder: '#f59e0b',
             minecraft: '#3CB043',
-            location: '#8A2BE2'
+            location: '#8A2BE2',
+            note: '#f97316'
           },
           animation: {
             'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite'
@@ -226,6 +227,17 @@
       font-size: 0.85rem;
     }
     
+    .note-badge {
+      display: inline-flex;
+      align-items: center;
+      background: rgba(249, 115, 22, 0.2);
+      color: #fdba74;
+      padding: 0.25rem 0.75rem;
+      border-radius: 20px;
+      margin-top: 0.5rem;
+      font-size: 0.85rem;
+    }
+    
     .timezone-badge {
       display: inline-flex;
       align-items: center;
@@ -264,40 +276,6 @@
     .tooltip:hover .tooltiptext {
       visibility: visible;
       opacity: 1;
-    }
-    
-    .icon-grid {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 0.5rem;
-      margin-top: 0.5rem;
-    }
-    
-    .icon-option {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 0.5rem;
-      border-radius: 8px;
-      background: rgba(15, 23, 42, 0.6);
-      border: 1px solid rgba(14, 165, 233, 0.3);
-      cursor: pointer;
-      transition: all 0.2s ease;
-    }
-    
-    .icon-option:hover {
-      background: rgba(14, 165, 233, 0.2);
-      transform: scale(1.1);
-    }
-    
-    .icon-option.selected {
-      background: rgba(14, 165, 233, 0.3);
-      border-color: #0ea5e9;
-      transform: scale(1.1);
-    }
-    
-    .icon-option i {
-      font-size: 1.5rem;
     }
     
     .action-buttons {
@@ -385,6 +363,14 @@
       background: rgba(14, 165, 233, 0.3);
       border: 1px solid #0ea5e9;
     }
+    
+    .reminder-box {
+      background: rgba(245, 158, 11, 0.1);
+      border: 1px solid rgba(245, 158, 11, 0.3);
+      border-radius: 12px;
+      padding: 1rem;
+      margin-top: 1rem;
+    }
   </style>
 </head>
 <body class="bg-dark text-gray-200">
@@ -392,9 +378,9 @@
     <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
       <div class="flex items-center">
         <div class="w-10 h-10 rounded-full bg-primary flex items-center justify-center mr-3">
-          <i class="fas fa-globe text-white"></i>
+          <i class="fas fa-sticky-note text-white"></i>
         </div>
-        <h1 class="text-2xl font-bold text-white">Cobalt Web</h1>
+        <h1 class="text-2xl font-bold text-white">Cobalt Заметки</h1>
       </div>
       
       <div class="hidden lg:flex space-x-8">
@@ -526,13 +512,10 @@
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
           <div>
             <label class="block text-gray-300 mb-2">Значок для заметки</label>
-            <div class="flex items-center">
-              <div id="selectedIconPreview" class="w-10 h-10 flex items-center justify-center bg-primary/20 rounded-lg mr-3">
-                <i id="selectedIcon" class="fas fa-pickaxe text-xl text-minecraft"></i>
-              </div>
+            <div class="flex">
               <button 
                 id="chooseIconBtn" 
-                class="px-4 py-2 rounded-lg bg-primary/20 text-primary hover:bg-primary/30"
+                class="px-4 py-2 rounded-lg bg-primary/20 text-primary hover:bg-primary/30 w-full flex items-center justify-center"
               >
                 <i class="fas fa-icons mr-2"></i> Выбрать значок
               </button>
@@ -684,34 +667,52 @@
     const customIconModal = document.getElementById('customIconModal');
     const closeIconModal = document.getElementById('closeIconModal');
     const customIconGrid = document.getElementById('customIconGrid');
-    const selectedIcon = document.getElementById('selectedIcon');
     
     let notes = [];
     
     const minecraftIcons = [
-      'fas fa-pickaxe', 'fas fa-axe', 'fas fa-sword', 'fas fa-shovel',
-      'fas fa-house', 'fas fa-chest', 'fas fa-wheat', 'fas fa-cow',
-      'fas fa-tree', 'fas fa-fire', 'fas fa-gem', 'fas fa-mountain',
-      'fas fa-water', 'fas fa-skull', 'fas fa-trophy', 'fas fa-book',
-      'fas fa-map', 'fas fa-compass', 'fas fa-torii-gate', 'fas fa-dragon'
+      {icon: 'fas fa-pickaxe', name: 'Кирка'},
+      {icon: 'fas fa-axe', name: 'Топор'},
+      {icon: 'fas fa-sword', name: 'Меч'},
+      {icon: 'fas fa-shovel', name: 'Лопата'},
+      {icon: 'fas fa-house', name: 'Дом'},
+      {icon: 'fas fa-chest', name: 'Сундук'},
+      {icon: 'fas fa-wheat', name: 'Пшеница'},
+      {icon: 'fas fa-cow', name: 'Корова'},
+      {icon: 'fas fa-tree', name: 'Дерево'},
+      {icon: 'fas fa-fire', name: 'Огонь'},
+      {icon: 'fas fa-gem', name: 'Алмаз'},
+      {icon: 'fas fa-mountain', name: 'Гора'},
+      {icon: 'fas fa-water', name: 'Вода'},
+      {icon: 'fas fa-skull', name: 'Скелет'},
+      {icon: 'fas fa-trophy', name: 'Трофей'},
+      {icon: 'fas fa-book', name: 'Книга'},
+      {icon: 'fas fa-map', name: 'Карта'},
+      {icon: 'fas fa-compass', name: 'Компас'},
+      {icon: 'fas fa-torii-gate', name: 'Портал'},
+      {icon: 'fas fa-dragon', name: 'Дракон'},
+      {icon: 'fas fa-moon', name: 'Луна'},
+      {icon: 'fas fa-sun', name: 'Солнце'},
+      {icon: 'fas fa-star', name: 'Звезда'},
+      {icon: 'fas fa-bolt', name: 'Молния'},
+      {icon: 'fas fa-coins', name: 'Монеты'}
     ];
     
     function initIcons() {
       customIconGrid.innerHTML = '';
       
-      minecraftIcons.forEach(icon => {
+      minecraftIcons.forEach(iconData => {
         const iconItem = document.createElement('div');
         iconItem.className = 'custom-icon-item';
-        iconItem.setAttribute('data-icon', icon);
+        iconItem.setAttribute('data-icon', iconData.icon);
         iconItem.innerHTML = `
-          <i class="${icon} text-2xl text-minecraft mb-2"></i>
-          <span class="text-xs text-gray-300">${icon.split('fa-')[1]}</span>
+          <i class="${iconData.icon} text-2xl text-minecraft mb-2"></i>
+          <span class="text-xs text-gray-300">${iconData.name}</span>
         `;
         
         iconItem.addEventListener('click', function() {
           const selected = this.getAttribute('data-icon');
           noteIcon.value = selected;
-          selectedIcon.className = selected;
           customIconModal.classList.remove('active');
         });
         
@@ -851,7 +852,6 @@
       notes.forEach((note, index) => {
         txtContent += `Заметка #${index + 1}\n`;
         txtContent += `--------------------------------\n`;
-        txtContent += `Значок: ${note.icon || 'нет'}\n`;
         txtContent += `Содержимое: ${note.text}\n`;
         if (note.location) txtContent += `Место: ${note.location}\n`;
         if (note.note) txtContent += `Примечание: ${note.note}\n`;
@@ -899,17 +899,32 @@
         let reminderHtml = '';
         if (note.reminder) {
           reminderHtml = `
-            <div class="mt-4 bg-reminder/10 p-3 rounded-lg border border-reminder/30">
+            <div class="reminder-box">
               <div class="flex items-center text-reminder">
                 <i class="fas fa-bell mr-2"></i>
-                <span>Напоминание: ${formatDate(note.reminder, note.timezone)}</span>
+                <span class="font-bold">Напоминание:</span>
+              </div>
+              <div class="mt-2">
+                <div class="text-reminder">${formatDate(note.reminder, note.timezone)}</div>
+                ${note.location ? `
+                  <div class="location-badge mt-2">
+                    <i class="fas fa-map-marker-alt mr-2"></i>
+                    <span>${note.location}</span>
+                  </div>
+                ` : ''}
+                ${note.note ? `
+                  <div class="note-badge mt-2">
+                    <i class="fas fa-info-circle mr-2"></i>
+                    <span>${note.note}</span>
+                  </div>
+                ` : ''}
               </div>
             </div>
           `;
         }
         
         let locationHtml = '';
-        if (note.location) {
+        if (note.location && !note.reminder) {
           locationHtml = `
             <div class="location-badge">
               <i class="fas fa-map-marker-alt mr-2"></i>
@@ -919,10 +934,11 @@
         }
         
         let noteNoteHtml = '';
-        if (note.note) {
+        if (note.note && !note.reminder) {
           noteNoteHtml = `
-            <div class="mt-2 text-gray-400 italic">
-              <i class="fas fa-info-circle mr-2"></i>${note.note}
+            <div class="note-badge">
+              <i class="fas fa-info-circle mr-2"></i>
+              <span>${note.note}</span>
             </div>
           `;
         }
@@ -945,8 +961,10 @@
                 ${note.icon ? `<i class="${note.icon} minecraft-icon"></i>` : ''}
                 <p class="whitespace-pre-line flex-1">${note.text}</p>
               </div>
-              ${locationHtml}
-              ${noteNoteHtml}
+              <div class="flex flex-wrap gap-2 mt-2">
+                ${locationHtml}
+                ${noteNoteHtml}
+              </div>
               ${reminderHtml}
               ${timezoneHtml}
             </div>
@@ -1039,9 +1057,11 @@
     }
     
     function deleteNote(id) {
-      notes = notes.filter(note => note.id != id);
-      saveNotes();
-      renderNotes();
+      if (confirm('Вы уверены, что хотите удалить эту заметку?')) {
+        notes = notes.filter(note => note.id != id);
+        saveNotes();
+        renderNotes();
+      }
     }
     
     function copyNote(id) {
