@@ -1,0 +1,1075 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Cobalt Заметки</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="icon" href="Images/icon.png">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: '#0ea5e9',
+            dark: '#0f172a',
+            reminder: '#f59e0b',
+            minecraft: '#3CB043',
+            location: '#8A2BE2'
+          },
+          animation: {
+            'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite'
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap');
+    
+    body {
+      font-family: 'Montserrat', sans-serif;
+      scroll-behavior: smooth;
+      background: linear-gradient(135deg, #0f172a, #1e293b);
+      color: #f1f5f9;
+      min-height: 100vh;
+    }
+    
+    .sticky-header {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      transition: all 0.4s ease;
+      backdrop-filter: blur(10px);
+      background: rgba(15, 23, 42, 0.85);
+    }
+    
+    .scrolled {
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+    }
+    
+    .burger-line {
+      display: block;
+      height: 2px;
+      width: 25px;
+      background: white;
+      margin: 5px auto;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    
+    .mobile-menu {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    
+    .mobile-menu.open {
+      max-height: 300px;
+    }
+    
+    .note-card {
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      background: linear-gradient(145deg, #1e293b, #0f172a);
+      border: 1px solid rgba(14, 165, 233, 0.2);
+      border-radius: 12px;
+      overflow: hidden;
+      position: relative;
+    }
+    
+    .note-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 10px 25px -5px rgba(14, 165, 233, 0.3);
+    }
+    
+    .btn-primary {
+      background: linear-gradient(135deg, #0ea5e9, #0284c7);
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(2, 132, 199, 0.3);
+    }
+    
+    .btn-primary:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 6px 20px rgba(2, 132, 199, 0.5);
+    }
+    
+    .btn-primary:active {
+      transform: translateY(1px);
+    }
+    
+    .btn-reminder {
+      background: linear-gradient(135deg, #f59e0b, #d97706);
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(245, 158, 11, 0.3);
+    }
+    
+    .btn-reminder:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 6px 20px rgba(245, 158, 11, 0.5);
+    }
+    
+    .btn-minecraft {
+      background: linear-gradient(135deg, #3CB043, #2E8B57);
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(60, 176, 67, 0.3);
+    }
+    
+    .btn-minecraft:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 6px 20px rgba(60, 176, 67, 0.5);
+    }
+    
+    .reminder-indicator {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background-color: #f59e0b;
+      box-shadow: 0 0 10px rgba(245, 158, 11, 0.7);
+      animation: pulse 1.5s infinite;
+    }
+    
+    .note-form {
+      background: rgba(30, 41, 59, 0.7);
+      border-radius: 12px;
+      backdrop-filter: blur(10px);
+      padding: 2rem;
+      border: 1px solid rgba(14, 165, 233, 0.2);
+    }
+    
+    .form-input {
+      background: rgba(15, 23, 42, 0.6);
+      border: 1px solid rgba(14, 165, 233, 0.3);
+      color: white;
+      padding: 0.75rem 1rem;
+      border-radius: 8px;
+      transition: all 0.3s ease;
+    }
+    
+    .form-input:focus {
+      outline: none;
+      border-color: #0ea5e9;
+      box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.3);
+    }
+    
+    .empty-state {
+      text-align: center;
+      padding: 3rem;
+      background: rgba(30, 41, 59, 0.3);
+      border-radius: 12px;
+      border: 2px dashed rgba(14, 165, 233, 0.3);
+    }
+    
+    .notification {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: rgba(30, 41, 59, 0.95);
+      color: white;
+      padding: 1rem 2rem;
+      border-radius: 8px;
+      border-left: 4px solid #0ea5e9;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+      transform: translateX(120%);
+      transition: transform 0.4s ease;
+      z-index: 1000;
+      max-width: 350px;
+    }
+    
+    .notification.show {
+      transform: translateX(0);
+    }
+    
+    .notification-title {
+      display: flex;
+      align-items: center;
+      font-weight: bold;
+      margin-bottom: 0.5rem;
+      color: #0ea5e9;
+    }
+    
+    @media (min-width: 768px) {
+      .desktop-menu {
+        display: flex;
+        gap: 20px;
+      }
+      .burger-btn-container {
+        display: none;
+      }
+    }
+    
+    @media (max-width: 767px) {
+      .desktop-menu {
+        display: none;
+      }
+      .burger-btn-container {
+        display: block;
+      }
+    }
+    
+    .minecraft-icon {
+      font-size: 1.5rem;
+      margin-right: 10px;
+      color: #3CB043;
+    }
+    
+    .location-badge {
+      display: inline-flex;
+      align-items: center;
+      background: rgba(138, 43, 226, 0.2);
+      color: #c19bf5;
+      padding: 0.25rem 0.75rem;
+      border-radius: 20px;
+      margin-top: 0.5rem;
+      font-size: 0.85rem;
+    }
+    
+    .timezone-badge {
+      display: inline-flex;
+      align-items: center;
+      background: rgba(14, 165, 233, 0.2);
+      color: #7dd3fc;
+      padding: 0.25rem 0.75rem;
+      border-radius: 20px;
+      margin-top: 0.5rem;
+      font-size: 0.85rem;
+    }
+    
+    .tooltip {
+      position: relative;
+      display: inline-block;
+    }
+    
+    .tooltip .tooltiptext {
+      visibility: hidden;
+      width: 120px;
+      background-color: #1e293b;
+      color: #fff;
+      text-align: center;
+      border-radius: 6px;
+      padding: 5px 0;
+      position: absolute;
+      z-index: 1;
+      bottom: 125%;
+      left: 50%;
+      margin-left: -60px;
+      opacity: 0;
+      transition: opacity 0.3s;
+      font-size: 0.8rem;
+      border: 1px solid #0ea5e9;
+    }
+    
+    .tooltip:hover .tooltiptext {
+      visibility: visible;
+      opacity: 1;
+    }
+    
+    .icon-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0.5rem;
+      margin-top: 0.5rem;
+    }
+    
+    .icon-option {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.5rem;
+      border-radius: 8px;
+      background: rgba(15, 23, 42, 0.6);
+      border: 1px solid rgba(14, 165, 233, 0.3);
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    
+    .icon-option:hover {
+      background: rgba(14, 165, 233, 0.2);
+      transform: scale(1.1);
+    }
+    
+    .icon-option.selected {
+      background: rgba(14, 165, 233, 0.3);
+      border-color: #0ea5e9;
+      transform: scale(1.1);
+    }
+    
+    .icon-option i {
+      font-size: 1.5rem;
+    }
+    
+    .action-buttons {
+      display: flex;
+      gap: 0.5rem;
+      position: absolute;
+      top: 10px;
+      right: 10px;
+    }
+    
+    .action-btn {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(15, 23, 42, 0.7);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: #94a3b8;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    
+    .action-btn:hover {
+      background: rgba(14, 165, 233, 0.2);
+      color: #0ea5e9;
+      transform: translateY(-2px);
+    }
+    
+    .custom-icon-modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.7);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 1001;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.3s ease;
+    }
+    
+    .custom-icon-modal.active {
+      opacity: 1;
+      visibility: visible;
+    }
+    
+    .custom-icon-content {
+      background: #1e293b;
+      border-radius: 12px;
+      padding: 2rem;
+      width: 90%;
+      max-width: 500px;
+      border: 1px solid #0ea5e9;
+    }
+    
+    .custom-icon-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 0.75rem;
+      margin: 1rem 0;
+    }
+    
+    .custom-icon-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 0.75rem;
+      border-radius: 8px;
+      background: #0f172a;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    
+    .custom-icon-item:hover {
+      background: rgba(14, 165, 233, 0.2);
+      transform: translateY(-3px);
+    }
+    
+    .custom-icon-item.selected {
+      background: rgba(14, 165, 233, 0.3);
+      border: 1px solid #0ea5e9;
+    }
+  </style>
+</head>
+<body class="bg-dark text-gray-200">
+  <header class="sticky-header">
+    <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+      <div class="flex items-center">
+        <div class="w-10 h-10 rounded-full bg-primary flex items-center justify-center mr-3">
+          <i class="fas fa-globe text-white"></i>
+        </div>
+        <h1 class="text-2xl font-bold text-white">Cobalt Web</h1>
+      </div>
+      
+      <div class="hidden lg:flex space-x-8">
+        <a href="index.html" class="hover:text-primary transition-colors flex items-center">
+          <i class="fas fa-home mr-2"></i> Главная
+        </a> 
+        <a href="notes.html" class="hover:text-primary transition-colors flex items-center">
+          <i class="fas fa-sticky-note mr-2"></i> Заметки
+        </a>
+        <a href="tools.html" class="hover:text-primary transition-colors flex items-center">
+          <i class="fas fa-tools mr-2"></i> Инструменты
+        </a>
+        <a href="launcher.html" class="hover:text-primary transition-colors flex items-center">
+          <i class="fas fa-rocket mr-2"></i> Лаунчер
+        </a>
+        <a href="https://t.me/sun_community_chat" class="hover:text-primary transition-colors flex items-center">
+          <i class="fas fa-users mr-2"></i> Сообщество
+        </a>
+      </div>
+      
+      <div class="block lg:hidden">
+        <button id="burgerBtn" class="text-white focus:outline-none z-50">
+          <div class="burger-line"></div>
+          <div class="burger-line"></div>
+          <div class="burger-line"></div>
+        </button>
+      </div>
+    </div>
+    
+    <div id="mobileMenu" class="mobile-menu bg-gray-900 lg:hidden">
+      <div class="flex flex-col px-6 py-4">
+        <a href="index.html" class="py-3 hover:text-primary transition-colors flex items-center">
+          <i class="fas fa-home mr-3 w-5"></i> Главная
+        </a> 
+        <a href="notes.html" class="py-3 hover:text-primary transition-colors flex items-center">
+          <i class="fas fa-sticky-note mr-3 w-5"></i> Заметки
+        </a>
+        <a href="tools.html" class="py-3 hover:text-primary transition-colors flex items-center">
+          <i class="fas fa-tools mr-3 w-5"></i> Инструменты
+        </a>
+        <a href="launcher.html" class="py-3 hover:text-primary transition-colors flex items-center">
+          <i class="fas fa-rocket mr-3 w-5"></i> Лаунчер
+        </a>
+        <a href="https://t.me/sun_community_chat" class="py-3 hover:text-primary transition-colors flex items-center">
+          <i class="fas fa-users mr-3 w-5"></i> Сообщество
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <div id="notification" class="notification">
+    <div class="notification-title">
+      <i class="fas fa-bell mr-2"></i> Напоминание!
+    </div>
+    <div id="notificationContent">У вас запланировано событие</div>
+  </div>
+
+  <div id="customIconModal" class="custom-icon-modal">
+    <div class="custom-icon-content">
+      <h3 class="text-xl font-bold mb-4 text-white">Выберите значок</h3>
+      <div class="custom-icon-grid" id="customIconGrid"></div>
+      <div class="flex justify-end mt-4">
+        <button id="closeIconModal" class="px-4 py-2 rounded-lg bg-gray-700 text-white hover:bg-gray-600">
+          Закрыть
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <section class="py-10 px-4 relative">
+    <div class="max-w-4xl mx-auto">
+      <div class="note-form">
+        <h2 class="text-2xl font-bold mb-6 text-white flex items-center">
+          <i class="fas fa-plus-circle mr-3 text-primary"></i> Новая заметка Minecraft
+        </h2>
+        
+        <div class="mb-6">
+          <label class="block text-gray-300 mb-2">Текст заметки</label>
+          <textarea 
+            id="noteText" 
+            class="w-full form-input" 
+            rows="3" 
+            placeholder="Например: Проверить ферму железных големов..."
+          ></textarea>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+          <div>
+            <label class="block text-gray-300 mb-2">Место в Minecraft</label>
+            <input 
+              type="text" 
+              id="noteLocation" 
+              class="w-full form-input" 
+              placeholder="Координаты или название места"
+            >
+          </div>
+          
+          <div>
+            <label class="block text-gray-300 mb-2">Примечание</label>
+            <input 
+              type="text" 
+              id="noteNote" 
+              class="w-full form-input" 
+              placeholder="Дополнительные детали..."
+            >
+          </div>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+          <div>
+            <label class="block text-gray-300 mb-2">Дата напоминания</label>
+            <input 
+              type="date" 
+              id="reminderDate" 
+              class="w-full form-input"
+            >
+          </div>
+          
+          <div>
+            <label class="block text-gray-300 mb-2">Время напоминания</label>
+            <input 
+              type="time" 
+              id="reminderTime" 
+              class="w-full form-input"
+            >
+          </div>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+          <div>
+            <label class="block text-gray-300 mb-2">Значок для заметки</label>
+            <div class="flex items-center">
+              <div id="selectedIconPreview" class="w-10 h-10 flex items-center justify-center bg-primary/20 rounded-lg mr-3">
+                <i id="selectedIcon" class="fas fa-pickaxe text-xl text-minecraft"></i>
+              </div>
+              <button 
+                id="chooseIconBtn" 
+                class="px-4 py-2 rounded-lg bg-primary/20 text-primary hover:bg-primary/30"
+              >
+                <i class="fas fa-icons mr-2"></i> Выбрать значок
+              </button>
+            </div>
+            <input type="hidden" id="noteIcon" value="fas fa-pickaxe">
+          </div>
+          
+          <div>
+            <label class="block text-gray-300 mb-2">Часовой пояс</label>
+            <select id="noteTimezone" class="w-full form-input">
+              <option value="Europe/Moscow">Москва (GMT+3)</option>
+              <option value="Europe/Kaliningrad">Калининград (GMT+2)</option>
+              <option value="Asia/Yekaterinburg">Екатеринбург (GMT+5)</option>
+              <option value="Asia/Omsk">Омск (GMT+6)</option>
+              <option value="Asia/Krasnoyarsk">Красноярск (GMT+7)</option>
+              <option value="Asia/Irkutsk">Иркутск (GMT+8)</option>
+              <option value="Asia/Yakutsk">Якутск (GMT+9)</option>
+              <option value="Asia/Vladivostok">Владивосток (GMT+10)</option>
+              <option value="Asia/Magadan">Магадан (GMT+11)</option>
+              <option value="Asia/Kamchatka">Камчатка (GMT+12)</option>
+            </select>
+          </div>
+        </div>
+        
+        <div class="flex flex-wrap gap-3">
+          <button 
+            id="addNoteBtn" 
+            class="btn-primary px-6 py-3 rounded-lg font-medium text-white flex items-center"
+          >
+            <i class="fas fa-save mr-2"></i> Сохранить заметку
+          </button>
+          
+          <button 
+            id="addReminderBtn" 
+            class="btn-reminder px-6 py-3 rounded-lg font-medium text-white flex items-center"
+          >
+            <i class="fas fa-bell mr-2"></i> Добавить напоминание
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="py-10 px-4 relative">
+    <div class="max-w-4xl mx-auto">
+      <div class="flex justify-between items-center mb-6">
+        <h2 class="text-2xl font-bold text-white flex items-center">
+          <i class="fas fa-sticky-note mr-3 text-primary"></i> Мои заметки
+          <span id="notesCounter" class="ml-2 bg-primary/20 text-primary text-sm font-medium px-3 py-1 rounded-full">0</span>
+        </h2>
+        
+        <button 
+          id="exportAllBtn" 
+          class="btn-minecraft px-4 py-2 rounded-lg font-medium text-white flex items-center"
+        >
+          <i class="fas fa-download mr-2"></i> Скачать все (TXT)
+        </button>
+      </div>
+      
+      <div id="notesContainer" class="grid grid-cols-1 gap-5">
+        <div id="emptyState" class="empty-state">
+          <div class="text-5xl text-primary/50 mb-4">
+            <i class="fas fa-sticky-note"></i>
+          </div>
+          <h3 class="text-xl font-bold mb-2 text-gray-300">У вас пока нет заметок</h3>
+          <p class="text-gray-400 mb-4">Создайте свою первую заметку с напоминанием с помощью формы выше</p>
+          <div class="animate-pulse text-primary">
+            <i class="fas fa-arrow-up text-2xl"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    const burgerBtn = document.getElementById('burgerBtn');
+    const mobileMenu = document.getElementById('mobileMenu');
+    
+    function toggleMobileMenu() {
+      mobileMenu.classList.toggle('open');
+      
+      const lines = document.querySelectorAll('.burger-line');
+      if (mobileMenu.classList.contains('open')) {
+        lines[0].style.transform = 'translateY(7px) rotate(45deg)';
+        lines[1].style.opacity = '0';
+        lines[2].style.transform = 'translateY(-7px) rotate(-45deg)';
+      } else {
+        lines[0].style.transform = 'none';
+        lines[1].style.opacity = '1';
+        lines[2].style.transform = 'none';
+      }
+    }
+
+    burgerBtn.addEventListener('click', function(e) {
+      e.stopPropagation();
+      toggleMobileMenu();
+    });
+    
+    document.addEventListener('click', function(e) {
+      if (mobileMenu.classList.contains('open') && 
+          !mobileMenu.contains(e.target) && 
+          !burgerBtn.contains(e.target)) {
+        toggleMobileMenu();
+      }
+    });
+    
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape' && mobileMenu.classList.contains('open')) {
+        toggleMobileMenu();
+      }
+    });
+
+    const menuItems = mobileMenu.querySelectorAll('a');
+    menuItems.forEach(item => {
+      item.addEventListener('click', function() {
+        setTimeout(() => {
+          if (mobileMenu.classList.contains('open')) {
+            toggleMobileMenu();
+          }
+        }, 300);
+      });
+    });
+
+    window.addEventListener('scroll', function() {
+      const header = document.querySelector('header');
+      if (window.scrollY > 10) {
+        header.classList.add('scrolled');
+      } else {
+        header.classList.remove('scrolled');
+      }
+    });
+    
+    const notesContainer = document.getElementById('notesContainer');
+    const notesCounter = document.getElementById('notesCounter');
+    const emptyState = document.getElementById('emptyState');
+    const noteText = document.getElementById('noteText');
+    const noteLocation = document.getElementById('noteLocation');
+    const noteNote = document.getElementById('noteNote');
+    const reminderDate = document.getElementById('reminderDate');
+    const reminderTime = document.getElementById('reminderTime');
+    const noteIcon = document.getElementById('noteIcon');
+    const noteTimezone = document.getElementById('noteTimezone');
+    const addNoteBtn = document.getElementById('addNoteBtn');
+    const addReminderBtn = document.getElementById('addReminderBtn');
+    const exportAllBtn = document.getElementById('exportAllBtn');
+    const notification = document.getElementById('notification');
+    const notificationContent = document.getElementById('notificationContent');
+    const chooseIconBtn = document.getElementById('chooseIconBtn');
+    const customIconModal = document.getElementById('customIconModal');
+    const closeIconModal = document.getElementById('closeIconModal');
+    const customIconGrid = document.getElementById('customIconGrid');
+    const selectedIcon = document.getElementById('selectedIcon');
+    
+    let notes = [];
+    
+    const minecraftIcons = [
+      'fas fa-pickaxe', 'fas fa-axe', 'fas fa-sword', 'fas fa-shovel',
+      'fas fa-house', 'fas fa-chest', 'fas fa-wheat', 'fas fa-cow',
+      'fas fa-tree', 'fas fa-fire', 'fas fa-gem', 'fas fa-mountain',
+      'fas fa-water', 'fas fa-skull', 'fas fa-trophy', 'fas fa-book',
+      'fas fa-map', 'fas fa-compass', 'fas fa-torii-gate', 'fas fa-dragon'
+    ];
+    
+    function initIcons() {
+      customIconGrid.innerHTML = '';
+      
+      minecraftIcons.forEach(icon => {
+        const iconItem = document.createElement('div');
+        iconItem.className = 'custom-icon-item';
+        iconItem.setAttribute('data-icon', icon);
+        iconItem.innerHTML = `
+          <i class="${icon} text-2xl text-minecraft mb-2"></i>
+          <span class="text-xs text-gray-300">${icon.split('fa-')[1]}</span>
+        `;
+        
+        iconItem.addEventListener('click', function() {
+          const selected = this.getAttribute('data-icon');
+          noteIcon.value = selected;
+          selectedIcon.className = selected;
+          customIconModal.classList.remove('active');
+        });
+        
+        customIconGrid.appendChild(iconItem);
+      });
+    }
+    
+    chooseIconBtn.addEventListener('click', function() {
+      customIconModal.classList.add('active');
+    });
+    
+    closeIconModal.addEventListener('click', function() {
+      customIconModal.classList.remove('active');
+    });
+    
+    customIconModal.addEventListener('click', function(e) {
+      if (e.target === customIconModal) {
+        customIconModal.classList.remove('active');
+      }
+    });
+    
+    function initDateTime() {
+      const now = new Date();
+      const year = now.getFullYear();
+      const month = String(now.getMonth() + 1).padStart(2, '0');
+      const day = String(now.getDate()).padStart(2, '0');
+      const hours = String(now.getHours()).padStart(2, '0');
+      const minutes = String(now.getMinutes()).padStart(2, '0');
+      
+      reminderDate.value = `${year}-${month}-${day}`;
+      reminderTime.value = `${hours}:${minutes}`;
+    }
+    
+    function checkNotificationSupport() {
+      if (!("Notification" in window)) {
+        return false;
+      }
+      return true;
+    }
+    
+    function requestNotificationPermission() {
+      if (checkNotificationSupport()) {
+        Notification.requestPermission();
+      }
+    }
+    
+    function showNotification(title, body) {
+      if (checkNotificationSupport() && Notification.permission === "granted") {
+        new Notification(title, { body });
+      } else {
+        notificationContent.textContent = body;
+        notification.classList.add('show');
+        
+        setTimeout(() => {
+          notification.classList.remove('show');
+        }, 5000);
+      }
+    }
+    
+    function saveNotes() {
+      localStorage.setItem('minecraftNotes', JSON.stringify(notes));
+      updateNotesCounter();
+    }
+    
+    function loadNotes() {
+      const savedNotes = localStorage.getItem('minecraftNotes');
+      if (savedNotes) {
+        notes = JSON.parse(savedNotes);
+        renderNotes();
+      }
+      updateNotesCounter();
+    }
+    
+    function updateNotesCounter() {
+      notesCounter.textContent = notes.length;
+      emptyState.style.display = notes.length ? 'none' : 'block';
+    }
+    
+    function checkReminders() {
+      const now = new Date();
+      
+      notes.forEach((note, index) => {
+        if (note.reminder && !note.notified) {
+          const reminderTime = new Date(note.reminder);
+          
+          if (reminderTime <= now) {
+            showNotification("Cobalt Заметки", note.text);
+            notes[index].notified = true;
+            saveNotes();
+            renderNotes();
+          }
+        }
+      });
+    }
+    
+    function formatDate(dateString, timezone) {
+      const date = new Date(dateString);
+      return date.toLocaleString('ru-RU', {
+        timeZone: timezone,
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+      });
+    }
+    
+    function animateNote(element) {
+      element.style.opacity = 0;
+      element.style.transform = 'translateY(20px)';
+      
+      setTimeout(() => {
+        element.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+        element.style.opacity = 1;
+        element.style.transform = 'translateY(0)';
+      }, 10);
+    }
+    
+    function copyToClipboard(text) {
+      navigator.clipboard.writeText(text).then(() => {
+        showNotification("Cobalt Заметки", "Заметка скопирована в буфер обмена");
+      }).catch(err => {
+        console.error('Ошибка копирования: ', err);
+      });
+    }
+    
+    function exportNotesToTxt() {
+      if (notes.length === 0) {
+        showNotification("Cobalt Заметки", "Нет заметок для экспорта");
+        return;
+      }
+      
+      let txtContent = "=== Cobalt Заметки для Minecraft ===\n";
+      txtContent += `Экспортировано: ${new Date().toLocaleString('ru-RU')}\n`;
+      txtContent += `Всего заметок: ${notes.length}\n\n`;
+      
+      notes.forEach((note, index) => {
+        txtContent += `Заметка #${index + 1}\n`;
+        txtContent += `--------------------------------\n`;
+        txtContent += `Значок: ${note.icon || 'нет'}\n`;
+        txtContent += `Содержимое: ${note.text}\n`;
+        if (note.location) txtContent += `Место: ${note.location}\n`;
+        if (note.note) txtContent += `Примечание: ${note.note}\n`;
+        if (note.reminder) {
+          txtContent += `Напоминание: ${formatDate(note.reminder, note.timezone)}\n`;
+        }
+        txtContent += `Часовой пояс: ${noteTimezone.querySelector(`option[value="${note.timezone}"]`).text}\n`;
+        txtContent += `Создано: ${formatDate(note.timestamp, note.timezone)}\n\n`;
+      });
+      
+      const blob = new Blob([txtContent], { type: 'text/plain' });
+      const url = URL.createObjectURL(blob);
+      
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `cobalt_notes_${new Date().toISOString().slice(0,10)}.txt`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      
+      showNotification("Cobalt Заметки", `Экспортировано ${notes.length} заметок в TXT`);
+    }
+    
+    function renderNotes() {
+      notesContainer.innerHTML = '';
+      
+      if (notes.length === 0) {
+        emptyState.style.display = 'block';
+        return;
+      }
+      
+      emptyState.style.display = 'none';
+      
+      const sortedNotes = [...notes].sort((a, b) => {
+        if (a.reminder && !b.reminder) return -1;
+        if (!a.reminder && b.reminder) return 1;
+        return new Date(b.timestamp) - new Date(a.timestamp);
+      });
+      
+      sortedNotes.forEach((note) => {
+        const noteElement = document.createElement('div');
+        noteElement.className = 'note-card p-5 relative';
+        
+        let reminderHtml = '';
+        if (note.reminder) {
+          reminderHtml = `
+            <div class="mt-4 bg-reminder/10 p-3 rounded-lg border border-reminder/30">
+              <div class="flex items-center text-reminder">
+                <i class="fas fa-bell mr-2"></i>
+                <span>Напоминание: ${formatDate(note.reminder, note.timezone)}</span>
+              </div>
+            </div>
+          `;
+        }
+        
+        let locationHtml = '';
+        if (note.location) {
+          locationHtml = `
+            <div class="location-badge">
+              <i class="fas fa-map-marker-alt mr-2"></i>
+              <span>${note.location}</span>
+            </div>
+          `;
+        }
+        
+        let noteNoteHtml = '';
+        if (note.note) {
+          noteNoteHtml = `
+            <div class="mt-2 text-gray-400 italic">
+              <i class="fas fa-info-circle mr-2"></i>${note.note}
+            </div>
+          `;
+        }
+        
+        let timezoneHtml = '';
+        if (note.timezone) {
+          const timezoneName = noteTimezone.querySelector(`option[value="${note.timezone}"]`).text;
+          timezoneHtml = `
+            <div class="timezone-badge">
+              <i class="fas fa-clock mr-2"></i>
+              <span>${timezoneName}</span>
+            </div>
+          `;
+        }
+        
+        noteElement.innerHTML = `
+          <div class="flex justify-between items-start">
+            <div class="flex-1">
+              <div class="flex items-start">
+                ${note.icon ? `<i class="${note.icon} minecraft-icon"></i>` : ''}
+                <p class="whitespace-pre-line flex-1">${note.text}</p>
+              </div>
+              ${locationHtml}
+              ${noteNoteHtml}
+              ${reminderHtml}
+              ${timezoneHtml}
+            </div>
+          </div>
+          <div class="mt-4 text-xs text-gray-500">
+            ${formatDate(note.timestamp, note.timezone)}
+          </div>
+          ${note.reminder && !note.notified ? '<div class="reminder-indicator"></div>' : ''}
+          
+          <div class="action-buttons">
+            <button class="action-btn copy-btn tooltip" data-id="${note.id}">
+              <i class="fas fa-copy"></i>
+              <span class="tooltiptext">Копировать</span>
+            </button>
+            <button class="action-btn delete-btn tooltip" data-id="${note.id}">
+              <i class="fas fa-trash"></i>
+              <span class="tooltiptext">Удалить</span>
+            </button>
+          </div>
+        `;
+        
+        notesContainer.appendChild(noteElement);
+        animateNote(noteElement);
+      });
+      
+      document.querySelectorAll('.delete-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+          const id = this.getAttribute('data-id');
+          deleteNote(id);
+        });
+      });
+      
+      document.querySelectorAll('.copy-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+          const id = this.getAttribute('data-id');
+          copyNote(id);
+        });
+      });
+    }
+    
+    function addNote(isReminder = false) {
+      const text = noteText.value.trim();
+      
+      if (!text) {
+        showNotification("Cobalt Заметки", "Пожалуйста, введите текст заметки");
+        return;
+      }
+      
+      let reminder = null;
+      if (isReminder) {
+        const date = reminderDate.value;
+        const time = reminderTime.value;
+        
+        if (!date || !time) {
+          showNotification("Cobalt Заметки", "Пожалуйста, укажите дату и время напоминания");
+          return;
+        }
+        
+        reminder = new Date(`${date}T${time}`);
+        
+        if (reminder < new Date()) {
+          showNotification("Cobalt Заметки", "Пожалуйста, укажите время в будущем");
+          return;
+        }
+      }
+      
+      const newNote = {
+        id: Date.now(),
+        text,
+        location: noteLocation.value.trim(),
+        note: noteNote.value.trim(),
+        icon: noteIcon.value,
+        timezone: noteTimezone.value,
+        reminder: reminder ? reminder.toISOString() : null,
+        notified: false,
+        timestamp: new Date().toISOString()
+      };
+      
+      notes.push(newNote);
+      saveNotes();
+      renderNotes();
+      
+      noteText.value = '';
+      noteLocation.value = '';
+      noteNote.value = '';
+      
+      if (isReminder) {
+        requestNotificationPermission();
+      }
+    }
+    
+    function deleteNote(id) {
+      notes = notes.filter(note => note.id != id);
+      saveNotes();
+      renderNotes();
+    }
+    
+    function copyNote(id) {
+      const note = notes.find(note => note.id == id);
+      if (!note) return;
+      
+      let textToCopy = note.text;
+      if (note.location) textToCopy += `\nМесто: ${note.location}`;
+      if (note.note) textToCopy += `\nПримечание: ${note.note}`;
+      if (note.reminder) {
+        textToCopy += `\nНапоминание: ${formatDate(note.reminder, note.timezone)}`;
+      }
+      
+      copyToClipboard(textToCopy);
+    }
+    
+    document.addEventListener('DOMContentLoaded', function() {
+      initDateTime();
+      initIcons();
+      loadNotes();
+      
+      addNoteBtn.addEventListener('click', () => addNote(false));
+      addReminderBtn.addEventListener('click', () => addNote(true));
+      exportAllBtn.addEventListener('click', exportNotesToTxt);
+      
+      setInterval(checkReminders, 30000);
+      checkReminders();
+    });
+  </script>
+</body>
+</html>
