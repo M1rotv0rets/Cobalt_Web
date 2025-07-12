@@ -17,7 +17,12 @@
             reminder: '#f59e0b',
             minecraft: '#3CB043',
             location: '#8A2BE2',
-            note: '#f97316'
+            note: '#f97316',
+            pickaxe: '#94a3b8',
+            axe: '#c2410c',
+            sword: '#0284c7',
+            shovel: '#854d0e',
+            chest: '#f59e0b'
           },
           animation: {
             'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite'
@@ -216,6 +221,30 @@
       color: #3CB043;
     }
     
+    .pickaxe-icon {
+      color: #94a3b8;
+    }
+    
+    .axe-icon {
+      color: #c2410c;
+    }
+    
+    .sword-icon {
+      color: #0284c7;
+    }
+    
+    .shovel-icon {
+      color: #854d0e;
+    }
+    
+    .chest-icon {
+      color: #f59e0b;
+    }
+    
+    .wheat-icon {
+      color: #84cc16;
+    }
+    
     .location-badge {
       display: inline-flex;
       align-items: center;
@@ -341,13 +370,14 @@
     .custom-icon-grid {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
-      gap: 0.75rem;
+      gap: 1rem;
       margin: 1rem 0;
     }
     
     @media (max-width: 480px) {
       .custom-icon-grid {
         grid-template-columns: repeat(3, 1fr);
+        gap: 0.75rem;
       }
     }
     
@@ -355,11 +385,12 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      padding: 0.75rem;
-      border-radius: 8px;
+      padding: 1rem;
+      border-radius: 12px;
       background: #0f172a;
       cursor: pointer;
       transition: all 0.2s ease;
+      min-height: 100px;
     }
     
     .custom-icon-item:hover {
@@ -399,6 +430,31 @@
     .export-btn {
       padding: 0.5rem 1rem;
       font-size: 0.9rem;
+    }
+    
+    .notes-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+    
+    .notes-title {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    
+    @media (max-width: 480px) {
+      .notes-header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      
+      .export-btn {
+        margin-top: 0.5rem;
+      }
     }
   </style>
 </head>
@@ -550,10 +606,10 @@
               </button>
             </div>
             <div id="selectedIconContainer" class="selected-icon-preview hidden">
-              <i id="selectedIconPreview" class="fas fa-pickaxe text-xl text-minecraft"></i>
+              <i id="selectedIconPreview" class="fas fa-hammer text-xl pickaxe-icon"></i>
               <div class="selected-icon-label">Вы выбрали этот значок</div>
             </div>
-            <input type="hidden" id="noteIcon" value="fas fa-pickaxe">
+            <input type="hidden" id="noteIcon" value="fas fa-hammer">
           </div>
           
           <div>
@@ -594,11 +650,13 @@
 
   <section class="py-10 px-4 relative">
     <div class="max-w-4xl mx-auto">
-      <div class="flex justify-between items-center mb-6">
-        <h2 class="text-2xl font-bold text-white flex items-center">
-          <i class="fas fa-sticky-note mr-3 text-primary"></i> Мои заметки
+      <div class="notes-header mb-6">
+        <div class="notes-title">
+          <h2 class="text-2xl font-bold text-white flex items-center">
+            <i class="fas fa-sticky-note mr-3 text-primary"></i> Мои заметки
+          </h2>
           <span id="notesCounter" class="ml-2 bg-primary/20 text-primary text-sm font-medium px-3 py-1 rounded-full">0</span>
-        </h2>
+        </div>
         
         <button 
           id="exportAllBtn" 
@@ -706,31 +764,30 @@
     let notes = [];
     
     const minecraftIcons = [
-      {icon: 'fas fa-pickaxe', name: 'Кирка'},
-      {icon: 'fas fa-axe', name: 'Топор'},
-      {icon: 'fas fa-sword', name: 'Меч'},
-      {icon: 'fas fa-shovel', name: 'Лопата'},
-      {icon: 'fas fa-house', name: 'Дом'},
-      {icon: 'fas fa-chest', name: 'Сундук'},
-      {icon: 'fas fa-wheat', name: 'Пшеница'},
-      {icon: 'fas fa-cow', name: 'Корова'},
-      {icon: 'fas fa-tree', name: 'Дерево'},
-      {icon: 'fas fa-fire', name: 'Огонь'},
-      {icon: 'fas fa-gem', name: 'Алмаз'},
-      {icon: 'fas fa-mountain', name: 'Гора'},
-      {icon: 'fas fa-water', name: 'Вода'},
-      {icon: 'fas fa-skull', name: 'Скелет'},
-      {icon: 'fas fa-trophy', name: 'Трофей'},
-      {icon: 'fas fa-book', name: 'Книга'},
-      {icon: 'fas fa-map', name: 'Карта'},
-      {icon: 'fas fa-compass', name: 'Компас'},
-      {icon: 'fas fa-torii-gate', name: 'Портал'},
-      {icon: 'fas fa-dragon', name: 'Дракон'},
-      {icon: 'fas fa-moon', name: 'Луна'},
-      {icon: 'fas fa-sun', name: 'Солнце'},
-      {icon: 'fas fa-star', name: 'Звезда'},
-      {icon: 'fas fa-bolt', name: 'Молния'},
-      {icon: 'fas fa-coins', name: 'Монеты'}
+      {icon: 'fas fa-hammer', name: 'Кирка', style: 'pickaxe-icon'},
+      {icon: 'fas fa-axe', name: 'Топор', style: 'axe-icon'},
+      {icon: 'fas fa-sword', name: 'Меч', style: 'sword-icon'},
+      {icon: 'fas fa-shovel', name: 'Лопата', style: 'shovel-icon'},
+      {icon: 'fas fa-chest', name: 'Сундук', style: 'chest-icon'},
+      {icon: 'fas fa-wheat', name: 'Пшеница', style: 'wheat-icon'},
+      {icon: 'fas fa-cow', name: 'Корова', style: 'minecraft-icon'},
+      {icon: 'fas fa-tree', name: 'Дерево', style: 'minecraft-icon'},
+      {icon: 'fas fa-fire', name: 'Огонь', style: 'minecraft-icon'},
+      {icon: 'fas fa-gem', name: 'Алмаз', style: 'minecraft-icon'},
+      {icon: 'fas fa-mountain', name: 'Гора', style: 'minecraft-icon'},
+      {icon: 'fas fa-water', name: 'Вода', style: 'minecraft-icon'},
+      {icon: 'fas fa-skull', name: 'Скелет', style: 'minecraft-icon'},
+      {icon: 'fas fa-trophy', name: 'Трофей', style: 'minecraft-icon'},
+      {icon: 'fas fa-book', name: 'Книга', style: 'minecraft-icon'},
+      {icon: 'fas fa-map', name: 'Карта', style: 'minecraft-icon'},
+      {icon: 'fas fa-compass', name: 'Компас', style: 'minecraft-icon'},
+      {icon: 'fas fa-torii-gate', name: 'Портал', style: 'minecraft-icon'},
+      {icon: 'fas fa-dragon', name: 'Дракон', style: 'minecraft-icon'},
+      {icon: 'fas fa-moon', name: 'Луна', style: 'minecraft-icon'},
+      {icon: 'fas fa-sun', name: 'Солнце', style: 'minecraft-icon'},
+      {icon: 'fas fa-star', name: 'Звезда', style: 'minecraft-icon'},
+      {icon: 'fas fa-bolt', name: 'Молния', style: 'minecraft-icon'},
+      {icon: 'fas fa-coins', name: 'Монеты', style: 'minecraft-icon'}
     ];
     
     function initIcons() {
@@ -740,15 +797,17 @@
         const iconItem = document.createElement('div');
         iconItem.className = 'custom-icon-item';
         iconItem.setAttribute('data-icon', iconData.icon);
+        iconItem.setAttribute('data-style', iconData.style);
         iconItem.innerHTML = `
-          <i class="${iconData.icon} text-2xl text-minecraft mb-2"></i>
+          <i class="${iconData.icon} text-2xl ${iconData.style} mb-2"></i>
           <span class="text-xs text-gray-300">${iconData.name}</span>
         `;
         
         iconItem.addEventListener('click', function() {
           const selected = this.getAttribute('data-icon');
+          const selectedStyle = this.getAttribute('data-style');
           noteIcon.value = selected;
-          selectedIconPreview.className = selected;
+          selectedIconPreview.className = `${selected} text-xl ${selectedStyle}`;
           selectedIconContainer.classList.remove('hidden');
           customIconModal.classList.remove('active');
         });
@@ -991,11 +1050,20 @@
           `;
         }
         
+        // Определяем стиль для значка
+        let iconStyle = 'minecraft-icon';
+        if (note.icon.includes('hammer')) iconStyle = 'pickaxe-icon';
+        if (note.icon.includes('axe')) iconStyle = 'axe-icon';
+        if (note.icon.includes('sword')) iconStyle = 'sword-icon';
+        if (note.icon.includes('shovel')) iconStyle = 'shovel-icon';
+        if (note.icon.includes('chest')) iconStyle = 'chest-icon';
+        if (note.icon.includes('wheat')) iconStyle = 'wheat-icon';
+        
         noteElement.innerHTML = `
           <div class="flex justify-between items-start">
             <div class="flex-1">
               <div class="flex items-start">
-                ${note.icon ? `<i class="${note.icon} minecraft-icon"></i>` : ''}
+                ${note.icon ? `<i class="${note.icon} ${iconStyle}"></i>` : ''}
                 <p class="whitespace-pre-line flex-1">${note.text}</p>
               </div>
               <div class="flex flex-wrap gap-2 mt-2">
