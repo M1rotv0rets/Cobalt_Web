@@ -120,18 +120,6 @@
       box-shadow: 0 6px 20px rgba(60, 176, 67, 0.5);
     }
     
-    .reminder-indicator {
-      position: absolute;
-      top: 10px;
-      right: 10px;
-      width: 12px;
-      height: 12px;
-      border-radius: 50%;
-      background-color: #f59e0b;
-      box-shadow: 0 0 10px rgba(245, 158, 11, 0.7);
-      animation: pulse 1.5s infinite;
-    }
-    
     .note-form {
       background: rgba(30, 41, 59, 0.7);
       border-radius: 12px;
@@ -213,6 +201,7 @@
     .minecraft-icon {
       color: #3CB043;
       margin-right: 12px;
+      margin-top: 3px;
     }
     
     .location-badge {
@@ -418,6 +407,16 @@
       gap: 0.5rem;
     }
     
+    .copy-btn .fa-copy {
+      animation: pulse-orange 2s infinite;
+    }
+    
+    @keyframes pulse-orange {
+      0% { color: #f59e0b; }
+      50% { color: #f97316; }
+      100% { color: #f59e0b; }
+    }
+    
     @media (max-width: 480px) {
       .notes-header {
         flex-direction: column;
@@ -520,7 +519,7 @@
             id="noteText" 
             class="w-full form-input" 
             rows="3" 
-            placeholder="Например: Проверить ферму железных големов..."
+            placeholder="Например: Проверить ферму железных големов"
           ></textarea>
         </div>
         
@@ -531,7 +530,7 @@
               type="text" 
               id="noteLocation" 
               class="w-full form-input" 
-              placeholder="Координаты или название места"
+              placeholder="Координаты или название"
             >
           </div>
           
@@ -541,7 +540,7 @@
               type="text" 
               id="noteNote" 
               class="w-full form-input" 
-              placeholder="Дополнительные детали..."
+              placeholder="Дополнительные детали"
             >
           </div>
         </div>
@@ -758,12 +757,12 @@
       {icon: 'fas fa-house', name: 'Дом'},
       {icon: 'fas fa-cube', name: 'Блок'},
       {icon: 'fas fa-dungeon', name: 'Подземелье'},
-      {icon: 'fas fa-wheat', name: 'Пшеница'},
-      {icon: 'fas fa-mine', name: 'Шахта'},
-      {icon: 'fas fa-ladder', name: 'Лестница'},
       {icon: 'fas fa-cloud', name: 'Облако'},
       {icon: 'fas fa-snowflake', name: 'Снег'},
-      {icon: 'fas fa-ghost', name: 'Призрак'}
+      {icon: 'fas fa-ghost', name: 'Призрак'},
+      {icon: 'fas fa-wheat-alt', name: 'Поле'},
+      {icon: 'fas fa-feather', name: 'Перо'},
+      {icon: 'fas fa-shield', name: 'Щит'}
     ];
     
     function initIcons() {
@@ -1042,7 +1041,6 @@
           <div class="mt-4 text-xs text-gray-500">
             ${formatDate(note.timestamp, note.timezone)}
           </div>
-          ${note.reminder && !note.notified ? '<div class="reminder-indicator"></div>' : ''}
           
           <div class="action-buttons">
             <button class="action-btn copy-btn tooltip" data-id="${note.id}">
