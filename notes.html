@@ -200,7 +200,7 @@
     
     .minecraft-icon {
       color: #3CB043;
-      margin-top: 3px;
+      margin-right: 12px;
     }
     
     .location-badge {
@@ -408,8 +408,8 @@
     
     .reminder-indicator {
       position: absolute;
-      top: -5px;
-      right: -5px;
+      top: 15px;
+      right: 15px;
       width: 12px;
       height: 12px;
       border-radius: 50%;
@@ -1030,6 +1030,8 @@
         }
         
         noteElement.innerHTML = `
+          ${note.reminder && !note.notified ? `<span class="reminder-indicator"></span>` : ''}
+          
           <div class="flex justify-between items-start">
             <div class="flex-1">
               <div class="flex items-center">
@@ -1049,13 +1051,10 @@
           </div>
           
           <div class="action-buttons">
-            <div class="relative">
-              <button class="action-btn copy-btn tooltip" data-id="${note.id}">
-                <i class="fas fa-copy"></i>
-                <span class="tooltiptext">Копировать</span>
-              </button>
-              ${note.reminder && !note.notified ? `<span class="reminder-indicator"></span>` : ''}
-            </div>
+            <button class="action-btn copy-btn tooltip" data-id="${note.id}">
+              <i class="fas fa-copy"></i>
+              <span class="tooltiptext">Копировать</span>
+            </button>
             <button class="action-btn delete-btn tooltip" data-id="${note.id}">
               <i class="fas fa-trash"></i>
               <span class="tooltiptext">Удалить</span>
