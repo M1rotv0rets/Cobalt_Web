@@ -17,12 +17,7 @@
             reminder: '#f59e0b',
             minecraft: '#3CB043',
             location: '#8A2BE2',
-            note: '#f97316',
-            pickaxe: '#94a3b8',
-            axe: '#c2410c',
-            sword: '#0284c7',
-            shovel: '#854d0e',
-            chest: '#f59e0b'
+            note: '#f97316'
           },
           animation: {
             'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite'
@@ -216,33 +211,7 @@
     }
     
     .minecraft-icon {
-      font-size: 1.5rem;
-      margin-right: 10px;
       color: #3CB043;
-    }
-    
-    .pickaxe-icon {
-      color: #94a3b8;
-    }
-    
-    .axe-icon {
-      color: #c2410c;
-    }
-    
-    .sword-icon {
-      color: #0284c7;
-    }
-    
-    .shovel-icon {
-      color: #854d0e;
-    }
-    
-    .chest-icon {
-      color: #f59e0b;
-    }
-    
-    .wheat-icon {
-      color: #84cc16;
     }
     
     .location-badge {
@@ -391,6 +360,8 @@
       cursor: pointer;
       transition: all 0.2s ease;
       min-height: 100px;
+      justify-content: center;
+      text-align: center;
     }
     
     .custom-icon-item:hover {
@@ -606,10 +577,10 @@
               </button>
             </div>
             <div id="selectedIconContainer" class="selected-icon-preview hidden">
-              <i id="selectedIconPreview" class="fas fa-hammer text-xl pickaxe-icon"></i>
+              <i id="selectedIconPreview" class="fas fa-cow text-xl minecraft-icon"></i>
               <div class="selected-icon-label">Вы выбрали этот значок</div>
             </div>
-            <input type="hidden" id="noteIcon" value="fas fa-hammer">
+            <input type="hidden" id="noteIcon" value="fas fa-cow">
           </div>
           
           <div>
@@ -764,12 +735,6 @@
     let notes = [];
     
     const minecraftIcons = [
-      {icon: 'fas fa-hammer', name: 'Кирка', style: 'pickaxe-icon'},
-      {icon: 'fas fa-axe', name: 'Топор', style: 'axe-icon'},
-      {icon: 'fas fa-sword', name: 'Меч', style: 'sword-icon'},
-      {icon: 'fas fa-shovel', name: 'Лопата', style: 'shovel-icon'},
-      {icon: 'fas fa-chest', name: 'Сундук', style: 'chest-icon'},
-      {icon: 'fas fa-wheat', name: 'Пшеница', style: 'wheat-icon'},
       {icon: 'fas fa-cow', name: 'Корова', style: 'minecraft-icon'},
       {icon: 'fas fa-tree', name: 'Дерево', style: 'minecraft-icon'},
       {icon: 'fas fa-fire', name: 'Огонь', style: 'minecraft-icon'},
@@ -797,17 +762,15 @@
         const iconItem = document.createElement('div');
         iconItem.className = 'custom-icon-item';
         iconItem.setAttribute('data-icon', iconData.icon);
-        iconItem.setAttribute('data-style', iconData.style);
         iconItem.innerHTML = `
-          <i class="${iconData.icon} text-2xl ${iconData.style} mb-2"></i>
+          <i class="${iconData.icon} text-2xl minecraft-icon mb-2"></i>
           <span class="text-xs text-gray-300">${iconData.name}</span>
         `;
         
         iconItem.addEventListener('click', function() {
           const selected = this.getAttribute('data-icon');
-          const selectedStyle = this.getAttribute('data-style');
           noteIcon.value = selected;
-          selectedIconPreview.className = `${selected} text-xl ${selectedStyle}`;
+          selectedIconPreview.className = `${selected} text-xl minecraft-icon`;
           selectedIconContainer.classList.remove('hidden');
           customIconModal.classList.remove('active');
         });
@@ -1050,20 +1013,11 @@
           `;
         }
         
-        // Определяем стиль для значка
-        let iconStyle = 'minecraft-icon';
-        if (note.icon.includes('hammer')) iconStyle = 'pickaxe-icon';
-        if (note.icon.includes('axe')) iconStyle = 'axe-icon';
-        if (note.icon.includes('sword')) iconStyle = 'sword-icon';
-        if (note.icon.includes('shovel')) iconStyle = 'shovel-icon';
-        if (note.icon.includes('chest')) iconStyle = 'chest-icon';
-        if (note.icon.includes('wheat')) iconStyle = 'wheat-icon';
-        
         noteElement.innerHTML = `
           <div class="flex justify-between items-start">
             <div class="flex-1">
               <div class="flex items-start">
-                ${note.icon ? `<i class="${note.icon} ${iconStyle}"></i>` : ''}
+                ${note.icon ? `<i class="${note.icon} minecraft-icon"></i>` : ''}
                 <p class="whitespace-pre-line flex-1">${note.text}</p>
               </div>
               <div class="flex flex-wrap gap-2 mt-2">
