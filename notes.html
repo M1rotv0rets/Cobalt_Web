@@ -212,6 +212,7 @@
     
     .minecraft-icon {
       color: #3CB043;
+      margin-right: 12px;
     }
     
     .location-badge {
@@ -577,10 +578,10 @@
               </button>
             </div>
             <div id="selectedIconContainer" class="selected-icon-preview hidden">
-              <i id="selectedIconPreview" class="fas fa-cow text-xl minecraft-icon"></i>
+              <i id="selectedIconPreview" class="fas fa-seedling text-xl minecraft-icon"></i>
               <div class="selected-icon-label">Вы выбрали этот значок</div>
             </div>
-            <input type="hidden" id="noteIcon" value="fas fa-cow">
+            <input type="hidden" id="noteIcon" value="fas fa-seedling">
           </div>
           
           <div>
@@ -735,24 +736,34 @@
     let notes = [];
     
     const minecraftIcons = [
-      {icon: 'fas fa-cow', name: 'Корова', style: 'minecraft-icon'},
-      {icon: 'fas fa-tree', name: 'Дерево', style: 'minecraft-icon'},
-      {icon: 'fas fa-fire', name: 'Огонь', style: 'minecraft-icon'},
-      {icon: 'fas fa-gem', name: 'Алмаз', style: 'minecraft-icon'},
-      {icon: 'fas fa-mountain', name: 'Гора', style: 'minecraft-icon'},
-      {icon: 'fas fa-water', name: 'Вода', style: 'minecraft-icon'},
-      {icon: 'fas fa-skull', name: 'Скелет', style: 'minecraft-icon'},
-      {icon: 'fas fa-trophy', name: 'Трофей', style: 'minecraft-icon'},
-      {icon: 'fas fa-book', name: 'Книга', style: 'minecraft-icon'},
-      {icon: 'fas fa-map', name: 'Карта', style: 'minecraft-icon'},
-      {icon: 'fas fa-compass', name: 'Компас', style: 'minecraft-icon'},
-      {icon: 'fas fa-torii-gate', name: 'Портал', style: 'minecraft-icon'},
-      {icon: 'fas fa-dragon', name: 'Дракон', style: 'minecraft-icon'},
-      {icon: 'fas fa-moon', name: 'Луна', style: 'minecraft-icon'},
-      {icon: 'fas fa-sun', name: 'Солнце', style: 'minecraft-icon'},
-      {icon: 'fas fa-star', name: 'Звезда', style: 'minecraft-icon'},
-      {icon: 'fas fa-bolt', name: 'Молния', style: 'minecraft-icon'},
-      {icon: 'fas fa-coins', name: 'Монеты', style: 'minecraft-icon'}
+      {icon: 'fas fa-seedling', name: 'Пашня'},
+      {icon: 'fas fa-cow', name: 'Корова'},
+      {icon: 'fas fa-tree', name: 'Дерево'},
+      {icon: 'fas fa-fire', name: 'Огонь'},
+      {icon: 'fas fa-gem', name: 'Алмаз'},
+      {icon: 'fas fa-mountain', name: 'Гора'},
+      {icon: 'fas fa-water', name: 'Вода'},
+      {icon: 'fas fa-skull', name: 'Скелет'},
+      {icon: 'fas fa-trophy', name: 'Трофей'},
+      {icon: 'fas fa-book', name: 'Книга'},
+      {icon: 'fas fa-map', name: 'Карта'},
+      {icon: 'fas fa-compass', name: 'Компас'},
+      {icon: 'fas fa-torii-gate', name: 'Портал'},
+      {icon: 'fas fa-dragon', name: 'Дракон'},
+      {icon: 'fas fa-moon', name: 'Луна'},
+      {icon: 'fas fa-sun', name: 'Солнце'},
+      {icon: 'fas fa-star', name: 'Звезда'},
+      {icon: 'fas fa-bolt', name: 'Молния'},
+      {icon: 'fas fa-coins', name: 'Монеты'},
+      {icon: 'fas fa-house', name: 'Дом'},
+      {icon: 'fas fa-cube', name: 'Блок'},
+      {icon: 'fas fa-dungeon', name: 'Подземелье'},
+      {icon: 'fas fa-wheat', name: 'Пшеница'},
+      {icon: 'fas fa-mine', name: 'Шахта'},
+      {icon: 'fas fa-ladder', name: 'Лестница'},
+      {icon: 'fas fa-cloud', name: 'Облако'},
+      {icon: 'fas fa-snowflake', name: 'Снег'},
+      {icon: 'fas fa-ghost', name: 'Призрак'}
     ];
     
     function initIcons() {
