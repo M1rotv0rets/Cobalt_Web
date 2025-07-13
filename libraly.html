@@ -1,0 +1,711 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Библиотекарь - Поиск книг</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://unpkg.com/aos@2.3.4/dist/aos.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: '#0ea5e9',
+            dark: '#0f172a',
+            book: '#8b5cf6'
+          },
+          animation: {
+            'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+            'float': 'float 6s ease-in-out infinite',
+          },
+          keyframes: {
+            float: {
+              '0%, 100%': { transform: 'translateY(0)' },
+              '50%': { transform: 'translateY(-10px)' },
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap');
+    
+    body {
+      font-family: 'Montserrat', sans-serif;
+      scroll-behavior: smooth;
+      background: linear-gradient(135deg, #0f172a, #1e293b);
+      color: #f1f5f9;
+      min-height: 100vh;
+    }
+    
+    .sticky-header {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      transition: all 0.4s ease;
+      backdrop-filter: blur(10px);
+      background: rgba(15, 23, 42, 0.85);
+    }
+    
+    .scrolled {
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+    }
+    
+    .book-card {
+      transition: all 0.3s ease;
+      background: rgba(30, 41, 59, 0.8);
+      border: 1px solid rgba(139, 92, 246, 0.3);
+      border-radius: 12px;
+      overflow: hidden;
+      position: relative;
+      height: 100%;
+    }
+    
+    .book-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 10px 25px -5px rgba(139, 92, 246, 0.3);
+      border-color: rgba(139, 92, 246, 0.5);
+    }
+    
+    .book-header {
+      transition: all 0.3s ease;
+      background: rgba(30, 41, 59, 0.7);
+      border-left: 4px solid #8b5cf6;
+    }
+    
+    .book-header:hover {
+      background: rgba(30, 41, 59, 0.9);
+      border-left-color: #a78bfa;
+    }
+    
+    .badge {
+      display: inline-block;
+      padding: 0.25rem 0.5rem;
+      border-radius: 0.25rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+    
+    .badge-primary {
+      background: rgba(14, 165, 233, 0.2);
+      color: #0ea5e9;
+    }
+    
+    .badge-success {
+      background: rgba(16, 185, 129, 0.2);
+      color: #10b981;
+    }
+    
+    .badge-warning {
+      background: rgba(245, 158, 11, 0.2);
+      color: #f59e0b;
+    }
+    
+    .badge-purple {
+      background: rgba(139, 92, 246, 0.2);
+      color: #8b5cf6;
+    }
+    
+    .badge-pink {
+      background: rgba(236, 72, 153, 0.2);
+      color: #ec4899;
+    }
+    
+    .glow {
+      text-shadow: 0 0 15px rgba(139, 92, 246, 0.7);
+    }
+    
+    .search-highlight {
+      background-color: rgba(139, 92, 246, 0.3);
+      padding: 0 2px;
+      border-radius: 3px;
+    }
+    
+    .book-icon {
+      background: linear-gradient(135deg, #1e293b, #0f172a);
+      border: 1px solid rgba(139, 92, 246, 0.3);
+    }
+    
+    .category-title {
+      position: relative;
+      padding-left: 1rem;
+    }
+    
+    .category-title::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 4px;
+      background: #8b5cf6;
+      border-radius: 2px;
+    }
+    
+    .bot-avatar {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #8b5cf6, #6366f1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 15px;
+      animation: float 6s ease-in-out infinite;
+    }
+    
+    .bot-message {
+      background: rgba(30, 41, 59, 0.7);
+      border-radius: 18px;
+      border-bottom-left-radius: 4px;
+      padding: 15px;
+      max-width: 80%;
+      margin-bottom: 20px;
+      position: relative;
+      animation: fadeIn 0.5s ease-out;
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .bot-message:after {
+      content: '';
+      position: absolute;
+      left: 0;
+      bottom: -10px;
+      width: 20px;
+      height: 20px;
+      border: 10px solid transparent;
+      border-top: 10px solid rgba(30, 41, 59, 0.7);
+      border-left: 10px solid rgba(30, 41, 59, 0.7);
+    }
+    
+    .user-input {
+      background: rgba(30, 41, 59, 0.7);
+      border: 1px solid rgba(139, 92, 246, 0.3);
+      transition: all 0.3s ease;
+    }
+    
+    .user-input:focus {
+      border-color: #8b5cf6;
+      box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.3);
+    }
+    
+    .genre-btn {
+      background: rgba(30, 41, 59, 0.5);
+      border: 1px solid rgba(139, 92, 246, 0.3);
+      transition: all 0.3s ease;
+    }
+    
+    .genre-btn:hover, .genre-btn.active {
+      background: rgba(139, 92, 246, 0.2);
+      border-color: #8b5cf6;
+      transform: translateY(-2px);
+    }
+  </style>
+</head>
+<body class="bg-dark text-gray-200">
+
+  <header class="sticky-header">
+    <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+      <div class="flex items-center">
+        <div class="w-10 h-10 rounded-full bg-book flex items-center justify-center mr-3">
+          <i class="fas fa-book text-white"></i>
+        </div>
+        <h1 class="text-2xl font-bold text-white">Библиотекарь</h1>
+      </div>
+      
+      <div class="hidden lg:flex space-x-8">
+        <a href="#" class="hover:text-primary transition-colors flex items-center">
+          <i class="fas fa-home mr-2"></i> Главная
+        </a> 
+        <a href="#" class="text-book transition-colors flex items-center">
+          <i class="fas fa-book mr-2"></i> Книги
+        </a>
+        <a href="#" class="hover:text-primary transition-colors flex items-center">
+          <i class="fas fa-tags mr-2"></i> Жанры
+        </a>
+        <a href="#" class="hover:text-primary transition-colors flex items-center">
+          <i class="fas fa-user mr-2"></i> Авторы
+        </a>
+      </div>
+      
+      <div class="block lg:hidden">
+        <button id="burgerBtn" class="text-white focus:outline-none z-50">
+          <div class="burger-line"></div>
+          <div class="burger-line"></div>
+          <div class="burger-line"></div>
+        </button>
+      </div>
+    </div>
+    
+    <div id="mobileMenu" class="mobile-menu bg-gray-900 lg:hidden">
+      <div class="flex flex-col px-6 py-4">
+        <a href="#" class="py-3 hover:text-primary transition-colors flex items-center">
+          <i class="fas fa-home mr-3 w-5"></i> Главная
+        </a> 
+        <a href="#" class="py-3 text-book transition-colors flex items-center">
+          <i class="fas fa-book mr-3 w-5"></i> Книги
+        </a>
+        <a href="#" class="py-3 hover:text-primary transition-colors flex items-center">
+          <i class="fas fa-tags mr-3 w-5"></i> Жанры
+        </a>
+        <a href="#" class="py-3 hover:text-primary transition-colors flex items-center">
+          <i class="fas fa-user mr-3 w-5"></i> Авторы
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <section class="relative py-16 px-4 overflow-hidden">
+    <div class="absolute inset-0 z-0">
+      <div class="absolute top-0 left-0 w-full h-full bg-gradient-to-b from-transparent to-dark opacity-90"></div>
+      <div class="absolute top-0 left-0 w-full h-full bg-gradient-to-r from-dark/90 to-book/20"></div>
+    </div>
+    
+    <div class="max-w-6xl mx-auto relative z-10">
+      <div class="text-center mb-12" data-aos="fade-up">
+        <h1 class="text-4xl sm:text-5xl font-bold mb-4 text-white glow">
+          Бот-библиотекарь
+        </h1>
+        <p class="text-xl text-gray-300 max-w-2xl mx-auto">
+          Находите книги по жанрам, ключевым словам и авторам. Ваш персональный помощник в мире литературы.
+        </p>
+      </div>
+      
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <!-- Левая колонка - интерфейс бота -->
+        <div class="lg:col-span-1 bg-gray-800/50 rounded-xl p-6" data-aos="fade-right">
+          <div class="flex items-center mb-6">
+            <div class="bot-avatar">
+              <i class="fas fa-robot text-2xl text-white"></i>
+            </div>
+            <div>
+              <h3 class="text-xl font-bold text-white">Библиотекарь Бот</h3>
+              <p class="text-gray-400">Всегда готов помочь с поиском книг</p>
+            </div>
+          </div>
+          
+          <div class="chat-container h-96 overflow-y-auto pr-2 mb-4">
+            <div class="bot-message">
+              <p>Привет! Я бот-библиотекарь. Чем могу помочь?</p>
+              <p class="mt-2">Вы можете:</p>
+              <ul class="list-disc pl-5 mt-1">
+                <li>Искать книги по названию, автору или ключевым словам</li>
+                <li>Фильтровать книги по жанру</li>
+                <li>Просматривать последние добавленные книги</li>
+              </ul>
+            </div>
+            
+            <div class="bot-message">
+              <p>Попробуйте ввести что-то в поле поиска ниже или выберите жанр из списка.</p>
+            </div>
+          </div>
+          
+          <div class="flex">
+            <input 
+              type="text" 
+              id="searchInput" 
+              placeholder="Введите название, автора или ключевое слово..." 
+              class="user-input flex-grow py-3 px-4 rounded-l-lg focus:outline-none"
+            >
+            <button 
+              id="searchBtn" 
+              class="bg-book text-white py-3 px-6 rounded-r-lg hover:bg-purple-600 transition-colors"
+            >
+              <i class="fas fa-search"></i>
+            </button>
+          </div>
+        </div>
+        
+        <!-- Центральная колонка - жанры -->
+        <div class="lg:col-span-1" data-aos="fade-up">
+          <div class="bg-gray-800/50 rounded-xl p-6 h-full">
+            <h2 class="text-2xl font-bold mb-6 text-white category-title">
+              Жанры книг
+            </h2>
+            
+            <div class="grid grid-cols-2 gap-4">
+              <button class="genre-btn active py-3 px-4 rounded-lg flex items-center">
+                <i class="fas fa-book mr-3 text-book"></i>
+                <span>Все книги</span>
+              </button>
+              
+              <button class="genre-btn py-3 px-4 rounded-lg flex items-center">
+                <i class="fas fa-scroll mr-3 text-yellow-400"></i>
+                <span>Истории</span>
+              </button>
+              
+              <button class="genre-btn py-3 px-4 rounded-lg flex items-center">
+                <i class="fas fa-user mr-3 text-green-400"></i>
+                <span>Биографии</span>
+              </button>
+              
+              <button class="genre-btn py-3 px-4 rounded-lg flex items-center">
+                <i class="fas fa-crystal-ball mr-3 text-pink-400"></i>
+                <span>Предсказания</span>
+              </button>
+              
+              <button class="genre-btn py-3 px-4 rounded-lg flex items-center">
+                <i class="fas fa-dragon mr-3 text-red-400"></i>
+                <span>Фэнтези</span>
+              </button>
+              
+              <button class="genre-btn py-3 px-4 rounded-lg flex items-center">
+                <i class="fas fa-rocket mr-3 text-blue-400"></i>
+                <span>Фантастика</span>
+              </button>
+            </div>
+            
+            <div class="mt-8">
+              <h3 class="text-xl font-bold mb-4 text-white">Статистика библиотеки</h3>
+              <div class="grid grid-cols-2 gap-4">
+                <div class="bg-gray-900/50 p-4 rounded-lg">
+                  <div class="text-3xl font-bold text-book mb-1">142</div>
+                  <div class="text-gray-400">Книг всего</div>
+                </div>
+                <div class="bg-gray-900/50 p-4 rounded-lg">
+                  <div class="text-3xl font-bold text-green-400 mb-1">24</div>
+                  <div class="text-gray-400">Новых за месяц</div>
+                </div>
+                <div class="bg-gray-900/50 p-4 rounded-lg">
+                  <div class="text-3xl font-bold text-yellow-400 mb-1">56</div>
+                  <div class="text-gray-400">Авторов</div>
+                </div>
+                <div class="bg-gray-900/50 p-4 rounded-lg">
+                  <div class="text-3xl font-bold text-pink-400 mb-1">18</div>
+                  <div class="text-gray-400">Жанров</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Правая колонка - последние книги -->
+        <div class="lg:col-span-1" data-aos="fade-left">
+          <div class="bg-gray-800/50 rounded-xl p-6 h-full">
+            <div class="flex justify-between items-center mb-6">
+              <h2 class="text-2xl font-bold text-white category-title">
+                Последние добавленные
+              </h2>
+              <a href="#" class="text-book hover:text-purple-400">Все новинки →</a>
+            </div>
+            
+            <div id="booksContainer" class="space-y-4">
+              <!-- Книги будут загружены из book.html -->
+              <div class="text-center py-10">
+                <div class="inline-block animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-book mb-4"></div>
+                <p class="text-gray-400">Загрузка книг...</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  
+  <section class="max-w-6xl mx-auto px-4 py-8">
+    <h2 class="text-2xl font-bold mb-6 text-white category-title" data-aos="fade-up">
+      Все книги
+    </h2>
+    
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <!-- Книги будут загружены из book.html -->
+      <div class="text-center py-10 col-span-3">
+        <div class="inline-block animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-book mb-4"></div>
+        <p class="text-gray-400">Загрузка всех книг...</p>
+      </div>
+    </div>
+  </section>
+  
+  <footer class="bg-gray-950 py-8 mt-12">
+    <div class="max-w-6xl mx-auto px-4">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div>
+          <h3 class="text-xl font-bold text-white mb-4">Библиотекарь</h3>
+          <p class="text-gray-400">
+            Ваш персональный помощник в мире литературы. Находите, читайте, наслаждайтесь.
+          </p>
+        </div>
+        <div>
+          <h3 class="text-xl font-bold text-white mb-4">Быстрые ссылки</h3>
+          <ul class="space-y-2">
+            <li><a href="#" class="text-gray-400 hover:text-book transition-colors">Все книги</a></li>
+            <li><a href="#" class="text-gray-400 hover:text-book transition-colors">Популярные жанры</a></li>
+            <li><a href="#" class="text-gray-400 hover:text-book transition-colors">Новые поступления</a></li>
+            <li><a href="#" class="text-gray-400 hover:text-book transition-colors">Авторы месяца</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3 class="text-xl font-bold text-white mb-4">Свяжитесь с нами</h3>
+          <p class="text-gray-400 mb-2">
+            <i class="fas fa-envelope mr-2 text-book"></i> contact@library-bot.com
+          </p>
+          <p class="text-gray-400 mb-2">
+            <i class="fas fa-phone mr-2 text-book"></i> +7 (999) 123-4567
+          </p>
+          <div class="flex space-x-4 mt-4">
+            <a href="#" class="text-gray-400 hover:text-book transition-colors">
+              <i class="fab fa-telegram fa-lg"></i>
+            </a>
+            <a href="#" class="text-gray-400 hover:text-book transition-colors">
+              <i class="fab fa-vk fa-lg"></i>
+            </a>
+            <a href="#" class="text-gray-400 hover:text-book transition-colors">
+              <i class="fab fa-discord fa-lg"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+      <div class="border-t border-gray-800 mt-8 pt-6 text-center text-gray-500">
+        © 2023 Библиотекарь. Все права защищены.
+      </div>
+    </div>
+  </footer>
+
+  <!-- Файл с книгами -->
+  <div id="bookData" style="display: none;">
+    <!-- Содержимое book.html будет вставлено сюда -->
+  </div>
+
+  <script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
+  <script>
+    // Инициализация AOS для анимаций
+    AOS.init({
+      duration: 800,
+      once: true,
+      offset: 50
+    });
+    
+    // Обработка мобильного меню
+    const burgerBtn = document.getElementById('burgerBtn');
+    const mobileMenu = document.getElementById('mobileMenu');
+    
+    burgerBtn.addEventListener('click', function() {
+      mobileMenu.classList.toggle('open');
+      
+      const lines = document.querySelectorAll('.burger-line');
+      if (mobileMenu.classList.contains('open')) {
+        lines[0].style.transform = 'translateY(7px) rotate(45deg)';
+        lines[1].style.opacity = '0';
+        lines[2].style.transform = 'translateY(-7px) rotate(-45deg)';
+      } else {
+        lines[0].style.transform = 'none';
+        lines[1].style.opacity = '1';
+        lines[2].style.transform = 'none';
+      }
+    });
+    
+    // Загрузка книг из book.html
+    document.addEventListener('DOMContentLoaded', function() {
+      // В реальном проекте здесь будет загрузка из файла book.html
+      // Для примера используем встроенные данные
+      
+      const books = [
+        {
+          title: "Потерянный",
+          author: "cava138",
+          genre: "Истории",
+          description: "День 1. А? Что? где я?! Я оказался в каком-то подвале...",
+          date: "2023-10-15",
+          new: true
+        },
+        {
+          title: "Глава 1 начало",
+          author: "DimonLemon",
+          genre: "Истории",
+          description: "Привет мой дневник сегодня я узнал что люблю утку...",
+          date: "2023-10-12",
+          new: true
+        },
+        {
+          title: "Глава 2 переезд",
+          author: "DimonLemon",
+          genre: "Истории",
+          description: "9день мы переехали к найсику в деревню начинаем делать домик...",
+          date: "2023-10-10",
+          new: false
+        },
+        {
+          title: "Автобиографии игроков Кубача",
+          author: "UberBaifo1",
+          genre: "Биографии",
+          description: "Издание Uberbaifo1 'Информация о почти каждом активном игроке на кубаче'...",
+          date: "2023-10-05",
+          new: false
+        },
+        {
+          title: "История игрока ktotakayasanya",
+          author: "ktotakayasanya",
+          genre: "Биографии",
+          description: "Глава 1. 15 Июня. С Чего Обычно Начинают Книги? Наверное...",
+          date: "2023-09-28",
+          new: false
+        },
+        {
+          title: "Предсказание 5",
+          author: "BudkaBDK",
+          genre: "Предсказания",
+          description: "Не откладывай дела в долгий ящик, иначе так ни к чему и не придёшь...",
+          date: "2023-09-20",
+          new: false
+        },
+        {
+          title: "Предсказание 13",
+          author: "BudkaBDK",
+          genre: "Предсказания",
+          description: "Оставь эмоции и положиcь на разум. Сконцентриру внимание на сегодняшнем дне...",
+          date: "2023-09-18",
+          new: false
+        },
+        {
+          title: "Дневник вызывателя Гропах",
+          author: "Вызыватель Гропах",
+          genre: "Истории",
+          description: "День 1337: Дорогой дневник! Сегодня утром я обнаружил пропажу тотема...",
+          date: "2023-09-15",
+          new: false
+        },
+        {
+          title: "Мурамаса",
+          author: "Foxylehaflower",
+          genre: "Истории",
+          description: "Эта мурамаса была сделана одним человеком. Он был недругом для своего соседа...",
+          date: "2023-09-10",
+          new: false
+        }
+      ];
+      
+      // Функция для отображения книг
+      function renderBooks(bookList, containerId) {
+        const container = document.getElementById(containerId);
+        container.innerHTML = '';
+        
+        bookList.forEach(book => {
+          const bookElement = document.createElement('div');
+          bookElement.className = 'book-card p-6';
+          bookElement.innerHTML = `
+            <div class="flex items-start mb-4">
+              <div class="book-icon w-16 h-16 rounded-lg flex items-center justify-center mr-4">
+                <i class="fas fa-book text-2xl text-book"></i>
+              </div>
+              <div>
+                <h3 class="text-xl font-bold text-white mb-1">${book.title}</h3>
+                <div class="text-gray-400 mb-2">Автор: ${book.author}</div>
+                <div class="flex flex-wrap gap-2">
+                  <span class="badge badge-purple">${book.genre}</span>
+                  ${book.new ? '<span class="badge badge-pink">Новая!</span>' : ''}
+                </div>
+              </div>
+            </div>
+            <p class="text-gray-400 mb-4 line-clamp-3">${book.description}</p>
+            <div class="flex justify-between items-center">
+              <span class="text-gray-500 text-sm">${book.date}</span>
+              <button class="bg-book/20 text-book hover:bg-book/30 py-2 px-4 rounded-lg transition-colors">
+                Читать <i class="fas fa-arrow-right ml-2"></i>
+              </button>
+            </div>
+          `;
+          container.appendChild(bookElement);
+        });
+      }
+      
+      // Отображение последних книг
+      renderBooks(books.slice(0, 3), 'booksContainer');
+      
+      // Отображение всех книг
+      renderBooks(books, 'allBooksContainer');
+      
+      // Создаем контейнер для всех книг
+      const allBooksContainer = document.createElement('div');
+      allBooksContainer.id = 'allBooksContainer';
+      allBooksContainer.className = 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6';
+      document.querySelector('.grid.grid-cols-1').appendChild(allBooksContainer);
+      renderBooks(books, 'allBooksContainer');
+      
+      // Поиск книг
+      const searchInput = document.getElementById('searchInput');
+      const searchBtn = document.getElementById('searchBtn');
+      
+      function searchBooks() {
+        const query = searchInput.value.toLowerCase();
+        if (!query) return;
+        
+        const results = books.filter(book => 
+          book.title.toLowerCase().includes(query) || 
+          book.author.toLowerCase().includes(query) ||
+          book.description.toLowerCase().includes(query) ||
+          book.genre.toLowerCase().includes(query)
+        );
+        
+        // Обновляем чат бота
+        const chatContainer = document.querySelector('.chat-container');
+        const botMessage = document.createElement('div');
+        botMessage.className = 'bot-message';
+        botMessage.innerHTML = `
+          <p>Найдено книг: <span class="text-book font-bold">${results.length}</span></p>
+          ${results.length > 0 ? 
+            `<p class="mt-2">По запросу <span class="text-book">"${query}"</span> найдены:</p>
+             <ul class="list-disc pl-5 mt-1">
+               ${results.slice(0, 3).map(book => 
+                 `<li><span class="text-book">${book.title}</span> (${book.author})</li>`
+               ).join('')}
+             </ul>` : 
+            `<p class="mt-2">К сожалению, по запросу <span class="text-book">"${query}"</span> ничего не найдено.</p>`
+          }
+        `;
+        chatContainer.appendChild(botMessage);
+        chatContainer.scrollTop = chatContainer.scrollHeight;
+        
+        // Прокручиваем к результатам
+        document.querySelector('#allBooksContainer').scrollIntoView({
+          behavior: 'smooth'
+        });
+        
+        // Выделяем результаты
+        if (results.length > 0) {
+          renderBooks(results, 'allBooksContainer');
+        }
+      }
+      
+      searchBtn.addEventListener('click', searchBooks);
+      searchInput.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') searchBooks();
+      });
+      
+      // Обработка выбора жанра
+      const genreBtns = document.querySelectorAll('.genre-btn');
+      genreBtns.forEach(btn => {
+        btn.addEventListener('click', function() {
+          genreBtns.forEach(b => b.classList.remove('active'));
+          this.classList.add('active');
+          
+          const genre = this.textContent.trim();
+          const filteredBooks = genre === 'Все книги' 
+            ? books 
+            : books.filter(book => book.genre === genre);
+          
+          // Обновляем чат бота
+          const chatContainer = document.querySelector('.chat-container');
+          const botMessage = document.createElement('div');
+          botMessage.className = 'bot-message';
+          botMessage.innerHTML = `
+            <p>Выбран жанр: <span class="text-book font-bold">${genre}</span></p>
+            <p class="mt-2">Найдено книг: <span class="text-book">${filteredBooks.length}</span></p>
+          `;
+          chatContainer.appendChild(botMessage);
+          chatContainer.scrollTop = chatContainer.scrollHeight;
+          
+          // Показываем книги
+          renderBooks(filteredBooks, 'allBooksContainer');
+        });
+      });
+    });
+  </script>
+</body>
+</html>
