@@ -3,7 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Cobalt Minecraft Search</title>
+  <title>Cobalt Search</title>
+  <link rel="icon" href="Images/icon.png">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
@@ -15,7 +16,8 @@
             dark: '#0f172a',
             reddit: '#FF4500',
             accent: '#8b5cf6',
-            favorite: '#FFD700'
+            favorite: '#FFD700',
+            language: '#10b981'
           }
         }
       }
@@ -309,7 +311,35 @@
       color: #FFD700;
     }
     
-    .avatar {
+    .tab-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .tab-btn {
+      padding: 0.75rem 1.5rem;
+      border-radius: 8px;
+      background: rgba(15, 23, 42, 0.5);
+      transition: all 0.3s ease;
+      cursor: pointer;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      border: 2px solid transparent;
+    }
+    
+    .tab-btn.active {
+      background: rgba(14, 165, 233, 0.2);
+      color: #0ea5e9;
+      border: 2px solid #0ea5e9;
+    }
+    
+    .tab-btn:hover:not(.active) {
+      background: rgba(14, 165, 233, 0.3);
+    }
+    
+    .user-icon {
       width: 24px;
       height: 24px;
       border-radius: 50%;
@@ -319,19 +349,109 @@
       align-items: center;
       justify-content: center;
       color: white;
-      font-size: 12px;
     }
     
-    .tab-container {
+    .loader {
+      width: 48px;
+      height: 48px;
+      border: 5px solid #0ea5e9;
+      border-bottom-color: transparent;
+      border-radius: 50%;
+      display: inline-block;
+      animation: rotation 1s linear infinite;
+    }
+    
+    @keyframes rotation {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    
+    .fade-in {
+      animation: fadeIn 0.5s ease-in;
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .icon-spin {
+      animation: iconSpin 1s linear infinite;
+    }
+    
+    @keyframes iconSpin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    
+    .language-selector {
+      position: relative;
+      display: inline-block;
+    }
+    
+    .language-btn {
       display: flex;
-      justify-content: space-between;
+      align-items: center;
+      padding: 0.5rem 1rem;
+      background: rgba(15, 23, 42, 0.5);
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    
+    .language-btn:hover {
+      background: rgba(14, 165, 233, 0.3);
+    }
+    
+    .language-options {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      background: rgba(30, 41, 59, 0.95);
+      border-radius: 8px;
+      padding: 0.5rem;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+      display: none;
+      z-index: 100;
+      width: 200px;
+    }
+    
+    .language-options.show {
+      display: block;
+    }
+    
+    .language-option {
+      padding: 0.5rem;
+      border-radius: 6px;
+      cursor: pointer;
+      display: flex;
       align-items: center;
     }
     
-    .mobile-tab-buttons {
+    .language-option:hover {
+      background: rgba(14, 165, 233, 0.3);
+    }
+    
+    .language-flag {
+      width: 24px;
+      height: 24px;
+      margin-right: 10px;
+      border-radius: 50%;
       display: flex;
-      gap: 5px;
-      margin-top: 10px;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      background: #1e3a8a;
+    }
+    
+    .browser-warning {
+      background: rgba(255, 100, 100, 0.2);
+      border: 1px solid rgba(255, 100, 100, 0.5);
+      border-radius: 8px;
+      padding: 0.75rem;
+      margin-top: 1rem;
+      display: flex;
+      align-items: center;
     }
     
     @media (max-width: 767px) {
@@ -368,54 +488,12 @@
         align-items: flex-start;
       }
       
-      .mobile-tab-buttons {
+      .tabs-wrapper {
         width: 100%;
+        display: flex;
         justify-content: center;
+        margin-top: 10px;
       }
-      
-      .mobile-tab-buttons .tab-btn {
-        flex: 1;
-        text-align: center;
-      }
-    }
-    
-    @media (min-width: 768px) {
-      .mobile-tab-buttons {
-        display: none;
-      }
-    }
-    
-    .loader {
-      width: 48px;
-      height: 48px;
-      border: 5px solid #0ea5e9;
-      border-bottom-color: transparent;
-      border-radius: 50%;
-      display: inline-block;
-      animation: rotation 1s linear infinite;
-    }
-    
-    @keyframes rotation {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
-    }
-    
-    .fade-in {
-      animation: fadeIn 0.5s ease-in;
-    }
-    
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(20px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-    
-    .icon-spin {
-      animation: iconSpin 1s linear infinite;
-    }
-    
-    @keyframes iconSpin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
     }
   </style>
 </head>
@@ -488,7 +566,9 @@
         <div class="mb-6">
           <div class="flex flex-col md:flex-row gap-4">
             <div class="w-full md:w-3/4">
-              <label class="block text-gray-300 mb-2">Ключевые слова для поиска</label>
+              <label class="block text-gray-300 mb-2 flex items-center">
+                <i class="fas fa-keyboard mr-2"></i> Ключевые слова для поиска
+              </label>
               <input 
                 id="searchQuery" 
                 type="text" 
@@ -498,7 +578,9 @@
               >
             </div>
             <div class="w-full md:w-1/4">
-              <label class="block text-gray-300 mb-2">Тема</label>
+              <label class="block text-gray-300 mb-2 flex items-center">
+                <i class="fas fa-tag mr-2"></i> Тема
+              </label>
               <select id="searchCategory" class="w-full form-input">
                 <option value="all">Все темы</option>
                 <option value="guides">Гайды</option>
@@ -510,8 +592,15 @@
               </select>
             </div>
           </div>
-          <div class="mt-2 text-sm text-gray-400">
-            <i class="fas fa-info-circle mr-2"></i> Пишите запросы на английском для лучших результатов
+          <div class="mt-2 text-sm text-gray-400 flex items-start">
+            <i class="fas fa-info-circle mr-2 mt-1"></i> 
+            <div>
+              <p>Пишите запросы на английском для лучших результатов</p>
+              <p class="mt-1 text-red-300">
+                <i class="fas fa-exclamation-triangle mr-1"></i> 
+                Данный инструмент официально поддерживает только браузер Firefox
+              </p>
+            </div>
           </div>
         </div>
         
@@ -534,15 +623,16 @@
           <i class="fas fa-list mr-3 text-primary"></i> Результаты поиска
         </h2>
         
-        <div class="flex overflow-x-auto gap-2">
-          <div class="tab-btn active" data-tab="all">Все</div>
-          <div class="tab-btn" data-tab="favorites">Избранное</div>
+        <div class="tabs-wrapper">
+          <div class="flex gap-2">
+            <div class="tab-btn active" data-tab="all">
+              <i class="fas fa-globe mr-2"></i> Все
+            </div>
+            <div class="tab-btn" data-tab="favorites">
+              <i class="fas fa-star mr-2"></i> Избранное
+            </div>
+          </div>
         </div>
-      </div>
-      
-      <div class="mobile-tab-buttons">
-        <div class="tab-btn active" data-tab="all">Все</div>
-        <div class="tab-btn" data-tab="favorites">Избранное</div>
       </div>
       
       <div id="resultsContainer" class="grid grid-cols-1 gap-5">
@@ -576,6 +666,9 @@
     const notification = document.getElementById('notification');
     const notificationContent = document.getElementById('notificationContent');
     const tabButtons = document.querySelectorAll('.tab-btn');
+
+    // Текущий выбранный язык для перевода
+    let currentLanguage = 'auto';
 
     const favorites = {
       getFavorites: function() {
@@ -743,7 +836,7 @@
       if (!text || text.trim() === '') return '';
       
       try {
-        const response = await fetch(`https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=en|ru`);
+        const response = await fetch(`https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=${currentLanguage}|ru`);
         const data = await response.json();
         return data.responseData.translatedText || text;
       } catch (error) {
@@ -819,7 +912,9 @@
               <div class="ml-4">
                 <i class="fas fa-comment mr-1"></i> ${result.comments}
               </div>
-              <div class="ml-4 text-gray-400">${result.date}</div>
+              <div class="ml-4 text-gray-400">
+                <i class="fas fa-clock mr-1"></i> ${result.date}
+              </div>
             </div>
           </div>
         </div>
@@ -859,11 +954,12 @@
       commentEl.setAttribute('data-id', comment.id);
       
       const isFavorite = commentFavorites.isFavorite(comment.id);
-      const avatarLetter = comment.author.charAt(0).toUpperCase();
       
       commentEl.innerHTML = `
         <div class="comment-author" data-author="${comment.author}">
-          <div class="avatar">${avatarLetter}</div>
+          <div class="user-icon">
+            <i class="fas fa-user"></i>
+          </div>
           ${comment.author}
         </div>
         <div class="comment-body">${comment.body}</div>
