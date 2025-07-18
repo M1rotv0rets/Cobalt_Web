@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Cobalt Поиск</title>
+  <title>Cobalt Minecraft Search</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
@@ -241,6 +241,95 @@
     .favorite-btn.active {
       color: #ffcc00;
     }
+    
+    .action-btn {
+      padding: 0.5rem 1rem;
+      border-radius: 8px;
+      background: rgba(15, 23, 42, 0.5);
+      transition: all 0.3s ease;
+      cursor: pointer;
+      font-size: 0.9rem;
+      margin-right: 0.5rem;
+      margin-bottom: 0.5rem;
+      display: inline-flex;
+      align-items: center;
+    }
+    
+    .action-btn:hover {
+      background: rgba(14, 165, 233, 0.3);
+    }
+    
+    .comments-container {
+      margin-top: 1rem;
+      border-top: 1px solid rgba(255,255,255,0.1);
+      padding-top: 1rem;
+    }
+    
+    .comment {
+      padding: 0.75rem;
+      background: rgba(15, 23, 42, 0.3);
+      border-radius: 8px;
+      margin-bottom: 0.75rem;
+    }
+    
+    .comment-author {
+      font-weight: bold;
+      color: #0ea5e9;
+      margin-bottom: 0.25rem;
+    }
+    
+    .like-btn {
+      display: inline-flex;
+      align-items: center;
+      cursor: pointer;
+      padding: 0.25rem 0.5rem;
+      border-radius: 20px;
+      transition: all 0.3s ease;
+    }
+    
+    .like-btn:hover {
+      background: rgba(255, 69, 0, 0.2);
+    }
+    
+    .like-btn.active {
+      color: #ff4500;
+    }
+    
+    .translated-text {
+      border-left: 3px solid #0ea5e9;
+      padding-left: 1rem;
+      margin-top: 0.5rem;
+    }
+    
+    @media (max-width: 767px) {
+      .search-form {
+        padding: 1.5rem;
+      }
+      
+      .form-input {
+        padding: 0.5rem 0.75rem;
+      }
+      
+      .action-btn {
+        padding: 0.4rem 0.8rem;
+        font-size: 0.8rem;
+      }
+      
+      .result-card {
+        padding: 1rem;
+      }
+      
+      .tab-btn {
+        padding: 0.5rem 1rem;
+        font-size: 0.9rem;
+      }
+      
+      .notification {
+        max-width: 90%;
+        left: 5%;
+        right: auto;
+      }
+    }
   </style>
 </head>
 <body class="bg-dark text-gray-200">
@@ -248,7 +337,7 @@
     <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
       <div class="flex items-center">
         <div class="w-10 h-10 rounded-full bg-primary flex items-center justify-center mr-3">
-          <i class="fas fa-diamond text-white"></i>
+          <i class="fas fa-search text-white"></i>
         </div>
         <h1 class="text-2xl font-bold text-white">Cobalt Поиск</h1>
       </div>
@@ -256,7 +345,13 @@
       <div class="hidden lg:flex space-x-8">
         <a href="index.html" class="hover:text-primary transition-colors flex items-center">
           <i class="fas fa-home mr-2"></i> Главная
-        </a> 
+        </a>
+        <a href="notes.html" class="hover:text-primary transition-colors flex items-center">
+          <i class="fas fa-note-sticky mr-2"></i> Заметки
+        </a>
+        <a href="launcher.html" class="hover:text-primary transition-colors flex items-center">
+          <i class="fas fa-rocket mr-2"></i> Лаунчер
+        </a>
         <a href="https://t.me/sun_community_chat" class="hover:text-primary transition-colors flex items-center">
           <i class="fas fa-users mr-2"></i> Сообщество
         </a>
@@ -275,7 +370,13 @@
       <div class="flex flex-col px-6 py-4">
         <a href="index.html" class="py-3 hover:text-primary transition-colors flex items-center">
           <i class="fas fa-home mr-3 w-5"></i> Главная
-        </a> 
+        </a>
+        <a href="notes.html" class="py-3 hover:text-primary transition-colors flex items-center">
+          <i class="fas fa-note-sticky mr-3 w-5"></i> Заметки
+        </a>
+        <a href="launcher.html" class="py-3 hover:text-primary transition-colors flex items-center">
+          <i class="fas fa-rocket mr-3 w-5"></i> Лаунчер
+        </a>
         <a href="https://t.me/sun_community_chat" class="py-3 hover:text-primary transition-colors flex items-center">
           <i class="fas fa-users mr-3 w-5"></i> Сообщество
         </a>
@@ -298,14 +399,33 @@
         </h2>
         
         <div class="mb-6">
-          <label class="block text-gray-300 mb-2">Ключевые слова для поиска</label>
-          <input 
-            id="searchQuery" 
-            type="text" 
-            class="w-full form-input" 
-            placeholder="Например: как сделать ферму железа, лучшие моды, биомы"
-            value="ферма железа"
-          >
+          <div class="flex flex-col md:flex-row gap-4">
+            <div class="w-full md:w-3/4">
+              <label class="block text-gray-300 mb-2">Ключевые слова для поиска</label>
+              <input 
+                id="searchQuery" 
+                type="text" 
+                class="w-full form-input" 
+                placeholder="Например: iron farm, best mods, biomes"
+                value="iron farm"
+              >
+            </div>
+            <div class="w-full md:w-1/4">
+              <label class="block text-gray-300 mb-2">Тема</label>
+              <select id="searchCategory" class="w-full form-input">
+                <option value="all">Все темы</option>
+                <option value="guides">Гайды</option>
+                <option value="mods">Моды</option>
+                <option value="builds">Постройки</option>
+                <option value="redstone">Редстоун</option>
+                <option value="biomes">Биомы</option>
+                <option value="servers">Серверы</option>
+              </select>
+            </div>
+          </div>
+          <div class="mt-2 text-sm text-gray-400">
+            <i class="fas fa-info-circle mr-2"></i> Пишите запросы на английском для лучших результатов
+          </div>
         </div>
         
         <div class="flex flex-wrap gap-3 mt-6">
@@ -339,7 +459,7 @@
             <i class="fas fa-search"></i>
           </div>
           <h3 class="text-xl font-bold mb-2 text-gray-300">Начните поиск информации по Minecraft</h3>
-          <p class="text-gray-400 mb-4">Введите ключевые слова и нажмите "Найти на Reddit"</p>
+          <p class="text-gray-400 mb-4">Введите ключевые слова на английском и нажмите "Найти на Reddit"</p>
           <div class="animate-pulse text-primary">
             <i class="fas fa-arrow-up text-2xl"></i>
           </div>
@@ -491,6 +611,41 @@
       return `${Math.floor(diff/86400)} дн. назад`;
     }
     
+    async function translateText(text) {
+      try {
+        const response = await fetch(`https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=en|ru`);
+        const data = await response.json();
+        return data.responseData.translatedText;
+      } catch (error) {
+        console.error('Translation error:', error);
+        return text;
+      }
+    }
+    
+    async function loadComments(postId) {
+      try {
+        const response = await fetch(`https://www.reddit.com/comments/${postId}.json`);
+        const data = await response.json();
+        return data[1].data.children.slice(0, 5).map(comment => ({
+          id: comment.data.id,
+          author: comment.data.author,
+          body: comment.data.body,
+          ups: comment.data.ups
+        }));
+      } catch (error) {
+        console.error('Error loading comments:', error);
+        return [];
+      }
+    }
+    
+    function copyToClipboard(text) {
+      navigator.clipboard.writeText(text).then(() => {
+        showNotification('Текст скопирован в буфер обмена');
+      }).catch(err => {
+        console.error('Failed to copy: ', err);
+      });
+    }
+    
     function createResultCard(result) {
       const card = document.createElement('div');
       card.className = 'result-card p-5 fade-in';
@@ -506,18 +661,34 @@
               <span>Reddit</span>
             </div>
             <h3 class="font-bold text-lg mb-2">${result.title}</h3>
-            <p class="text-gray-300 mb-3">${result.description}</p>
-            <div class="flex items-center text-gray-400 text-sm">
-              <span class="mr-4"><i class="fas fa-arrow-up mr-1"></i> ${result.votes}</span>
-              <span class="mr-4"><i class="fas fa-comment mr-1"></i> ${result.comments}</span>
-              <span>${result.date}</span>
+            <p class="text-gray-300">${result.description}</p>
+            <div class="flex flex-wrap items-center mt-3">
+              <div class="like-btn ${result.liked ? 'active' : ''}" data-id="${result.id}">
+                <i class="fas fa-heart mr-1"></i> ${result.votes}
+              </div>
+              <div class="ml-4">
+                <i class="fas fa-comment mr-1"></i> ${result.comments}
+              </div>
+              <div class="ml-4 text-gray-400">${result.date}</div>
             </div>
           </div>
         </div>
-        <div class="mt-4">
-          <a href="${result.url}" target="_blank" class="text-primary hover:underline font-medium">
-            <i class="fas fa-external-link-alt mr-2"></i> Читать на Reddit
-          </a>
+        <div class="mt-4 flex flex-wrap">
+          <button class="action-btn copy-btn" data-text="${result.title}\n\n${result.description}">
+            <i class="fas fa-copy mr-2"></i> Копировать
+          </button>
+          <button class="action-btn translate-btn" data-id="${result.id}">
+            <i class="fas fa-language mr-2"></i> Перевести
+          </button>
+          <button class="action-btn comments-btn" data-id="${result.id}">
+            <i class="fas fa-comments mr-2"></i> Комментарии
+          </button>
+        </div>
+        <div id="comments-${result.id}" class="comments-container hidden">
+          <div class="text-center py-4">
+            <div class="loader inline-block mx-auto mb-2"></div>
+            <p class="text-gray-400">Загрузка комментариев...</p>
+          </div>
         </div>
         <button class="favorite-btn ${isFavorite ? 'active' : ''}" 
                 data-id="${result.id}"
@@ -538,11 +709,12 @@
         return data.data.children.map(post => ({
           id: post.data.id,
           title: post.data.title,
-          description: post.data.selftext.substring(0, 250) + (post.data.selftext.length > 250 ? '...' : ''),
+          description: post.data.selftext.substring(0, 300) + (post.data.selftext.length > 300 ? '...' : ''),
           url: `https://reddit.com${post.data.permalink}`,
           votes: post.data.ups,
           comments: post.data.num_comments,
-          date: formatRedditDate(post.data.created_utc)
+          date: formatRedditDate(post.data.created_utc),
+          liked: false
         }));
       } catch (error) {
         console.error('Reddit search error:', error);
@@ -555,6 +727,7 @@
     
     async function performSearch() {
       const query = searchQuery.value.trim();
+      const category = document.getElementById('searchCategory').value;
       
       if (!query) {
         showNotification("Введите ключевые слова для поиска");
@@ -583,6 +756,7 @@
             resultsContainer.appendChild(card);
           });
           
+          // Обработчики для кнопок в карточках
           document.querySelectorAll('.favorite-btn').forEach(btn => {
             btn.addEventListener('click', function() {
               const id = this.getAttribute('data-id');
@@ -603,6 +777,94 @@
                   this.setAttribute('title', 'Удалить из избранного');
                   showNotification('Добавлено в избранное');
                 }
+              }
+            });
+          });
+          
+          document.querySelectorAll('.copy-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+              const text = this.getAttribute('data-text');
+              copyToClipboard(text);
+            });
+          });
+          
+          document.querySelectorAll('.translate-btn').forEach(btn => {
+            btn.addEventListener('click', async function() {
+              const cardId = this.getAttribute('data-id');
+              const card = document.querySelector(`.result-card[data-id="${cardId}"]`);
+              const description = card.querySelector('p.text-gray-300');
+              
+              if (description.classList.contains('translated')) return;
+              
+              this.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Перевод...';
+              this.disabled = true;
+              
+              const translatedTitle = await translateText(card.querySelector('h3').textContent);
+              const translatedDesc = await translateText(description.textContent);
+              
+              card.querySelector('h3').textContent = translatedTitle;
+              description.textContent = translatedDesc;
+              description.classList.add('translated');
+              
+              this.innerHTML = '<i class="fas fa-language mr-2"></i> Переведено';
+              this.disabled = false;
+            });
+          });
+          
+          document.querySelectorAll('.comments-btn').forEach(btn => {
+            btn.addEventListener('click', async function() {
+              const postId = this.getAttribute('data-id');
+              const card = document.querySelector(`.result-card[data-id="${postId}"]`);
+              const commentsContainer = card.querySelector('.comments-container');
+              
+              if (commentsContainer.classList.contains('hidden')) {
+                commentsContainer.classList.remove('hidden');
+                
+                if (!commentsContainer.hasAttribute('data-loaded')) {
+                  const comments = await loadComments(postId);
+                  let commentsHTML = '';
+                  
+                  if (comments.length > 0) {
+                    comments.forEach(comment => {
+                      commentsHTML += `
+                        <div class="comment">
+                          <div class="comment-author">${comment.author}</div>
+                          <div class="comment-body">${comment.body}</div>
+                          <div class="text-gray-400 text-sm mt-2">
+                            <i class="fas fa-heart"></i> ${comment.ups}
+                          </div>
+                        </div>
+                      `;
+                    });
+                  } else {
+                    commentsHTML = '<p class="text-gray-400">Комментарии не найдены</p>';
+                  }
+                  
+                  commentsContainer.innerHTML = commentsHTML;
+                  commentsContainer.setAttribute('data-loaded', 'true');
+                }
+              } else {
+                commentsContainer.classList.add('hidden');
+              }
+            });
+          });
+          
+          document.querySelectorAll('.like-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+              const id = this.getAttribute('data-id');
+              const result = results.find(r => r.id === id);
+              
+              if (result) {
+                result.liked = !result.liked;
+                this.classList.toggle('active', result.liked);
+                
+                if (result.liked) {
+                  result.votes++;
+                } else {
+                  result.votes--;
+                }
+                
+                this.innerHTML = `<i class="fas fa-heart mr-1"></i> ${result.votes}`;
               }
             });
           });
@@ -635,6 +897,7 @@
         resultsContainer.appendChild(card);
       });
       
+      // Добавляем обработчики для кнопок в избранном
       document.querySelectorAll('.favorite-btn').forEach(btn => {
         btn.addEventListener('click', function() {
           const id = this.getAttribute('data-id');
@@ -642,12 +905,43 @@
           if (favorites.removeFavorite(id)) {
             this.closest('.result-card').remove();
             
-            if (document.querySelectorAll('.result-card').length === 0) {
+            if (resultsContainer.children.length === 0) {
               displayFavorites();
             }
             
             showNotification('Удалено из избранного');
           }
+        });
+      });
+      
+      // Обработчики для кнопок копирования и перевода в избранном
+      document.querySelectorAll('.copy-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+          const text = this.getAttribute('data-text');
+          copyToClipboard(text);
+        });
+      });
+      
+      document.querySelectorAll('.translate-btn').forEach(btn => {
+        btn.addEventListener('click', async function() {
+          const cardId = this.getAttribute('data-id');
+          const card = document.querySelector(`.result-card[data-id="${cardId}"]`);
+          const description = card.querySelector('p.text-gray-300');
+          
+          if (description.classList.contains('translated')) return;
+          
+          this.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Перевод...';
+          this.disabled = true;
+          
+          const translatedTitle = await translateText(card.querySelector('h3').textContent);
+          const translatedDesc = await translateText(description.textContent);
+          
+          card.querySelector('h3').textContent = translatedTitle;
+          description.textContent = translatedDesc;
+          description.classList.add('translated');
+          
+          this.innerHTML = '<i class="fas fa-language mr-2"></i> Переведено';
+          this.disabled = false;
         });
       });
     }
