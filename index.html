@@ -106,23 +106,19 @@
       opacity: 1;
     }
     
-    .btn-download {
+    .btn-go {
       background: linear-gradient(135deg, #0ea5e9, #0284c7);
       transition: all 0.3s ease;
       box-shadow: 0 4px 15px rgba(2, 132, 199, 0.3);
     }
     
-    .btn-download:hover {
+    .btn-go:hover {
       transform: translateY(-3px);
       box-shadow: 0 6px 20px rgba(2, 132, 199, 0.5);
     }
     
-    .btn-download:active {
+    .btn-go:active {
       transform: translateY(1px);
-    }
-    
-    .glow {
-      text-shadow: 0 0 15px rgba(14, 165, 233, 0.7);
     }
     
     .bot-icon {
@@ -133,13 +129,6 @@
     
     .feature-card:hover .bot-icon {
       transform: scale(1.1);
-    }
-    
-    .grid-pattern {
-      background-image: 
-        linear-gradient(rgba(14, 165, 233, 0.1) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(14, 165, 233, 0.1) 1px, transparent 1px);
-      background-size: 20px 20px;
     }
   </style>
 </head>
@@ -160,10 +149,7 @@
         <a href="notes.html" class="hover:text-primary transition-colors flex items-center">
           <i class="fas fa-sticky-note mr-2"></i> Заметки
         </a>
-        <a href="tools.html" class="hover:text-primary transition-colors flex items-center">
-          <i class="fas fa-tools mr-2"></i> Инструменты
-        </a>
-        <a href=""launcher.html class="hover:text-primary transition-colors flex items-center">
+        <a href="launcher.html" class="hover:text-primary transition-colors flex items-center">
           <i class="fas fa-rocket mr-2"></i> Лаунчер
         </a>
         <a href="https://t.me/sun_community_chat" class="hover:text-primary transition-colors flex items-center">
@@ -188,9 +174,6 @@
         <a href="notes.html" class="py-3 hover:text-primary transition-colors flex items-center">
           <i class="fas fa-sticky-note mr-3 w-5"></i> Заметки
         </a>
-        <a href="tools.html" class="py-3 hover:text-primary transition-colors flex items-center">
-          <i class="fas fa-tools mr-3 w-5"></i> Инструменты
-        </a>
         <a href="launcher.html" class="py-3 hover:text-primary transition-colors flex items-center">
           <i class="fas fa-rocket mr-3 w-5"></i> Лаунчер
         </a>
@@ -214,7 +197,7 @@
             <p class="text-gray-300 mb-5">
               Ваш персональный помощник в мире Minecraft. Отвечает на вопросы и дает советы по игре.
             </p>
-            <a href="assistant.html" class="btn-download inline-block px-6 py-3 rounded-full font-medium text-white">
+            <a href="assistant.html" class="btn-go inline-block px-6 py-3 rounded-full font-medium text-white">
               Использовать <i class="fas fa-arrow-right ml-2"></i>
             </a>
           </div>
@@ -229,7 +212,7 @@
             <p class="text-gray-300 mb-5">
               Анализирует ваш лог и краш-репорт. Предоставляет объяснение ошибок и способы их исправления.
             </p>
-            <a href="diagnostic.html" class="btn-download inline-block px-6 py-3 rounded-full font-medium text-white">
+            <a href="diagnostic.html" class="btn-go inline-block px-6 py-3 rounded-full font-medium text-white">
               Использовать <i class="fas fa-arrow-right ml-2"></i>
             </a>
           </div>
@@ -244,7 +227,7 @@
             <p class="text-gray-300 mb-5">
               Находит лучшие моды, ресурспаки, датапаки и шейдеры для вашей версии Minecraft. Сортировка по рейтингу и совместимости.
             </p>
-            <a href="mods.html" class="btn-download inline-block px-6 py-3 rounded-full font-medium text-white">
+            <a href="mods.html" class="btn-go inline-block px-6 py-3 rounded-full font-medium text-white">
               Использовать <i class="fas fa-arrow-right ml-2"></i>
             </a>
           </div>
@@ -259,7 +242,7 @@
             <p class="text-gray-300 mb-5">
               Информация о предметах, мобах, блоках и их характеристиках. Для новичков и опытных игроков.
             </p>
-            <a href="wiki.html" class="btn-download inline-block px-6 py-3 rounded-full font-medium text-white">
+            <a href="wiki.html" class="btn-go inline-block px-6 py-3 rounded-full font-medium text-white">
               Использовать <i class="fas fa-arrow-right ml-2"></i>
             </a>
           </div>
@@ -274,7 +257,7 @@
             <p class="text-gray-300 mb-5">
               Следите за новостями Minecraft, обновлениями, ивентами и анонсами. Уведомления о новых версиях и модах.
             </p>
-            <a href="news.html" class="btn-download inline-block px-6 py-3 rounded-full font-medium text-white">
+            <a href="news.html" class="btn-go inline-block px-6 py-3 rounded-full font-medium text-white">
               Использовать <i class="fas fa-arrow-right ml-2"></i>
             </a>
           </div>
@@ -289,7 +272,7 @@
             <p class="text-gray-300 mb-5">
               Ищет информацию в реддите, форумах и сообществах. Находит ответы на вопросы по игре, модам и серверам.
             </p>
-            <a href="searth.html" class="btn-download inline-block px-6 py-3 rounded-full font-medium text-white">
+            <a href="searth.html" class="btn-go inline-block px-6 py-3 rounded-full font-medium text-white">
               Использовать <i class="fas fa-arrow-right ml-2"></i>
             </a>
           </div>
@@ -304,7 +287,7 @@
             <p class="text-gray-300 mb-5">
               Найдите нужный проект: карты, моды, плагины. Фильтры по версии, сложности и типу проекта.
             </p>
-            <a href="projects.html" class="btn-download inline-block px-6 py-3 rounded-full font-medium text-white">
+            <a href="projects.html" class="btn-go inline-block px-6 py-3 rounded-full font-medium text-white">
               Использовать <i class="fas fa-arrow-right ml-2"></i>
             </a>
           </div>
@@ -319,7 +302,53 @@
             <p class="text-gray-300 mb-5">
               Коллекция книг, руководств, историй и ресурсов для Minecraft. Изучайте механики, техники строительства и стратегии.
             </p>
-            <a href="books.html" class="btn-download inline-block px-6 py-3 rounded-full font-medium text-white">
+            <a href="books.html" class="btn-go inline-block px-6 py-3 rounded-full font-medium text-white">
+              Использовать <i class="fas fa-arrow-right ml-2"></i>
+            </a>
+          </div>
+        </div>
+        
+        <!-- Новые карточки -->
+        <div class="feature-card p-6" data-aos="fade-up" data-aos-delay="900">
+          <div class="text-center">
+            <div class="bot-icon text-cyan-400">
+              <i class="fas fa-globe-americas"></i>
+            </div>
+            <h3 class="text-xl font-bold mb-3 text-white">Настройщик Миров</h3>
+            <p class="text-gray-300 mb-5">
+              Создавайте уникальные миры с кастомными настройками. Редактируйте биомы, структуры и правила генерации.
+            </p>
+            <a href="world-customizer.html" class="btn-go inline-block px-6 py-3 rounded-full font-medium text-white">
+              Использовать <i class="fas fa-arrow-right ml-2"></i>
+            </a>
+          </div>
+        </div>
+        
+        <div class="feature-card p-6" data-aos="fade-up" data-aos-delay="1000">
+          <div class="text-center">
+            <div class="bot-icon text-pink-400">
+              <i class="fas fa-user-astronaut"></i>
+            </div>
+            <h3 class="text-xl font-bold mb-3 text-white">Скины Minecraft</h3>
+            <p class="text-gray-300 mb-5">
+              Коллекция уникальных скинов для вашего персонажа. Просмотр, создание и установка кастомных скинов.
+            </p>
+            <a href="skins.html" class="btn-go inline-block px-6 py-3 rounded-full font-medium text-white">
+              Использовать <i class="fas fa-arrow-right ml-2"></i>
+            </a>
+          </div>
+        </div>
+        
+        <div class="feature-card p-6" data-aos="fade-up" data-aos-delay="1100">
+          <div class="text-center">
+            <div class="bot-icon text-amber-400">
+              <i class="fas fa-hammer"></i>
+            </div>
+            <h3 class="text-xl font-bold mb-3 text-white">Крафт Minecraft</h3>
+            <p class="text-gray-300 mb-5">
+              Полное руководство по крафтингу. Все рецепты крафта, поиск по предметам и интерактивные схемы.
+            </p>
+            <a href="crafting.html" class="btn-go inline-block px-6 py-3 rounded-full font-medium text-white">
               Использовать <i class="fas fa-arrow-right ml-2"></i>
             </a>
           </div>
