@@ -1,0 +1,1728 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Cobalt Моды</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: '#0ea5e9',
+            dark: '#0f172a',
+            reminder: '#f59e0b',
+            card: '#1e293b',
+            darker: '#0a1120',
+            success: '#10b981',
+            warning: '#f59e0b',
+            danger: '#ef4444',
+            shader: '#8b5cf6'
+          },
+          animation: {
+            'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite'
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap');
+    
+    body {
+      font-family: 'Montserrat', sans-serif;
+      scroll-behavior: smooth;
+      background: linear-gradient(135deg, #0f172a, #1e293b);
+      color: #f1f5f9;
+      min-height: 100vh;
+    }
+    
+    .sticky-header {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      transition: all 0.4s ease;
+      backdrop-filter: blur(10px);
+      background: rgba(15, 23, 42, 0.85);
+    }
+    
+    .scrolled {
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+    }
+    
+    .burger-line {
+      display: block;
+      height: 2px;
+      width: 25px;
+      background: white;
+      margin: 5px auto;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    
+    .mobile-menu {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    
+    .mobile-menu.open {
+      max-height: 300px;
+    }
+    
+    .btn-primary {
+      background: linear-gradient(135deg, #0ea5e9, #0284c7);
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(2, 132, 199, 0.3);
+    }
+    
+    .btn-primary:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 6px 20px rgba(2, 132, 199, 0.5);
+    }
+    
+    .btn-primary:active {
+      transform: translateY(1px);
+    }
+    
+    .btn-reminder {
+      background: linear-gradient(135deg, #f59e0b, #d97706);
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(245, 158, 11, 0.3);
+    }
+    
+    .btn-reminder:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 6px 20px rgba(245, 158, 11, 0.5);
+    }
+    
+    .search-form {
+      background: rgba(30, 41, 59, 0.7);
+      border-radius: 12px;
+      backdrop-filter: blur(10px);
+      padding: 2rem;
+      border: 1px solid rgba(14, 165, 233, 0.2);
+    }
+    
+    .form-input {
+      background: rgba(15, 23, 42, 0.6);
+      border: 1px solid rgba(14, 165, 233, 0.3);
+      color: white;
+      padding: 0.75rem 1rem;
+      border-radius: 8px;
+      transition: all 0.3s ease;
+    }
+    
+    .form-input:focus {
+      outline: none;
+      border-color: #0ea5e9;
+      box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.3);
+    }
+    
+    .empty-state {
+      text-align: center;
+      padding: 3rem;
+      background: rgba(30, 41, 59, 0.3);
+      border-radius: 12px;
+      border: 2px dashed rgba(14, 165, 233, 0.3);
+    }
+    
+    .notification {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: rgba(30, 41, 59, 0.95);
+      color: white;
+      padding: 1rem 2rem;
+      border-radius: 8px;
+      border-left: 4px solid #0ea5e9;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+      transform: translateX(120%);
+      transition: transform 0.4s ease;
+      z-index: 1000;
+      max-width: 350px;
+    }
+    
+    .notification.show {
+      transform: translateX(0);
+    }
+    
+    .notification-title {
+      display: flex;
+      align-items: center;
+      font-weight: bold;
+      margin-bottom: 0.5rem;
+      color: #0ea5e9;
+    }
+    
+    .mod-card {
+      transition: all 0.3s ease;
+      background: linear-gradient(145deg, #1e293b, #0f172a);
+      border: 1px solid rgba(14, 165, 233, 0.2);
+      border-radius: 12px;
+      overflow: hidden;
+      position: relative;
+    }
+    
+    .mod-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 10px 25px -5px rgba(14, 165, 233, 0.3);
+    }
+    
+    .card-badge {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      padding: 5px 10px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 600;
+      z-index: 2;
+    }
+    
+    .badge-mod {
+      background: #0ea5e9;
+    }
+    
+    .badge-resourcepack {
+      background: #10b981;
+    }
+    
+    .badge-datapack {
+      background: #f59e0b;
+    }
+    
+    .badge-shader {
+      background: #8b5cf6;
+    }
+    
+    .card-image {
+      height: 300px; 
+      width: 100%;
+      background: #0a1120;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      position: relative;
+    }
+    
+    .card-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: all 0.5s ease;
+    }
+    
+    .mod-card:hover .card-image img {
+      transform: scale(1.1); 
+    }
+    
+    .image-placeholder {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, #0ea5e9, #0284c7);
+      color: white;
+      font-size: 14px;
+      text-align: center;
+      padding: 20px;
+    }
+    
+    .loader-spinner {
+      border: 4px solid rgba(14, 165, 233, 0.2);
+      border-top: 4px solid #0ea5e9;
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 20px;
+    }
+    
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    
+    .version-tag {
+      background: rgba(14, 165, 233, 0.15);
+      color: #0ea5e9;
+      padding: 3px 8px;
+      border-radius: 4px;
+      font-size: 12px;
+      font-weight: 500;
+    }
+    
+    .sort-btn {
+      padding: 8px 15px;
+      border-radius: 6px;
+      background: rgba(30, 41, 59, 0.8);
+      color: #f1f5f9;
+      border: 1px solid rgba(14, 165, 233, 0.3);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    
+    .sort-btn.active {
+      background: #0ea5e9;
+      color: white;
+    }
+    
+    .sort-btn:hover {
+      background: rgba(56, 69, 97, 0.8);
+    }
+    
+    .page-btn {
+      width: 40px;
+      height: 40px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(30, 41, 59, 0.8);
+      color: #f1f5f9;
+      border: 1px solid rgba(14, 165, 233, 0.3);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    
+    .page-btn:hover, .page-btn.active {
+      background: #0ea5e9;
+      color: white;
+    }
+    
+    .chat-bot {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #0ea5e9, #0284c7);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 24px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+      cursor: pointer;
+      z-index: 100;
+      transition: all 0.3s ease;
+    }
+    
+    .chat-bot:hover {
+      transform: scale(1.1);
+    }
+    
+    .chat-container {
+      position: fixed;
+      bottom: 100px;
+      right: 30px;
+      width: 350px;
+      height: 450px;
+      background: rgba(30, 41, 59, 0.95);
+      border-radius: 15px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(14, 165, 233, 0.3);
+      display: flex;
+      flex-direction: column;
+      z-index: 99;
+      overflow: hidden;
+      transform: translateY(20px);
+      opacity: 0;
+      pointer-events: none;
+      transition: all 0.3s ease;
+    }
+    
+    .chat-container.open {
+      transform: translateY(0);
+      opacity: 1;
+      pointer-events: all;
+    }
+    
+    .chat-header {
+      background: rgba(15, 23, 42, 0.9);
+      padding: 15px;
+      border-bottom: 1px solid rgba(14, 165, 233, 0.2);
+      display: flex;
+      align-items: center;
+    }
+    
+    .chat-messages {
+      flex: 1;
+      padding: 15px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    
+    .message {
+      max-width: 80%;
+      padding: 10px 15px;
+      border-radius: 18px;
+      font-size: 14px;
+    }
+    
+    .bot-message {
+      background: rgba(14, 165, 233, 0.2);
+      border-bottom-left-radius: 5px;
+      align-self: flex-start;
+    }
+    
+    .user-message {
+      background: rgba(14, 165, 233, 0.4);
+      border-bottom-right-radius: 5px;
+      align-self: flex-end;
+    }
+    
+    .chat-input-container {
+      padding: 15px;
+      background: rgba(15, 23, 42, 0.9);
+      border-top: 1px solid rgba(14, 165, 233, 0.2);
+    }
+    
+    .download-modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.7);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 200;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+    
+    .download-modal.open {
+      opacity: 1;
+      pointer-events: all;
+    }
+    
+    .modal-content {
+      background: rgba(30, 41, 59, 0.95);
+      border-radius: 15px;
+      padding: 25px;
+      width: 90%;
+      max-width: 500px;
+      border: 1px solid rgba(14, 165, 233, 0.3);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+    }
+    
+    .versions-list {
+      max-height: 300px;
+      overflow-y: auto;
+      margin: 15px 0;
+      border: 1px solid rgba(14, 165, 233, 0.2);
+      border-radius: 10px;
+      padding: 10px;
+    }
+    
+    .version-item {
+      padding: 10px 15px;
+      border-radius: 8px;
+      margin-bottom: 8px;
+      background: rgba(15, 23, 42, 0.6);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    
+    .version-item:hover {
+      background: rgba(14, 165, 233, 0.2);
+    }
+    
+    .favorite-btn {
+      position: absolute;
+      top: 15px;
+      left: 15px;
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      background: rgba(30, 41, 59, 0.7);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #f1f5f9;
+      cursor: pointer;
+      transition: all 0.3s;
+      z-index: 2;
+    }
+    
+    .favorite-btn.active {
+      color: #f59e0b;
+    }
+    
+    .favorite-btn:hover {
+      background: rgba(245, 158, 11, 0.2);
+    }
+    
+    .tab-btn {
+      padding: 10px 20px;
+      border-radius: 8px;
+      background: rgba(30, 41, 59, 0.7);
+      color: #f1f5f9;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-weight: 500;
+    }
+    
+    .tab-btn.active {
+      background: #0ea5e9;
+      color: white;
+    }
+    
+    .folder-path {
+      background: rgba(15, 23, 42, 0.6);
+      border: 1px solid rgba(14, 165, 233, 0.3);
+      color: white;
+      padding: 0.75rem 1rem;
+      border-radius: 8px;
+      transition: all 0.3s ease;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    
+    .folder-path-placeholder {
+      color: #94a3b8;
+    }
+    
+    @keyframes float {
+      0% { transform: translateY(0px); }
+      50% { transform: translateY(-8px); }
+      100% { transform: translateY(0px); }
+    }
+    
+    .bot-float {
+      animation: float 3s ease-in-out infinite;
+    }
+    
+    .card-tag {
+      background: rgba(14, 165, 233, 0.15);
+      color: #0ea5e9;
+      padding: 3px 8px;
+      border-radius: 4px;
+      font-size: 12px;
+      font-weight: 500;
+      display: inline-flex;
+      align-items: center;
+    }
+    
+    .card-tag i {
+      margin-right: 4px;
+      font-size: 10px;
+    }
+    
+    .folder-select-info {
+      background: rgba(15, 23, 42, 0.6);
+      border: 1px dashed rgba(14, 165, 233, 0.3);
+      border-radius: 8px;
+      padding: 12px;
+      margin-top: 10px;
+      font-size: 13px;
+    }
+    
+    @media (min-width: 768px) {
+      .desktop-menu {
+        display: flex;
+        gap: 20px;
+      }
+      .burger-btn-container {
+        display: none;
+      }
+    }
+    
+    @media (max-width: 767px) {
+      .desktop-menu {
+        display: none;
+      }
+      .burger-btn-container {
+        display: block;
+      }
+      .filters {
+        grid-template-columns: 1fr;
+      }
+      .chat-container {
+        width: 90%;
+        right: 5%;
+        height: 70vh;
+      }
+      .card-image {
+        height: 180px;
+      }
+    }
+  </style>
+</head>
+<body class="bg-dark text-gray-200">
+  <header class="sticky-header">
+    <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+      <div class="flex items-center">
+        <div class="w-10 h-10 rounded-full bg-primary flex items-center justify-center mr-3">
+          <i class="fas fa-cube text-white"></i>
+        </div>
+        <h1 class="text-2xl font-bold text-white">Cobalt Моды</h1>
+      </div>
+      
+      <div class="desktop-menu">
+        <a href="index.html" class="hover:text-primary transition-colors flex items-center">
+          <i class="fas fa-home mr-2"></i> Главная
+        </a> 
+        <a href="notes.html" class="hover:text-primary transition-colors flex items-center">
+          <i class="fas fa-sticky-note mr-2"></i> Заметки
+        </a>
+        <a href="tools.html" class="hover:text-primary transition-colors flex items-center">
+          <i class="fas fa-tools mr-2"></i> Инструменты
+        </a>
+        <a href="launcher.html" class="hover:text-primary transition-colors flex items-center">
+          <i class="fas fa-rocket mr-2"></i> Лаунчер
+        </a>
+        <a href="https://t.me/sun_community_chat" class="hover:text-primary transition-colors flex items-center">
+          <i class="fas fa-users mr-2"></i> Сообщество
+        </a>
+      </div>
+      
+      <div class="burger-btn-container">
+        <button id="burgerBtn" class="text-white focus:outline-none z-50">
+          <div class="burger-line"></div>
+          <div class="burger-line"></div>
+          <div class="burger-line"></div>
+        </button>
+      </div>
+    </div>
+    
+    <div id="mobileMenu" class="mobile-menu bg-gray-900">
+      <div class="flex flex-col px-6 py-4">
+        <a href="index.html" class="py-3 hover:text-primary transition-colors flex items-center">
+          <i class="fas fa-home mr-3 w-5"></i> Главная
+        </a> 
+        <a href="notes.html" class="py-3 hover:text-primary transition-colors flex items-center">
+          <i class="fas fa-sticky-note mr-3 w-5"></i> Заметки
+        </a>
+        <a href="tools.html" class="py-3 hover:text-primary transition-colors flex items-center">
+          <i class="fas fa-tools mr-3 w-5"></i> Инструменты
+        </a>
+        <a href="launcher.html" class="py-3 hover:text-primary transition-colors flex items-center">
+          <i class="fas fa-rocket mr-3 w-5"></i> Лаунчер
+        </a>
+        <a href="https://t.me/sun_community_chat" class="hover:text-primary transition-colors flex items-center">
+          <i class="fas fa-users mr-2"></i> Сообщество
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <div id="notification" class="notification">
+    <div class="notification-title">
+      <i class="fas fa-info-circle mr-2"></i> Информация
+    </div>
+    <div id="notificationContent">Поиск модов выполнен успешно</div>
+  </div>
+
+  <div class="download-modal" id="downloadModal">
+    <div class="modal-content">
+      <div class="flex justify-between items-center mb-4">
+        <h3 class="text-xl font-bold text-white flex items-center">
+          <i class="fas fa-download mr-2 text-primary"></i> Установка мода
+        </h3>
+        <button id="closeModal" class="text-gray-400 hover:text-white">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      <div id="modTitle" class="font-medium mb-2"></div>
+      <p class="text-gray-400 text-sm mb-4">Выберите версию для скачивания:</p>
+      
+      <div class="versions-list" id="versionsList">
+      </div>
+      
+      <div class="mt-4">
+        <label class="block text-gray-300 mb-2"><i class="fas fa-folder mr-2"></i>Папка установки</label>
+        <div class="flex gap-2">
+          <div class="folder-path flex-1" id="folderPath">
+            <span class="folder-path-placeholder">Выберите папку...</span>
+          </div>
+          <button id="chooseFolderBtn" class="btn-primary px-4 rounded-lg font-medium text-white flex items-center">
+            <i class="fas fa-folder-open mr-2"></i> Выбрать
+          </button>
+        </div>
+        <div class="folder-select-info">
+          <i class="fas fa-info-circle text-primary mr-2"></i>
+          <span id="folderInfo">Выберите папку для установки мода</span>
+        </div>
+      </div>
+      
+      <button id="downloadBtn" class="btn-primary w-full mt-4 py-3 rounded-lg font-medium text-white flex items-center justify-center">
+        <i class="fas fa-download mr-2"></i> Установить
+      </button>
+    </div>
+  </div>
+
+  <div class="chat-bot" id="chatBotBtn">
+    <i class="fas fa-robot"></i>
+  </div>
+  
+  <div class="chat-container" id="chatContainer">
+    <div class="chat-header">
+      <div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center mr-3">
+        <i class="fas fa-robot text-white text-sm"></i>
+      </div>
+      <h3 class="font-bold">Помощник по Minecraft</h3>
+    </div>
+    <div class="chat-messages" id="chatMessages">
+      <div class="message bot-message">
+        Привет! Я помогу тебе выбрать моды, ресурспаки и шейдеры для Minecraft. Спроси меня что-нибудь!
+      </div>
+    </div>
+    <div class="chat-input-container">
+      <div class="flex">
+        <input 
+          type="text" 
+          id="chatInput" 
+          class="form-input flex-1" 
+          placeholder="Введите ваш вопрос..."
+        >
+        <button id="sendMessageBtn" class="btn-primary ml-3 px-4 rounded-lg">
+          <i class="fas fa-paper-plane"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <section class="py-10 px-4 relative">
+    <div class="max-w-4xl mx-auto">
+      <div class="search-form">
+        <h2 class="text-2xl font-bold mb-6 text-white flex items-center">
+          <i class="fas fa-search mr-3 text-primary"></i> Поиск контента для Minecraft
+        </h2>
+        
+        <div class="mb-6">
+          <label class="block text-gray-300 mb-2">Поиск модов, ресурспаков, шейдеров</label>
+          <input 
+            type="text" 
+            id="searchInput" 
+            class="w-full form-input" 
+            placeholder="Например: Optifine, Sodium..."
+          >
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+          <div>
+            <label class="block text-gray-300 mb-2"><i class="fas fa-filter mr-2"></i>Тип контента</label>
+            <select id="contentType" class="w-full form-input">
+              <option value="mod">Моды</option>
+              <option value="resourcepack">Ресурспаки</option>
+              <option value="datapack">Датапаки</option>
+              <option value="shader">Шейдеры</option>
+              <option value="">Все типы</option>
+            </select>
+          </div>
+          
+          <div>
+            <label class="block text-gray-300 mb-2"><i class="fas fa-gamepad mr-2"></i>Версия Minecraft</label>
+            <select id="mcVersion" class="w-full form-input">
+              <option value="1.20.1">1.20.1</option>
+              <option value="1.20">1.20</option>
+              <option value="1.19.4">1.19.4</option>
+              <option value="1.19.2">1.19.2</option>
+              <option value="1.18.2">1.18.2</option>
+              <option value="">Любая версия</option>
+            </select>
+          </div>
+        </div>
+        
+        <div class="flex flex-wrap gap-3">
+          <button 
+            id="searchBtn" 
+            class="btn-primary px-6 py-3 rounded-lg font-medium text-white flex items-center"
+          >
+            <i class="fas fa-search mr-2"></i> Найти
+          </button>
+          
+          <button 
+            id="resetBtn" 
+            class="btn-reminder px-6 py-3 rounded-lg font-medium text-white flex items-center"
+          >
+            <i class="fas fa-redo mr-2"></i> Сбросить
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="py-10 px-4 relative">
+    <div class="max-w-4xl mx-auto">
+      <div class="flex flex-wrap gap-3 mb-6">
+        <button class="tab-btn active" id="searchTab">Поиск</button>
+        <button class="tab-btn" id="favoritesContentTab">Избранное</button>
+      </div>
+      
+      <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6">
+        <h2 class="text-2xl font-bold text-white flex items-center mb-4 md:mb-0">
+          <i class="fas fa-cubes mr-3 text-primary"></i> <span id="resultsTitle">Результаты поиска</span>
+          <span id="resultsCounter" class="ml-2 bg-primary/20 text-primary text-sm font-medium px-3 py-1 rounded-full">0</span>
+        </h2>
+        
+        <div class="flex flex-wrap gap-2" id="sortButtons">
+          <button class="sort-btn active" data-sort="relevance">По релевантности</button>
+          <button class="sort-btn" data-sort="downloads">По загрузкам</button>
+          <button class="sort-btn" data-sort="updated">По обновлению</button>
+        </div>
+      </div>
+      
+      <div id="resultsContainer" class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+        <div id="emptyState" class="empty-state">
+          <div class="text-5xl text-primary/50 mb-4">
+            <i class="fas fa-cube"></i>
+          </div>
+          <h3 class="text-xl font-bold mb-2 text-gray-300">Начните поиск модов</h3>
+          <p class="text-gray-400 mb-4">Введите запрос в поле выше, чтобы найти моды, ресурспаки и шейдеры</p>
+        </div>
+      </div>
+      
+      <div class="flex justify-center mt-8 gap-2" id="pagination"></div>
+    </div>
+  </section>
+
+  <script>
+    const burgerBtn = document.getElementById('burgerBtn');
+    const mobileMenu = document.getElementById('mobileMenu');
+    const resultsContainer = document.getElementById('resultsContainer');
+    const resultsCounter = document.getElementById('resultsCounter');
+    const emptyState = document.getElementById('emptyState');
+    const searchInput = document.getElementById('searchInput');
+    const searchBtn = document.getElementById('searchBtn');
+    const resetBtn = document.getElementById('resetBtn');
+    const notification = document.getElementById('notification');
+    const notificationContent = document.getElementById('notificationContent');
+    const pagination = document.getElementById('pagination');
+    const sortButtons = document.querySelectorAll('.sort-btn');
+    const favoritesContentTab = document.getElementById('favoritesContentTab');
+    const searchTab = document.getElementById('searchTab');
+    const chatBotBtn = document.getElementById('chatBotBtn');
+    const chatContainer = document.getElementById('chatContainer');
+    const chatMessages = document.getElementById('chatMessages');
+    const chatInput = document.getElementById('chatInput');
+    const sendMessageBtn = document.getElementById('sendMessageBtn');
+    const downloadModal = document.getElementById('downloadModal');
+    const closeModal = document.getElementById('closeModal');
+    const versionsList = document.getElementById('versionsList');
+    const downloadBtn = document.getElementById('downloadBtn');
+    const modTitle = document.getElementById('modTitle');
+    const resultsTitle = document.getElementById('resultsTitle');
+    const chooseFolderBtn = document.getElementById('chooseFolderBtn');
+    const folderPath = document.getElementById('folderPath');
+    const folderInfo = document.getElementById('folderInfo');
+    
+    let currentPage = 1;
+    let totalPages = 1;
+    let currentSort = 'relevance';
+    let currentQuery = '';
+    let currentType = 'mod';
+    let currentVersion = '1.20.1';
+    let favorites = JSON.parse(localStorage.getItem('mcFavorites')) || [];
+    let currentMod = null;
+    let selectedVersion = null;
+    let downloadUrl = null;
+    let folderHandle = null;
+    
+    function toggleMobileMenu() {
+      mobileMenu.classList.toggle('open');
+      const lines = document.querySelectorAll('.burger-line');
+      if (mobileMenu.classList.contains('open')) {
+        lines[0].style.transform = 'translateY(7px) rotate(45deg)';
+        lines[1].style.opacity = '0';
+        lines[2].style.transform = 'translateY(-7px) rotate(-45deg)';
+      } else {
+        lines[0].style.transform = 'none';
+        lines[1].style.opacity = '1';
+        lines[2].style.transform = 'none';
+      }
+    }
+
+    burgerBtn.addEventListener('click', function(e) {
+      e.stopPropagation();
+      toggleMobileMenu();
+    });
+    
+    document.addEventListener('click', function(e) {
+      if (mobileMenu.classList.contains('open') && 
+          !mobileMenu.contains(e.target) && 
+          !burgerBtn.contains(e.target)) {
+        toggleMobileMenu();
+      }
+    });
+    
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape' && mobileMenu.classList.contains('open')) {
+        toggleMobileMenu();
+      }
+    });
+
+    const menuItems = mobileMenu.querySelectorAll('a');
+    menuItems.forEach(item => {
+      item.addEventListener('click', function() {
+        setTimeout(() => {
+          if (mobileMenu.classList.contains('open')) {
+            toggleMobileMenu();
+          }
+        }, 300);
+      });
+    });
+
+    window.addEventListener('scroll', function() {
+      const header = document.querySelector('header');
+      if (window.scrollY > 10) {
+        header.classList.add('scrolled');
+      } else {
+        header.classList.remove('scrolled');
+      }
+    });
+    
+    function showNotification(message) {
+      notificationContent.textContent = message;
+      notification.classList.add('show');
+      setTimeout(() => {
+        notification.classList.remove('show');
+      }, 3000);
+    }
+    
+    function formatNumber(num) {
+      return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+    }
+    
+    function formatDate(dateString) {
+      const date = new Date(dateString);
+      return date.toLocaleDateString('ru-RU', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric'
+      });
+    }
+    
+    function getBadgeClass(type) {
+      switch(type) {
+        case 'mod': return 'badge-mod';
+        case 'resourcepack': return 'badge-resourcepack';
+        case 'datapack': return 'badge-datapack';
+        case 'shader': return 'badge-shader';
+        case 'modpack': return 'badge-mod';
+        default: return 'badge-mod';
+      }
+    }
+    
+    function getBadgeText(type) {
+      switch(type) {
+        case 'mod': return 'Мод';
+        case 'resourcepack': return 'Ресурспак';
+        case 'datapack': return 'Датапак';
+        case 'shader': return 'Шейдер';
+        case 'modpack': return 'Сборка';
+        default: return type;
+      }
+    }
+    
+    function isFavorited(id) {
+      return favorites.some(mod => mod.id === id);
+    }
+    
+    function toggleFavorite(mod) {
+      const index = favorites.findIndex(m => m.id === mod.id);
+      
+      if (index === -1) {
+        favorites.push(mod);
+        showNotification('Добавлено в избранное');
+      } else {
+        favorites.splice(index, 1);
+        showNotification('Удалено из избранного');
+      }
+      
+      localStorage.setItem('mcFavorites', JSON.stringify(favorites));
+      
+      if (document.getElementById('favoritesContentTab').classList.contains('active')) {
+        showFavorites();
+      } else {
+        renderMods(window.currentMods);
+      }
+    }
+    
+    function renderMods(mods) {
+      if (!mods || mods.length === 0) {
+        resultsContainer.innerHTML = `
+          <div class="empty-state">
+            <i class="fas fa-box-open text-5xl text-primary/50 mb-4"></i>
+            <h3 class="text-xl font-bold mb-2 text-gray-300">Ничего не найдено</h3>
+            <p class="text-gray-400 mb-4">Попробуйте изменить параметры поиска</p>
+          </div>
+        `;
+        return;
+      }
+      
+      let html = '';
+      
+      mods.forEach(mod => {
+        const versions = mod.versions ? mod.versions.slice(0, 3) : [];
+        const isFav = isFavorited(mod.id);
+        
+        html += `
+          <div class="mod-card overflow-hidden">
+            <div class="favorite-btn ${isFav ? 'active' : ''}" data-id="${mod.id}">
+              <i class="fas fa-star"></i>
+            </div>
+            <div class="card-badge ${getBadgeClass(mod.project_type)}">
+              ${getBadgeText(mod.project_type)}
+            </div>
+            <div class="card-image">
+              ${mod.icon_url 
+                ? `<img src="${mod.icon_url}?format=webp&width=400" alt="${mod.title}">` 
+                : `<div class="image-placeholder">
+                    <div>${mod.title}</div>
+                   </div>`}
+            </div>
+            <div class="p-4">
+              <a href="${mod.page_url}" target="_blank" class="text-lg font-bold mb-2 text-white hover:text-primary block">${mod.title}</a>
+              <p class="text-gray-400 text-sm mb-3 line-clamp-2">${mod.description || 'Описание отсутствует'}</p>
+              
+              <div class="flex flex-wrap gap-3 mb-3">
+                <div class="flex items-center text-xs">
+                  <i class="fas fa-download text-primary mr-1"></i>
+                  <span>${formatNumber(mod.downloads)}</span>
+                </div>
+                <div class="flex items-center text-xs">
+                  <i class="fas fa-calendar text-primary mr-1"></i>
+                  <span>${formatDate(mod.date_modified)}</span>
+                </div>
+                <div class="flex items-center text-xs">
+                  <i class="fas fa-user text-primary mr-1"></i>
+                  <span>${mod.author}</span>
+                </div>
+              </div>
+              
+              <div class="flex flex-wrap gap-1">
+                ${versions.map(version => `
+                  <span class="version-tag">${version}</span>
+                `).join('')}
+                ${mod.versions && mod.versions.length > 3 ? `<span class="version-tag">+${mod.versions.length - 3}</span>` : ''}
+              </div>
+              
+              <button class="btn-primary w-full mt-3 py-2 rounded-lg font-medium text-white flex items-center justify-center download-btn" data-id="${mod.id}">
+                <i class="fas fa-download mr-2"></i> Скачать
+              </button>
+            </div>
+          </div>
+        `;
+      });
+      
+      resultsContainer.innerHTML = html;
+      emptyState.style.display = 'none';
+      
+      document.querySelectorAll('.favorite-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+          const id = this.getAttribute('data-id');
+          const mod = window.currentMods.find(m => m.id === id);
+          if (mod) toggleFavorite(mod);
+        });
+      });
+      
+      document.querySelectorAll('.download-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+          const id = this.getAttribute('data-id');
+          currentMod = window.currentMods.find(m => m.id === id);
+          if (currentMod) openDownloadModal(currentMod);
+        });
+      });
+    }
+    
+    async function openDownloadModal(mod) {
+      modTitle.textContent = mod.title;
+      versionsList.innerHTML = '';
+      folderPath.innerHTML = '<span class="folder-path-placeholder">Выберите папку...</span>';
+      folderInfo.textContent = 'Выберите папку для установки мода';
+      folderHandle = null;
+      
+      const loader = document.createElement('div');
+      loader.className = 'flex justify-center py-4';
+      loader.innerHTML = '<div class="loader-spinner"></div>';
+      versionsList.appendChild(loader);
+      
+      downloadModal.classList.add('open');
+      
+      try {
+        const response = await fetch(`https://api.modrinth.com/v2/project/${mod.id}/version`, {
+          headers: {
+            'User-Agent': 'CobaltModSearch/1.0.0'
+          }
+        });
+        
+        if (!response.ok) throw new Error('API error');
+        
+        const data = await response.json();
+        versionsList.innerHTML = '';
+        
+        data.forEach(version => {
+          const versionItem = document.createElement('div');
+          versionItem.className = 'version-item';
+          versionItem.innerHTML = `
+            <div class="font-medium">${version.name}</div>
+            <div class="text-xs text-gray-400 mt-1">Minecraft: ${version.game_versions.join(', ')}</div>
+            <div class="text-xs text-gray-400">${new Date(version.date_published).toLocaleDateString()}</div>
+          `;
+          
+          versionItem.addEventListener('click', () => {
+            document.querySelectorAll('.version-item').forEach(item => {
+              item.classList.remove('bg-primary/20');
+            });
+            versionItem.classList.add('bg-primary/20');
+            downloadUrl = version.files[0].url;
+          });
+          
+          versionsList.appendChild(versionItem);
+        });
+        
+        if (data.length > 0) {
+          versionsList.firstChild.classList.add('bg-primary/20');
+          downloadUrl = data[0].files[0].url;
+        }
+      } catch (error) {
+        versionsList.innerHTML = '<div class="text-center py-4 text-gray-400">Ошибка загрузки версий</div>';
+      }
+    }
+    
+    async function downloadMod() {
+      if (!downloadUrl) {
+        showNotification('Ошибка: не выбрана версия для скачивания');
+        return;
+      }
+      
+      if (!folderHandle) {
+        showNotification('Пожалуйста, выберите папку для установки');
+        return;
+      }
+      
+      const fileName = downloadUrl.split('/').pop();
+      const modName = currentMod ? currentMod.title : fileName;
+      
+      try {
+        const fileResponse = await fetch(downloadUrl);
+        if (!fileResponse.ok) throw new Error('Failed to download file');
+        
+        const fileBlob = await fileResponse.blob();
+        const fileHandle = await folderHandle.getFileHandle(fileName, { create: true });
+        const writable = await fileHandle.createWritable();
+        await writable.write(fileBlob);
+        await writable.close();
+        
+        showNotification(`Мод "${modName}" успешно установлен!`);
+        
+        downloadBtn.innerHTML = '<i class="fas fa-check mr-2"></i> Успешно установлено!';
+        downloadBtn.classList.remove('btn-primary');
+        downloadBtn.classList.add('bg-success');
+        
+        setTimeout(() => {
+          downloadModal.classList.remove('open');
+          downloadBtn.innerHTML = '<i class="fas fa-download mr-2"></i> Установить';
+          downloadBtn.classList.add('btn-primary');
+          downloadBtn.classList.remove('bg-success');
+        }, 2000);
+      } catch (error) {
+        showNotification('Ошибка при установке: ' + error.message);
+      }
+    }
+    
+    async function chooseFolder() {
+      try {
+        if ('showDirectoryPicker' in window) {
+          folderHandle = await window.showDirectoryPicker();
+          const folderName = folderHandle.name;
+          folderPath.innerHTML = `<span class="truncate">${folderName}</span>`;
+          folderInfo.textContent = 'Папка выбрана. Теперь вы можете установить мод.';
+        } else {
+          folderInfo.innerHTML = 'Ваш браузер не поддерживает выбор папки. После скачивания переместите файл в папку модов.';
+          folderPath.innerHTML = '<span class="folder-path-placeholder">Браузер не поддерживает выбор папки</span>';
+        }
+      } catch (error) {
+        if (error.name !== 'AbortError') {
+          folderInfo.textContent = 'Ошибка при выборе папки. Попробуйте снова.';
+        }
+      }
+    }
+    
+    function showLoading() {
+      resultsContainer.innerHTML = `
+        <div class="flex flex-col items-center justify-center py-10">
+          <div class="loader-spinner"></div>
+          <p class="mt-4 text-gray-300">Поиск контента...</p>
+        </div>
+      `;
+    }
+    
+    function updatePagination() {
+      let html = '';
+      const maxPages = 5;
+      
+      html += `<div class="page-btn" id="prevPage"><i class="fas fa-chevron-left"></i></div>`;
+      
+      let startPage = Math.max(1, currentPage - Math.floor(maxPages / 2));
+      let endPage = startPage + maxPages - 1;
+      
+      if (endPage > totalPages) {
+        endPage = totalPages;
+        startPage = Math.max(1, endPage - maxPages + 1);
+      }
+      
+      for (let i = startPage; i <= endPage; i++) {
+        html += `<div class="page-btn ${i === currentPage ? 'active' : ''}" data-page="${i}">${i}</div>`;
+      }
+      
+      html += `<div class="page-btn" id="nextPage"><i class="fas fa-chevron-right"></i></div>`;
+      
+      pagination.innerHTML = html;
+      
+      document.querySelectorAll('.page-btn[data-page]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          currentPage = parseInt(btn.dataset.page);
+          searchMods();
+        });
+      });
+      
+      document.getElementById('prevPage')?.addEventListener('click', () => {
+        if (currentPage > 1) {
+          currentPage--;
+          searchMods();
+        }
+      });
+      
+      document.getElementById('nextPage')?.addEventListener('click', () => {
+        if (currentPage < totalPages) {
+          currentPage++;
+          searchMods();
+        }
+      });
+    }
+    
+    async function searchMods() {
+      showLoading();
+      
+      const query = searchInput.value.trim();
+      const type = document.getElementById('contentType').value;
+      const version = document.getElementById('mcVersion').value;
+      
+      const params = new URLSearchParams();
+      params.append('query', query || '');
+      params.append('limit', '8');
+      params.append('offset', (currentPage - 1) * 8);
+      params.append('index', currentSort);
+      
+      const facets = [];
+      
+      if (type) {
+        facets.push(`["project_type:${type}"]`);
+      }
+      
+      if (version) {
+        facets.push(`["versions:${version}"]`);
+      }
+      
+      if (facets.length > 0) {
+        params.append('facets', `[${facets.join(',')}]`);
+      }
+      
+      try {
+        const response = await fetch(`https://api.modrinth.com/v2/search?${params.toString()}`, {
+          headers: {
+            'User-Agent': 'CobaltModSearch/1.0.0'
+          }
+        });
+        
+        if (!response.ok) {
+          throw new Error(`API error: ${response.status}`);
+        }
+        
+        const data = await response.json();
+        
+        const mods = data.hits.map(mod => ({
+          id: mod.project_id,
+          title: mod.title,
+          description: mod.description,
+          icon_url: mod.icon_url,
+          author: mod.author,
+          downloads: mod.downloads,
+          date_modified: mod.date_modified,
+          project_type: mod.project_type,
+          versions: mod.versions,
+          page_url: `https://modrinth.com/${mod.project_type}/${mod.slug}`
+        }));
+        
+        window.currentMods = mods;
+        
+        resultsCounter.textContent = data.total_hits;
+        totalPages = Math.ceil(data.total_hits / 8);
+        renderMods(mods);
+        updatePagination();
+        
+        if (mods.length > 0) {
+          showNotification(`Найдено ${data.total_hits} результатов по вашему запросу`);
+        }
+      } catch (error) {
+        resultsContainer.innerHTML = `
+          <div class="empty-state">
+            <i class="fas fa-exclamation-triangle text-5xl text-yellow-500 mb-4"></i>
+            <h3 class="text-xl font-bold mb-2 text-gray-300">Ошибка при поиске</h3>
+            <p class="text-gray-400 mb-4">Попробуйте повторить запрос позже</p>
+          </div>
+        `;
+        pagination.innerHTML = '';
+        resultsCounter.textContent = '0';
+        showNotification('Произошла ошибка при поиске модов');
+      }
+    }
+    
+    function showFavorites() {
+      if (favorites.length === 0) {
+        resultsContainer.innerHTML = `
+          <div class="empty-state">
+            <i class="fas fa-heart text-5xl text-red-500 mb-4"></i>
+            <h3 class="text-xl font-bold mb-2 text-gray-300">Избранное пусто</h3>
+            <p class="text-gray-400 mb-4">Добавьте моды в избранное, нажимая на звёздочку</p>
+          </div>
+        `;
+        pagination.innerHTML = '';
+        resultsCounter.textContent = '0';
+        return;
+      }
+      
+      resultsCounter.textContent = favorites.length;
+      resultsTitle.textContent = 'Избранное';
+      renderMods(favorites);
+      pagination.innerHTML = '';
+    }
+    
+    function resetSearch() {
+      searchInput.value = '';
+      document.getElementById('contentType').value = 'mod';
+      document.getElementById('mcVersion').value = '1.20.1';
+      currentPage = 1;
+      currentSort = 'relevance';
+      resultsTitle.textContent = 'Результаты поиска';
+      
+      sortButtons.forEach(btn => {
+        if (btn.dataset.sort === 'relevance') {
+          btn.classList.add('active');
+        } else {
+          btn.classList.remove('active');
+        }
+      });
+      
+      resultsContainer.innerHTML = `
+        <div class="empty-state">
+          <div class="text-5xl text-primary/50 mb-4">
+            <i class="fas fa-cube"></i>
+          </div>
+          <h3 class="text-xl font-bold mb-2 text-gray-300">Начните поиск модов</h3>
+          <p class="text-gray-400 mb-4">Введите запрос в поле выше, чтобы найти моды, ресурспаки и шейдеры</p>
+        </div>
+      `;
+      pagination.innerHTML = '';
+      resultsCounter.textContent = '0';
+    }
+    
+    function addMessage(message, isUser = false) {
+      const messageDiv = document.createElement('div');
+      messageDiv.className = `message ${isUser ? 'user-message' : 'bot-message'}`;
+      messageDiv.textContent = message;
+      chatMessages.appendChild(messageDiv);
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+    
+    const botDatabase = {
+      mods: {
+        "оптимизация": [
+          "Sodium - Оптимизация рендеринга для Fabric",
+          "OptiFine - Оптимизация графики и HD текстуры",
+          "Lithium - Оптимизация игровых механик",
+          "Phosphor - Оптимизация освещения",
+          "FerriteCore - Снижает использование памяти"
+        ],
+        "геймплей": [
+          "Biomes O' Plenty - Добавляет 80+ новых биомов",
+          "Tinkers' Construct - Расширенная система создания инструментов",
+          "Pam's HarvestCraft - Расширенное сельское хозяйство",
+          "Alex's Mobs - Добавляет 50+ новых мобов",
+          "Twilight Forest - Новое измерение с приключениями"
+        ],
+        "технические": [
+          "Create - Создание механизмов и автоматизаций",
+          "Applied Energistics 2 - Системы хранения энергии",
+          "IndustrialCraft 2 - Промышленные машины и генераторы",
+          "Thermal Expansion - Энергия, транспорт жидкостей",
+          "Mekanism - Современные технологии и обработка ресурсов"
+        ],
+        "магия": [
+          "Thaumcraft - Исследование магии и алхимии",
+          "Botania - Магия природы и цветов",
+          "Blood Magic - Ритуальная магия с использованием крови",
+          "Ars Nouveau - Современная система заклинаний",
+          "Astral Sorcery - Магия звезд и созвездий"
+        ]
+      },
+      resourcepacks: {
+        "реализм": [
+          "LB Photo Realism - Фотореалистичные текстуры",
+          "Realistico - Высокодетализированные текстуры",
+          "SEUS Renewed - Реалистичные материалы и эффекты",
+          "Napp - Физически корректные текстуры",
+          "ModernArch - Современная архитектура"
+        ],
+        "стилизованные": [
+          "Faithful - Классические текстуры в 32x",
+          "Sphax PureBDCraft - Стиль комиксов",
+          "Jolicraft - Уютный пиксельный стиль",
+          "Mizuno's 16 Craft - Японский аниме стиль",
+          "Luna HD - Сказочный стиль с мягкими цветами"
+        ],
+        "pvp": [
+          "Tightfault Revamp - Оптимизированный для PvP",
+          "TimeDeo 2k Pack - Популярный среди стримеров",
+          "SammyGreen - Чистый и контрастный",
+          "RKYFault - Четкие контуры и яркие цвета",
+          "Huahwi Pack - Минималистичный стиль"
+        ],
+        "темы": [
+          "Cyberpunk - Неоновые цвета и футуризм",
+          "Medieval - Средневековые текстуры",
+          "Steampunk - Викторианская эпоха с технологиями",
+          "Fantasy - Фэнтезийный мир с магией",
+          "Futuristic - Современные и футуристические текстуры"
+        ]
+      },
+      datapacks: {
+        "качество жизни": [
+          "Multiplayer Sleep - Спать при одном игроке",
+          "Armor Statues - Статуи с броней",
+          "Double Shulker Shells - Двойные ракушки шалкера",
+          "Player Head Drops - Голова игрока при смерти",
+          "Coordinates HUD - Отображение координат на экране"
+        ],
+        "сложность": [
+          "Hardcore Darkness - Полная темнота ночью",
+          "Tough Mobs - Мобы становятся сильнее",
+          "Terralith - Генерация новых биомов",
+          "Graves - Могилы с вещами после смерти",
+          "Hardcore Questing Mode - Система квестов"
+        ],
+        "технические": [
+          "Carpet Mod - Технические возможности",
+          "Scicraft Datapack - Для технических серверов",
+          "Redstone Helper - Улучшения редстоуна",
+          "Chunk Loaders - Загрузка чанков",
+          "Wireless Redstone - Беспроводной редстоун"
+        ],
+        "приключения": [
+          "Dungeon Crawl - Рандомные подземелья",
+          "Mob Arena - Арена с волнами мобов",
+          "Custom Structures - Генерация уникальных структур",
+          "RPG Quests - Система квестов в RPG стиле",
+          "Boss Battles - Уникальные боссы"
+        ]
+      },
+      shaders: {
+        "реализм": [
+          "SEUS PTGI - Патч-трассировка лучей",
+          "Continuum - Кинематографичная графика",
+          "Kappa - Реалистичные материалы и свет",
+          "Nostalgia - Реалистичный вантовый шейдер",
+          "Molly VX - Реализм с эффектами объемного света"
+        ],
+        "стиль": [
+          "BSL Shaders - Баланс красоты и производительности",
+          "Sildur's Vibrant - Яркие и насыщенные цвета",
+          "Chocapic13 - Настраиваемые и легкие",
+          "Complementary - Улучшенная версия BSL",
+          "Vanilla Plus - Улучшенная ванильная графика"
+        ],
+        "производительность": [
+          "Iris - Современные шейдеры с Sodium",
+          "MakeUp - Быстрые и стильные",
+          "SFLP Shaders - Легкие и красивые",
+          "Vanilla Plus - Улучшенная ванильная графика",
+          "Enhanced Default - Улучшенная производительность"
+        ],
+        "атмосфера": [
+          "Rethinking Voxels - Уникальная атмосфера",
+          "Triliton's Shaders - Атмосферные эффекты",
+          "Naelego's Cel Shaders - Стиль мультфильма",
+          "Soft Voxels - Мягкое освещение и тени",
+          "AstraLex - Реалистичное небо и облака"
+        ]
+      }
+    };
+    
+    function handleUserMessage(message) {
+      message = message.toLowerCase();
+      
+      if (message.includes('привет') || message.includes('здравствуй') || message.includes('хай')) {
+        addMessage('Привет! Я помогу тебе с модами, ресурспаками и шейдерами для Minecraft. Что тебя интересует?');
+        return;
+      }
+      
+      if (message.includes('помощь') || message.includes('команды')) {
+        addMessage('Я могу помочь с:\n- Поиском модов по категориям\n- Рекомендациями ресурспаков\n- Настройкой шейдеров\n- Установкой контента\n\nСпроси: "Моды для оптимизации", "Ресурспаки в стиле комиксов", "Шейдеры для слабого ПК" и т.д.');
+        return;
+      }
+      
+      if (message.includes('мод') || message.includes('моды')) {
+        if (message.includes('оптим') || message.includes('фпс') || message.includes('производительность')) {
+          showModsList('оптимизация');
+          return;
+        }
+        if (message.includes('геймплей') || message.includes('игровой процесс') || message.includes('новый контент')) {
+          showModsList('геймплей');
+          return;
+        }
+        if (message.includes('технич') || message.includes('автоматизация') || message.includes('машины')) {
+          showModsList('технические');
+          return;
+        }
+        if (message.includes('маги') || message.includes('ритуал') || message.includes('заклинани')) {
+          showModsList('магия');
+          return;
+        }
+        
+        addMessage('Какие моды тебя интересуют? Например:\n- Оптимизация\n- Новый геймплей\n- Технические моды\n- Магия');
+        return;
+      }
+      
+      if (message.includes('ресурспак') || message.includes('текстур') || message.includes('rp')) {
+        if (message.includes('реализм') || message.includes('реалистич')) {
+          showResourcepacksList('реализм');
+          return;
+        }
+        if (message.includes('стиль') || message.includes('комикс') || message.includes('пиксель')) {
+          showResourcepacksList('стилизованные');
+          return;
+        }
+        if (message.includes('pvp') || message.includes('пвп')) {
+          showResourcepacksList('pvp');
+          return;
+        }
+        if (message.includes('тема') || message.includes('стилизация')) {
+          showResourcepacksList('темы');
+          return;
+        }
+        
+        addMessage('Какие ресурспаки тебя интересуют? Например:\n- Реалистичные\n- В стиле комиксов\n- Для PvP\n- Тематические');
+        return;
+      }
+      
+      if (message.includes('датапак') || message.includes('dp')) {
+        if (message.includes('качество') || message.includes('удобство') || message.includes('жизни')) {
+          showDatapacksList('качество жизни');
+          return;
+        }
+        if (message.includes('сложн') || message.includes('хардкор')) {
+          showDatapacksList('сложность');
+          return;
+        }
+        if (message.includes('технич') || message.includes('автоматизация')) {
+          showDatapacksList('технические');
+          return;
+        }
+        if (message.includes('приключ') || message.includes('квест')) {
+          showDatapacksList('приключения');
+          return;
+        }
+        
+        addMessage('Какие датапаки тебя интересуют? Например:\n- Для улучшения качества жизни\n- Повышающие сложность\n- Технические\n- Приключенческие');
+        return;
+      }
+      
+      if (message.includes('шейдер') || message.includes('shader') || message.includes('график')) {
+        if (message.includes('реализм') || message.includes('реалистич') || message.includes('кино')) {
+          showShadersList('реализм');
+          return;
+        }
+        if (message.includes('стиль') || message.includes('красив') || message.includes('ярк')) {
+          showShadersList('стиль');
+          return;
+        }
+        if (message.includes('производительность') || message.includes('слаб') || message.includes('оптим')) {
+          showShadersList('производительность');
+          return;
+        }
+        if (message.includes('атмосфер') || message.includes('небо') || message.includes('облак')) {
+          showShadersList('атмосфера');
+          return;
+        }
+        
+        addMessage('Какие шейдеры тебя интересуют? Например:\n- Реалистичные\n- Стильные и красивые\n- Для слабых ПК\n- С уникальной атмосферой');
+        return;
+      }
+      
+      if (message.includes('установить') || message.includes('инструкция') || message.includes('как поставить')) {
+        addMessage('Чтобы установить мод/ресурспак/шейдер:\n1. Скачайте нужный файл\n2. Откройте папку .minecraft\n3. Поместите файл в папку:\n   - Моды → /mods\n   - Ресурспаки → /resourcepacks\n   - Шейдеры → /shaderpacks\n4. Запустите игру и активируйте в настройках');
+        return;
+      }
+      
+      if (message.includes('спасибо') || message.includes('благодарю')) {
+        addMessage('Всегда пожалуйста! Обращайтесь, если понадобится помощь. Удачной игры! 😊');
+        return;
+      }
+      
+      addMessage('Извините, я не понял ваш вопрос. Вы можете спросить о модах, ресурспаках или шейдерах для Minecraft. Или напишите "помощь" для списка команд.');
+    }
+    
+    function showModsList(category) {
+      const mods = botDatabase.mods[category];
+      let response = `Лучшие моды в категории "${category}":\n`;
+      
+      mods.forEach((mod, index) => {
+        response += `\n${index + 1}. ${mod}`;
+      });
+      
+      response += `\n\nВы можете найти их на нашем сайте через поиск.`;
+      addMessage(response);
+    }
+    
+    function showResourcepacksList(category) {
+      const packs = botDatabase.resourcepacks[category];
+      let response = `Лучшие ресурспаки в категории "${category}":\n`;
+      
+      packs.forEach((pack, index) => {
+        response += `\n${index + 1}. ${pack}`;
+      });
+      
+      response += `\n\nВы можете найти их на нашем сайте через поиск.`;
+      addMessage(response);
+    }
+    
+    function showDatapacksList(category) {
+      const packs = botDatabase.datapacks[category];
+      let response = `Лучшие датапаки в категории "${category}":\n`;
+      
+      packs.forEach((pack, index) => {
+        response += `\n${index + 1}. ${pack}`;
+      });
+      
+      response += `\n\nВы можете найти их на нашем сайте через поиск.`;
+      addMessage(response);
+    }
+    
+    function showShadersList(category) {
+      const shaders = botDatabase.shaders[category];
+      let response = `Лучшие шейдеры в категории "${category}":\n`;
+      
+      shaders.forEach((shader, index) => {
+        response += `\n${index + 1}. ${shader}`;
+      });
+      
+      response += `\n\nВы можете найти их на нашем сайте через поиск.`;
+      addMessage(response);
+    }
+    
+    document.addEventListener('DOMContentLoaded', function() {
+      searchBtn.addEventListener('click', function() {
+        searchTab.classList.add('active');
+        favoritesContentTab.classList.remove('active');
+        resultsTitle.textContent = 'Результаты поиска';
+        currentPage = 1;
+        searchMods();
+      });
+      
+      resetBtn.addEventListener('click', resetSearch);
+      
+      searchInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+          searchTab.classList.add('active');
+          favoritesContentTab.classList.remove('active');
+          resultsTitle.textContent = 'Результаты поиска';
+          currentPage = 1;
+          searchMods();
+        }
+      });
+      
+      sortButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+          sortButtons.forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          currentSort = btn.dataset.sort;
+          currentPage = 1;
+          searchMods();
+        });
+      });
+      
+      favoritesContentTab.addEventListener('click', function(e) {
+        e.preventDefault();
+        searchTab.classList.remove('active');
+        this.classList.add('active');
+        showFavorites();
+      });
+      
+      searchTab.addEventListener('click', function(e) {
+        e.preventDefault();
+        this.classList.add('active');
+        favoritesContentTab.classList.remove('active');
+        resultsTitle.textContent = 'Результаты поиска';
+        if (searchInput.value) {
+          searchMods();
+        } else {
+          resetSearch();
+        }
+      });
+      
+      chatBotBtn.addEventListener('click', function() {
+        chatContainer.classList.toggle('open');
+      });
+      
+      sendMessageBtn.addEventListener('click', function() {
+        if (chatInput.value.trim() !== '') {
+          addMessage(chatInput.value, true);
+          handleUserMessage(chatInput.value);
+          chatInput.value = '';
+        }
+      });
+      
+      chatInput.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter' && chatInput.value.trim() !== '') {
+          addMessage(chatInput.value, true);
+          handleUserMessage(chatInput.value);
+          chatInput.value = '';
+        }
+      });
+      
+      closeModal.addEventListener('click', function() {
+        downloadModal.classList.remove('open');
+      });
+      
+      downloadBtn.addEventListener('click', downloadMod);
+      
+      chooseFolderBtn.addEventListener('click', chooseFolder);
+      
+      document.addEventListener('click', function(e) {
+        if (downloadModal.classList.contains('open') && 
+            e.target === downloadModal) {
+          downloadModal.classList.remove('open');
+        }
+      });
+      
+      chatBotBtn.addEventListener('mouseover', function() {
+        this.classList.add('bot-float');
+      });
+      
+      chatBotBtn.addEventListener('mouseout', function() {
+        this.classList.remove('bot-float');
+      });
+      
+      resetSearch();
+    });
+  </script>
+</body>
+</html>
