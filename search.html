@@ -14,7 +14,8 @@
             primary: '#0ea5e9',
             dark: '#0f172a',
             reddit: '#FF4500',
-            accent: '#8b5cf6'
+            accent: '#8b5cf6',
+            favorite: '#FFD700'
           }
         }
       }
@@ -200,6 +201,8 @@
       color: #0ea5e9;
       margin-bottom: 0.25rem;
       cursor: pointer;
+      display: flex;
+      align-items: center;
     }
     
     .comment-author:hover {
@@ -246,6 +249,18 @@
       border-radius: 8px;
     }
     
+    .post-video {
+      margin-top: 1rem;
+      border-radius: 8px;
+      overflow: hidden;
+      max-height: 300px;
+    }
+    
+    .post-video video {
+      width: 100%;
+      border-radius: 8px;
+    }
+    
     .comment-actions {
       position: absolute;
       top: 10px;
@@ -271,17 +286,52 @@
       transform: scale(1.1);
     }
     
-    .mobile-favorite-btn {
-      position: static;
-      margin-top: 10px;
-      width: auto;
-      height: auto;
-      padding: 0.5rem 1rem;
-      border-radius: 8px;
+    .favorite-btn-small {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
       background: rgba(15, 23, 42, 0.7);
       display: flex;
       align-items: center;
       justify-content: center;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      position: absolute;
+      top: 15px;
+      right: 15px;
+    }
+    
+    .favorite-btn-small:hover {
+      background: rgba(14, 165, 233, 0.3);
+    }
+    
+    .favorite-btn-small.active {
+      color: #FFD700;
+    }
+    
+    .avatar {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      margin-right: 8px;
+      background-color: #0ea5e9;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 12px;
+    }
+    
+    .tab-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .mobile-tab-buttons {
+      display: flex;
+      gap: 5px;
+      margin-top: 10px;
     }
     
     @media (max-width: 767px) {
@@ -313,12 +363,59 @@
         right: auto;
       }
       
-      .mobile-favorite-container {
-        display: flex;
+      .tab-container {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      
+      .mobile-tab-buttons {
         width: 100%;
         justify-content: center;
-        margin-top: 10px;
       }
+      
+      .mobile-tab-buttons .tab-btn {
+        flex: 1;
+        text-align: center;
+      }
+    }
+    
+    @media (min-width: 768px) {
+      .mobile-tab-buttons {
+        display: none;
+      }
+    }
+    
+    .loader {
+      width: 48px;
+      height: 48px;
+      border: 5px solid #0ea5e9;
+      border-bottom-color: transparent;
+      border-radius: 50%;
+      display: inline-block;
+      animation: rotation 1s linear infinite;
+    }
+    
+    @keyframes rotation {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    
+    .fade-in {
+      animation: fadeIn 0.5s ease-in;
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .icon-spin {
+      animation: iconSpin 1s linear infinite;
+    }
+    
+    @keyframes iconSpin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
     }
   </style>
 </head>
@@ -432,7 +529,7 @@
 
   <section class="py-10 px-4 relative">
     <div class="max-w-4xl mx-auto">
-      <div class="flex justify-between items-center mb-6">
+      <div class="tab-container mb-6">
         <h2 class="text-2xl font-bold text-white flex items-center">
           <i class="fas fa-list mr-3 text-primary"></i> Результаты поиска
         </h2>
@@ -441,6 +538,11 @@
           <div class="tab-btn active" data-tab="all">Все</div>
           <div class="tab-btn" data-tab="favorites">Избранное</div>
         </div>
+      </div>
+      
+      <div class="mobile-tab-buttons">
+        <div class="tab-btn active" data-tab="all">Все</div>
+        <div class="tab-btn" data-tab="favorites">Избранное</div>
       </div>
       
       <div id="resultsContainer" class="grid grid-cols-1 gap-5">
@@ -638,6 +740,8 @@
     }
     
     async function translateText(text) {
+      if (!text || text.trim() === '') return '';
+      
       try {
         const response = await fetch(`https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=en|ru`);
         const data = await response.json();
@@ -680,11 +784,20 @@
       
       const isFavorite = favorites.isFavorite(result.id);
       
-      let imageHTML = '';
+      let mediaHTML = '';
       if (result.imageUrl) {
-        imageHTML = `
+        mediaHTML = `
           <div class="post-image">
             <img src="${result.imageUrl}" alt="Post image" class="cursor-pointer" onclick="window.open('${result.imageUrl}', '_blank')">
+          </div>
+        `;
+      } else if (result.videoUrl) {
+        mediaHTML = `
+          <div class="post-video">
+            <video controls>
+              <source src="${result.videoUrl}" type="video/mp4">
+              Ваш браузер не поддерживает видео.
+            </video>
           </div>
         `;
       }
@@ -698,7 +811,7 @@
             </div>
             <h3 class="font-bold text-lg mb-2">${result.title}</h3>
             <p class="text-gray-300">${result.description}</p>
-            ${imageHTML}
+            ${mediaHTML}
             <div class="flex flex-wrap items-center mt-3">
               <div class="like-btn ${result.liked ? 'active' : ''}" data-id="${result.id}">
                 <i class="fas fa-heart mr-1"></i> ${result.votes}
@@ -724,23 +837,16 @@
             <i class="fas fa-external-link-alt mr-2"></i> Перейти на пост
           </a>
         </div>
-        <div class="mobile-favorite-container hidden md:block">
-          <button class="favorite-btn ${isFavorite ? 'active' : ''}" 
-                  data-id="${result.id}"
-                  title="${isFavorite ? 'Удалить из избранного' : 'Добавить в избранное'}">
-            <i class="${isFavorite ? 'fas' : 'far'} fa-star mr-2"></i> ${isFavorite ? 'В избранном' : 'В избранное'}
-          </button>
-        </div>
         <div id="comments-${result.id}" class="comments-container hidden">
           <div class="text-center py-4">
             <div class="loader inline-block mx-auto mb-2"></div>
             <p class="text-gray-400">Загрузка комментариев...</p>
           </div>
         </div>
-        <button class="favorite-btn mobile-favorite-btn ${isFavorite ? 'active' : ''} md:hidden" 
+        <button class="favorite-btn-small ${isFavorite ? 'active' : ''}" 
                 data-id="${result.id}"
                 title="${isFavorite ? 'Удалить из избранного' : 'Добавить в избранное'}">
-          <i class="${isFavorite ? 'fas' : 'far'} fa-star mr-2"></i> ${isFavorite ? 'В избранном' : 'В избранное'}
+          <i class="${isFavorite ? 'fas' : 'far'} fa-star"></i>
         </button>
       `;
       
@@ -753,10 +859,12 @@
       commentEl.setAttribute('data-id', comment.id);
       
       const isFavorite = commentFavorites.isFavorite(comment.id);
+      const avatarLetter = comment.author.charAt(0).toUpperCase();
       
       commentEl.innerHTML = `
         <div class="comment-author" data-author="${comment.author}">
-          <i class="fas fa-user mr-2"></i> ${comment.author}
+          <div class="avatar">${avatarLetter}</div>
+          ${comment.author}
         </div>
         <div class="comment-body">${comment.body}</div>
         <div class="flex items-center mt-2 text-sm">
@@ -788,8 +896,16 @@
         
         return data.data.children.map(post => {
           let imageUrl = '';
-          if (post.data.preview && post.data.preview.images && post.data.preview.images.length > 0) {
-            imageUrl = post.data.preview.images[0].source.url.replace(/&amp;/g, '&');
+          let videoUrl = '';
+          
+          if (post.data.preview) {
+            if (post.data.preview.images && post.data.preview.images.length > 0) {
+              imageUrl = post.data.preview.images[0].source.url.replace(/&amp;/g, '&');
+            }
+            
+            if (post.data.media && post.data.media.reddit_video) {
+              videoUrl = post.data.media.reddit_video.fallback_url;
+            }
           }
           
           return {
@@ -801,7 +917,8 @@
             comments: post.data.num_comments,
             date: formatRedditDate(post.data.created_utc),
             liked: false,
-            imageUrl: imageUrl
+            imageUrl: imageUrl,
+            videoUrl: videoUrl
           };
         });
       } catch (error) {
@@ -844,8 +961,7 @@
             resultsContainer.appendChild(card);
           });
           
-          // Обработчики для кнопок в карточках
-          document.querySelectorAll('.favorite-btn').forEach(btn => {
+          document.querySelectorAll('.favorite-btn-small').forEach(btn => {
             btn.addEventListener('click', function() {
               const id = this.getAttribute('data-id');
               const isActive = this.classList.contains('active');
@@ -853,18 +969,16 @@
               if (isActive) {
                 if (favorites.removeFavorite(id)) {
                   this.classList.remove('active');
-                  this.querySelector('i').classList.replace('fas', 'far');
+                  this.innerHTML = '<i class="far fa-star"></i>';
                   this.setAttribute('title', 'Добавить в избранное');
-                  this.innerHTML = this.innerHTML.replace('В избранном', 'В избранное');
                   showNotification('Удалено из избранного');
                 }
               } else {
                 const result = results.find(r => r.id === id);
                 if (result && favorites.addFavorite(result)) {
                   this.classList.add('active');
-                  this.querySelector('i').classList.replace('far', 'fas');
+                  this.innerHTML = '<i class="fas fa-star"></i>';
                   this.setAttribute('title', 'Удалить из избранного');
-                  this.innerHTML = this.innerHTML.replace('В избранное', 'В избранном');
                   showNotification('Добавлено в избранное');
                 }
               }
@@ -886,8 +1000,8 @@
               
               if (description.classList.contains('translated')) return;
               
-              this.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Перевод...';
-              this.disabled = true;
+              const originalBtnHTML = this.innerHTML;
+              this.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>';
               
               const translatedTitle = await translateText(card.querySelector('h3').textContent);
               const translatedDesc = await translateText(description.textContent);
@@ -896,8 +1010,7 @@
               description.textContent = translatedDesc;
               description.classList.add('translated');
               
-              this.innerHTML = '<i class="fas fa-language mr-2"></i> Переведено';
-              this.disabled = false;
+              this.innerHTML = originalBtnHTML;
             });
           });
           
@@ -926,7 +1039,6 @@
                   commentsContainer.innerHTML = commentsHTML;
                   commentsContainer.setAttribute('data-loaded', 'true');
                   
-                  // Добавляем обработчики для комментариев
                   document.querySelectorAll('.comment-author').forEach(author => {
                     author.addEventListener('click', function() {
                       const username = this.getAttribute('data-author');
@@ -949,13 +1061,14 @@
                       
                       if (body.classList.contains('translated')) return;
                       
+                      const originalHTML = this.innerHTML;
                       this.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
                       
                       const translatedText = await translateText(body.textContent);
                       body.textContent = translatedText;
                       body.classList.add('translated');
                       
-                      this.innerHTML = '<i class="fas fa-language"></i>';
+                      this.innerHTML = originalHTML;
                     });
                   });
                   
@@ -1048,8 +1161,7 @@
         resultsContainer.appendChild(card);
       });
       
-      // Добавляем обработчики для кнопок в избранном
-      document.querySelectorAll('.favorite-btn').forEach(btn => {
+      document.querySelectorAll('.favorite-btn-small').forEach(btn => {
         btn.addEventListener('click', function() {
           const id = this.getAttribute('data-id');
           
@@ -1065,7 +1177,6 @@
         });
       });
       
-      // Обработчики для кнопок копирования и перевода в избранном
       document.querySelectorAll('.copy-btn').forEach(btn => {
         btn.addEventListener('click', function() {
           const text = this.getAttribute('data-text');
@@ -1081,8 +1192,8 @@
           
           if (description.classList.contains('translated')) return;
           
-          this.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Перевод...';
-          this.disabled = true;
+          const originalBtnHTML = this.innerHTML;
+          this.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>';
           
           const translatedTitle = await translateText(card.querySelector('h3').textContent);
           const translatedDesc = await translateText(description.textContent);
@@ -1091,8 +1202,7 @@
           description.textContent = translatedDesc;
           description.classList.add('translated');
           
-          this.innerHTML = '<i class="fas fa-language mr-2"></i> Переведено';
-          this.disabled = false;
+          this.innerHTML = originalBtnHTML;
         });
       });
     }
