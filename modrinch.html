@@ -496,11 +496,19 @@
       margin-bottom: 6px;
       display: flex;
       align-items: center;
+      justify-content: space-between;
     }
     
     .dependency-name {
       flex: 1;
       font-size: 14px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    
+    .dependency-name:hover {
+      color: #0ea5e9;
+      text-decoration: underline;
     }
     
     .dependency-required {
@@ -509,6 +517,7 @@
       padding: 2px 6px;
       border-radius: 4px;
       font-size: 11px;
+      margin: 0 8px;
     }
     
     .dependency-optional {
@@ -517,6 +526,7 @@
       padding: 2px 6px;
       border-radius: 4px;
       font-size: 11px;
+      margin: 0 8px;
     }
     
     .modal-section {
@@ -539,6 +549,37 @@
       color: white;
       border: 1px solid rgba(14, 165, 233, 0.3);
       margin-top: 5px;
+    }
+    
+    .dependency-btn {
+      background: rgba(14, 165, 233, 0.2);
+      color: white;
+      border-radius: 6px;
+      padding: 4px 8px;
+      font-size: 12px;
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    
+    .dependency-btn:hover {
+      background: rgba(14, 165, 233, 0.3);
+    }
+    
+    .dependency-btn i {
+      margin-right: 4px;
+    }
+    
+    .loader-spinner-small {
+      border: 2px solid rgba(14, 165, 233, 0.2);
+      border-top: 2px solid #0ea5e9;
+      border-radius: 50%;
+      width: 16px;
+      height: 16px;
+      animation: spin 1s linear infinite;
+      display: inline-block;
+      margin-right: 8px;
     }
     
     @media (min-width: 768px) {
@@ -1187,8 +1228,29 @@
       });
     }
     
-    function updateDependencies(version) {
-      dependenciesList.innerHTML = '';
+    async function getProjectInfo(projectId) {
+      try {
+        const response = await fetch(`https://api.modrinth.com/v2/project/${projectId}`, {
+          headers: {
+            'User-Agent': 'CobaltModSearch/1.0.0'
+          }
+        });
+        
+        if (!response.ok) return null;
+        
+        const data = await response.json();
+        return {
+          title: data.title,
+          page_url: `https://modrinth.com/${data.project_type}/${data.slug}`
+        };
+      } catch (error) {
+        console.error('Error fetching project info:', error);
+        return null;
+      }
+    }
+    
+    async function updateDependencies(version) {
+      dependenciesList.innerHTML = '<div class="text-center py-4 text-gray-400">Загрузка зависимостей...</div>';
       
       if (!version.dependencies || version.dependencies.length === 0) {
         dependenciesList.innerHTML = '<div class="text-center py-4 text-gray-400">Нет зависимостей</div>';
@@ -1198,19 +1260,74 @@
       
       dependencies = version.dependencies;
       
-      dependencies.forEach(dep => {
+      dependenciesList.innerHTML = '';
+      
+      for (const dep of dependencies) {
         const depItem = document.createElement('div');
         depItem.className = 'dependency-item';
         
         depItem.innerHTML = `
-          <div class="dependency-name">${dep.project_id || dep.file_name}</div>
-          <div class="${dep.dependency_type === 'required' ? 'dependency-required' : 'dependency-optional'}">
-            ${dep.dependency_type === 'required' ? 'Обязательная' : 'Опциональная'}
+          <div class="flex items-center">
+            <div class="loader-spinner-small"></div>
+            <span class="ml-2">Загрузка...</span>
           </div>
         `;
         
         dependenciesList.appendChild(depItem);
-      });
+        
+        const projectInfo = await getProjectInfo(dep.project_id);
+        
+        depItem.innerHTML = `
+          <a href="${projectInfo ? projectInfo.page_url : '#'}" 
+             target="_blank"
+             class="dependency-name"
+             title="Открыть страницу зависимости">
+            ${projectInfo ? projectInfo.title : dep.project_id}
+          </a>
+          <div class="flex items-center">
+            <span class="${dep.dependency_type === 'required' ? 'dependency-required' : 'dependency-optional'}">
+              ${dep.dependency_type === 'required' ? 'Обязательная' : 'Опциональная'}
+            </span>
+            <button class="dependency-btn download-dependency" data-id="${dep.project_id}">
+              <i class="fas fa-download"></i> Скачать
+            </button>
+          </div>
+        `;
+        
+        const downloadBtn = depItem.querySelector('.download-dependency');
+        downloadBtn.addEventListener('click', async (e) => {
+          e.stopPropagation();
+          const projectId = e.currentTarget.getAttribute('data-id');
+          
+          try {
+            const response = await fetch(`https://api.modrinth.com/v2/project/${projectId}/version`, {
+              headers: {
+                'User-Agent': 'CobaltModSearch/1.0.0'
+              }
+            });
+            
+            if (!response.ok) throw new Error('API error');
+            
+            const versions = await response.json();
+            if (versions.length > 0) {
+              const latestVersion = versions[0];
+              const downloadUrl = latestVersion.files[0].url;
+              
+              const fileName = downloadUrl.split('/').pop();
+              const link = document.createElement('a');
+              link.href = downloadUrl;
+              link.download = fileName;
+              document.body.appendChild(link);
+              link.click();
+              document.body.removeChild(link);
+              
+              showNotification(`Скачивание зависимости: ${projectInfo.title}`);
+            }
+          } catch (error) {
+            showNotification('Ошибка при скачивании зависимости');
+          }
+        });
+      }
     }
     
     async function downloadMod() {
@@ -1497,7 +1614,14 @@
           "Starlight - Переписывает систему освещения",
           "Entity Culling - Оптимизация рендеринга сущностей",
           "Cull Leaves - Оптимизация рендеринга листвы",
-          "FastFurnace - Ускоряет работу печей"
+          "FastFurnace - Ускоряет работу печей",
+          "Rubidium - Оптимизация для Forge",
+          "Magnesium - Портирует Sodium на Forge",
+          "Radium - Дополнительная оптимизация для Fabric",
+          "Krypton - Оптимизация сетевых взаимодействий",
+          "Lazydfu - Ускоряет загрузку мира",
+          "ModernFix - Улучшает производительность на Forge",
+          "ServerCore - Оптимизация серверов"
         ],
         "геймплей": [
           "Biomes O' Plenty - Добавляет 80+ новых биомов",
@@ -1509,7 +1633,14 @@
           "Waystones - Система быстрого перемещения",
           "Apotheosis - Улучшенная система зачарований",
           "Create - Инженерные механизмы и автоматизация",
-          "Mowzie's Mobs - Уникальные мобы с продвинутой анимацией"
+          "Mowzie's Mobs - Уникальные мобы с продвинутой анимацией",
+          "Decorative Blocks - Декоративные блоки",
+          "Aquaculture 2 - Улучшенная рыбалка",
+          "Dynamic Trees - Реалистичные растущие деревья",
+          "Tetra - Модульная система инструментов",
+          "Waystones - Портал-камни для телепортации",
+          "Guard Villagers - Охранники для деревень",
+          "Spice of Life - Необходимость разнообразия в еде"
         ],
         "технические": [
           "Applied Energistics 2 - Системы хранения энергии",
@@ -1521,7 +1652,14 @@
           "Immersive Engineering - Реалистичные механизмы",
           "Refined Storage - Современная система хранения",
           "RFTools - Инструменты для автоматизации",
-          "Computercraft - Программирование на Lua в Minecraft"
+          "Computercraft - Программирование на Lua в Minecraft",
+          "Industrial Foregoing - Промышленная автоматизация",
+          "Cyclic - Разнообразные механизмы",
+          "Ranged Pumps - Насосы для жидкостей",
+          "XNet - Продвинутая система кабелей",
+          "Integrated Dynamics - Программируемая логика",
+          "Simple Storage Network - Простое сетевое хранилище",
+          "Engineer's Decor - Декоративные технические блоки"
         ],
         "магия": [
           "Thaumcraft - Исследование магии и алхимии",
@@ -1533,7 +1671,14 @@
           "Mahou Tsukai - Магия в стиле аниме",
           "Psi - Программируемая магия",
           "Mana and Artifice - Комплексная магическая система",
-          "Occultism - Ритуалы и призывание существ"
+          "Occultism - Ритуалы и призывание существ",
+          "Forbidden and Arcanus - Запретная магия",
+          "Ars Creo - Создание магических конструкций",
+          "Elemental Craft - Магия стихий",
+          "Malum - Тёмная ритуальная магия",
+          "Hexcasting - Гексагональная магическая система",
+          "Reliquary - Магические реликвии",
+          "Soul Magic - Магия душ"
         ],
         "строительство": [
           "Chisel - Множество новых вариантов блоков",
@@ -1545,7 +1690,14 @@
           "Blockcraftery - Наклонные и другие декоративные блоки",
           "LittleTiles - Маленькие декоративные плитки",
           "Chisels & Bits - Создание своих блоков из битов",
-          "WorldEdit - Инструмент для строительства"
+          "WorldEdit - Инструмент для строительства",
+          "Macaw's Bridges - Разнообразные мосты",
+          "Macaw's Windows - Окна и витражи",
+          "Macaw's Roofs - Разнообразные крыши",
+          "Decorative Blocks - Декоративные блоки",
+          "Supplementaries - Дополнительные декоративные элементы",
+          "Adorn - Простая мебель и декор",
+          "FramedBlocks - Декоративные рамки для блоков"
         ]
       },
       resourcepacks: {
@@ -1559,7 +1711,14 @@
           "Realistic Adventure - Реализм для приключений",
           "Minecraft Realistic - Классический реализм",
           "UMSOEA - Ультра-реалистичные текстуры",
-          "Rex's Realism - Натуральные текстуры"
+          "Rex's Realism - Натуральные текстуры",
+          "Newb X - Фотореалистичный пакет",
+          "Real Source - Реалистичные ресурсы",
+          "Definitive Realism - Высококачественный реализм",
+          "Realism Mats - Физические материалы",
+          "Voxel Photorealistic - Воксельный реализм",
+          "Physical Beauty - Реалистичная красота",
+          "True Realism - Истинный реализм"
         ],
         "стилизованные": [
           "Faithful - Классические текстуры в 32x",
@@ -1571,7 +1730,14 @@
           "Soartex Fanver - Чистый и минималистичный",
           "John Smith Legacy - Средневековый стиль",
           "R3D CRAFT - Реализм в стилизованной манере",
-          "Misa's Realistic - Стилизованный реализм"
+          "Misa's Realistic - Стилизованный реализм",
+          "Pixel Perfection - Пиксельное совершенство",
+          "Anemoia - Ностальгический стиль",
+          "Rustic - Деревенский стиль",
+          "Cocricot - Японский стиль",
+          "Brixel - Стиль Lego",
+          "Paper Cut-out - Бумажный стиль",
+          "VanillaBDcraft - Ванильный стиль комиксов"
         ],
         "pvp": [
           "Tightfault Revamp - Оптимизированный для PvP",
@@ -1583,14 +1749,33 @@
           "Latenci - Оптимизированный для скорости",
           "Pulse - Яркий и контрастный",
           "VenoCraft - Стиль для PvP и скорости",
-          "Shark - Чистый и функциональный"
+          "Shark - Чистый и функциональный",
+          "Hive - Для серверов Hive",
+          "Prestige - Премиум стиль для PvP",
+          "Skyline - Четкие границы блоков",
+          "Revamp - Переработанный PvP пак",
+          "Prism - Яркие и контрастные текстуры",
+          "RusherHack - Для клиента RusherHack",
+          "Lemon - Четкие и контрастные текстуры"
         ],
         "ctm": [
           "Connected Textures - Поддержка CTM",
           "Faithful 32x CTM - Ванильный стиль с CTM",
           "Soartex Fanver CTM - Чистый стиль с CTM",
           "Unity - Единый стиль с CTM",
-          "Dokucraft CTM - Темный фэнтези с CTM"
+          "Dokucraft CTM - Темный фэнтези с CTM",
+          "ModernArch CTM - Современная архитектура с CTM",
+          "Conquest - Реализм с CTM",
+          "BDcraft CTM - Стиль комиксов с CTM",
+          "John Smith CTM - Средневековый стиль с CTM",
+          "R3D Craft CTM - Реализм с CTM",
+          "Excalibur - Фэнтези с CTM",
+          "Lithos - Каменные текстуры с CTM",
+          "Rustic CTM - Деревенский стиль с CTM",
+          "Vader - Темный стиль с CTM",
+          "Brixel CTM - Lego стиль с CTM",
+          "Cocricot CTM - Японский стиль с CTM",
+          "Paper Cut-out CTM - Бумажный стиль с CTM"
         ]
       },
       datapacks: {
@@ -1604,7 +1789,14 @@
           "Track Statistics - Расширенная статистика",
           "Customizable Armor Stands - Настраиваемые манекены",
           "Vein Miner - Добыча целых жил руды",
-          "Tree Capitator - Срубка целых деревьев"
+          "Tree Capitator - Срубка целых деревьев",
+          "Fast Leaf Decay - Быстрое опадание листьев",
+          "Silence Mobs - Заглушить звуки мобов",
+          "More Mob Heads - Головы всех мобов",
+          "Anti Enderman Grief - Защита от эндерменов",
+          "Universal Dyeing - Красить любые блоки",
+          "Custom Nether Portals - Настраиваемые порталы",
+          "Terralith - Генерация новых биомов"
         ],
         "сложность": [
           "Hardcore Darkness - Полная темнота ночью",
@@ -1616,14 +1808,33 @@
           "Spice of Life - Необходимость разнообразной пищи",
           "Hostile Worlds - Усиленные мобы в других измерениях",
           "Scaling Health - Увеличивающаяся сложность",
-          "Stamina System - Система выносливости"
+          "Stamina System - Система выносливости",
+          "Better Combat - Улучшенный бой",
+          "Dynamic Difficulty - Динамическая сложность",
+          "Survival Island - Островное выживание",
+          "Blood Moon - Кровавая луна",
+          "Infernal Mobs - Инфернальные мобы",
+          "Roguelike Dungeons - Рогаликовые подземелья",
+          "Zombie Awareness - Умные зомби"
         ],
         "автоматизация": [
           "Auto Crafting Table - Автоматический крафт",
           "Tree Harvester - Автосбор деревьев",
           "Auto Smelt - Автоплавка",
           "Mob Grinder - Автоубийца мобов",
-          "Crop Harvester - Автосбор урожая"
+          "Crop Harvester - Автосбор урожая",
+          "Auto Fishing - Автоматическая рыбалка",
+          "Auto Breeder - Авторазведение животных",
+          "Auto Furnace - Автопечь",
+          "Auto Composter - Авто компостер",
+          "Auto Enchanter - Автозачарование",
+          "Auto Anvil - Автоматическая наковальня",
+          "Auto Brewing - Авто варка зелий",
+          "Auto Stone Cutter - Авто каменщик",
+          "Auto Villager - Авто торговля с жителями",
+          "Auto Smithing - Авто кузнец",
+          "Auto Loom - Авто ткацкий станок",
+          "Auto Grindstone - Авто точило"
         ]
       },
       shaders: {
@@ -1637,7 +1848,14 @@
           "Rethinking Voxels - Улучшенный реализм",
           "Triliton's Shaders - Реалистичные эффекты",
           "Soft Voxels - Мягкое освещение и тени",
-          "AstraLex - Реалистичное небо и облака"
+          "AstraLex - Реалистичное небо и облака",
+          "Project LUMA - Фотореализм",
+          "TME - Реалистичная атмосфера",
+          "Voyager - Реалистичное пространство",
+          "Radiant - Реалистичное освещение",
+          "Brixel - Реалистичные материалы",
+          "Stratum - Физически корректные материалы",
+          "UMSOEA - Ультрареализм"
         ],
         "стиль": [
           "BSL Shaders - Баланс красоты и производительности",
@@ -1649,14 +1867,33 @@
           "Prismarine - Подводный стиль",
           "RRe36's Shaders - Сбалансированный стиль",
           "MakeUp - Быстрые и стильные",
-          "SFLP Shaders - Легкие и красивые"
+          "SFLP Shaders - Легкие и красивые",
+          "AstraLex - Стилизованный реализм",
+          "Chocapic13 Toaster - Стильный и легкий",
+          "Triliton's Lite - Стилизованные эффекты",
+          "Vanilla Plus - Улучшенная ваниль",
+          "Prism - Яркий и красочный",
+          "Radiant - Стильное освещение",
+          "Starlight - Звездный стиль"
         ],
         "легкие": [
           "Sildur's Enhanced Default - Улучшенная ваниль",
           "Chocapic13 Lite - Легкие шейдеры",
           "BSL Lite - Упрощенная версия BSL",
           "MakeUp Ultra Fast - Сверхлегкие шейдеры",
-          "Complementary Reimagined - Оптимизированная версия"
+          "Complementary Reimagined - Оптимизированная версия",
+          "Iris - Легкие шейдеры для Fabric",
+          "Oculus - Легкие шейдеры для Forge",
+          "SFLP - Супер легкие шейдеры",
+          "Vanilla Plus Lite - Легкая ваниль",
+          "RRe36's Lite - Сбалансированные легкие",
+          "Chocapic13 Low - Минимальные требования",
+          "BSL Very Low - Очень легкая версия",
+          "MakeUp Minimal - Минималистичные шейдеры",
+          "Complementary Unbound - Легкая версия",
+          "Iris & Sodium - Оптимизированные шейдеры",
+          "Oculus & Rubidium - Легкие для Forge",
+          "Starlight Lite - Легкие звездные эффекты"
         ]
       }
     };
