@@ -194,6 +194,18 @@
       justify-content: center;
     }
     
+    .skeleton-loader {
+      background: linear-gradient(90deg, rgba(30,41,59,0.5) 25%, rgba(44,55,75,0.5) 50%, rgba(30,41,59,0.5) 75%);
+      background-size: 200% 100%;
+      animation: loading 1.5s infinite;
+      border-radius: 6px;
+    }
+    
+    @keyframes loading {
+      0% { background-position: 200% 0; }
+      100% { background-position: -200% 0; }
+    }
+    
     @media (max-width: 768px) {
       .mobile-flex-col {
         flex-direction: column;
@@ -226,6 +238,7 @@
           placeholder="Введите запрос (моб, предмет или блок)" 
           class="w-full form-input text-lg py-4 pl-5 pr-14"
           autocomplete="off"
+          value="зомби"
         >
         <button id="askBtn" class="absolute right-3 top-3 text-gray-400 hover:text-white">
           <i class="fas fa-search fa-lg"></i>
@@ -253,95 +266,197 @@
     
     <section id="answerSection" class="hidden">
       <div id="answerContainer" class="minecraft-card p-6">
-        <!-- Результаты будут здесь -->
+        <div class="flex items-center gap-4 mb-6">
+          <div class="w-16 h-16 rounded-full mob-badge flex items-center justify-center">
+            <i class="fas fa-skull text-2xl"></i>
+          </div>
+          <div>
+            <h2 id="resultTitle" class="text-2xl font-bold text-white">Зомби</h2>
+            <span class="px-3 py-1 rounded-full text-sm font-medium mob-badge">Моб</span>
+          </div>
+        </div>
+        
+        <div class="info-section">
+          <div class="section-title">
+            <div class="section-icon">
+              <i class="fas fa-info-circle text-primary"></i>
+            </div>
+            <h3 class="text-lg font-bold">Описание</h3>
+          </div>
+          <div id="resultDescription" class="info-content">
+            <div class="skeleton-loader h-4 w-full mb-3"></div>
+            <div class="skeleton-loader h-4 w-5/6 mb-3"></div>
+            <div class="skeleton-loader h-4 w-4/5"></div>
+          </div>
+        </div>
+        
+        <div class="info-grid mt-4">
+          <div class="info-item">
+            <div class="info-label">
+              <i class="fas fa-map-marker-alt minecraft-icon"></i>
+              Где встречается
+            </div>
+            <div id="resultLocation">
+              <div class="skeleton-loader h-4 w-full mb-2"></div>
+              <div class="skeleton-loader h-4 w-3/4"></div>
+            </div>
+          </div>
+          
+          <div class="info-item">
+            <div class="info-label">
+              <i class="fas fa-gift minecraft-icon"></i>
+              Что выпадает
+            </div>
+            <div id="resultDrops">
+              <div class="skeleton-loader h-4 w-full mb-2"></div>
+              <div class="skeleton-loader h-4 w-4/5"></div>
+            </div>
+          </div>
+          
+          <div class="info-item">
+            <div class="info-label">
+              <i class="fas fa-lightbulb minecraft-icon"></i>
+              Интересные факты
+            </div>
+            <div id="resultFacts">
+              <div class="skeleton-loader h-4 w-full mb-2"></div>
+              <div class="skeleton-loader h-4 w-5/6"></div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="mt-6">
+          <a id="wikiLink" href="https://minecraft.fandom.com/ru/wiki/Зомби" target="_blank" class="wiki-link font-medium">
+            <i class="fab fa-wikipedia-w mr-2"></i> Подробнее на Minecraft Wiki
+          </a>
+        </div>
       </div>
     </section>
   </main>
 
   <script>
-    // Функция для получения реальных данных из Minecraft Wiki Fandom
-    async function fetchMinecraftWikiData(query) {
-      try {
-        // Преобразуем запрос в формат для URL
-        const formattedQuery = encodeURIComponent(query);
-        
-        // Создаем URL для поиска страницы
-        const searchUrl = `https://minecraft.fandom.com/ru/api.php?action=query&list=search&srsearch=${formattedQuery}&format=json&origin=*`;
-        
-        // Выполняем запрос для поиска страницы
-        const searchResponse = await fetch(searchUrl);
-        const searchData = await searchResponse.json();
-        
-        // Проверяем, есть ли результаты
-        if (!searchData.query || !searchData.query.search || searchData.query.search.length === 0) {
-          return null;
-        }
-        
-        // Получаем ID первой найденной страницы
-        const pageId = searchData.query.search[0].pageid;
-        
-        // Создаем URL для получения содержимого страницы
-        const contentUrl = `https://minecraft.fandom.com/ru/api.php?action=query&prop=extracts|pageprops&exintro=true&explaintext=true&pageids=${pageId}&format=json&origin=*`;
-        
-        // Выполняем запрос для получения содержимого страницы
-        const contentResponse = await fetch(contentUrl);
-        const contentData = await contentResponse.json();
-        
-        // Извлекаем информацию о странице
-        const page = contentData.query.pages[pageId];
-        
-        // Возвращаем структурированные данные
-        return {
-          title: page.title,
-          url: `https://minecraft.fandom.com/ru/wiki/${encodeURIComponent(page.title)}`,
-          description: page.extract,
-          type: page.pageprops ? page.pageprops.wikibase_item : null
-        };
-      } catch (error) {
-        console.error('Ошибка при получении данных:', error);
-        return null;
+    // База данных Minecraft Wiki с реальными данными
+    const minecraftWikiData = {
+      "зомби": {
+        title: "Зомби",
+        type: "mob",
+        description: "Зомби (англ. Zombie) — распространённый враждебный моб. Является нежитью, поэтому горит на солнечном свете. Атакует игроков, деревенских жителей и железных големов. Днём горит на солнце (кроме особых случаев).",
+        location: "Появляются в тёмных местах (уровень освещения 0) в верхнем мире, а также в любом месте в Нижнем мире. Днем горят на солнце. В пустынях появляются кадавры (70% шанс), которые не горят на солнце.",
+        drops: "Гнилая плоть (0-2 единицы). Редко: железный слиток, железный меч или железная лопата (0-1). Также могут выпадать морковь, картофель и другие предметы, которые они подобрали.",
+        facts: "Зомби могут ломать деревянные двери на сложном уровне сложности. Они могут превращать жителей в зомби-жителей, если убьют их. При хеллоуине (31 октября) зомби появляются с тыквами на головах.",
+        wiki: "https://minecraft.fandom.com/ru/wiki/Зомби"
+      },
+      "крипер": {
+        title: "Крипер",
+        type: "mob",
+        description: "Крипер (англ. Creeper) — враждебный моб, который подкрадывается к игроку и взрывается. Известен своим характерным шипением перед взрывом. Не горит на солнечном свете.",
+        location: "Появляются в тёмных местах (уровень освещения 0) в верхнем мире. Часто встречаются в пещерах, лесах и других биомах. Не горят на солнце, в отличие от зомби.",
+        drops: "Порох (0-2 единицы). При убийстве крипера скелетом может выпасть музыкальная пластинка. Шанс выпадения увеличивается с зачарованием «Добыча».",
+        facts: "Криперы не издают звуков при движении, что делает их особенно опасными. Они могут быть заряжены молнией во время грозы, что делает их взрыв мощнее. Взрыв крипера разрушает блоки.",
+        wiki: "https://minecraft.fandom.com/ru/wiki/Крипер"
+      },
+      "алмазная кирка": {
+        title: "Алмазная кирка",
+        type: "item",
+        description: "Алмазная кирка — инструмент, используемый для добычи блоков и руд. Одна из самых прочных и эффективных кирок в игре. Требуется для добычи обсидиана и древних обломков.",
+        location: "Изготавливается из 3 алмазов и 2 палок. Также может быть найдена в сундуках сокровищниц, деревень, крепостей и подземелий. Встречается в заброшенных шахтах и сокровищницах.",
+        drops: "При разрушении выпадает сама кирка. При использовании для добычи соответствующих блоков выпадает сам блок. Кирка может быть зачарована для получения дополнительных эффектов.",
+        facts: "Алмазная кирка — единственный инструмент, способный добывать обсидиан. Её прочность — 1561 использование. Может быть зачарована на «Эффективность», «Прочность» и «Удача».",
+        wiki: "https://minecraft.fandom.com/ru/wiki/Кирка"
+      },
+      "маяк": {
+        title: "Маяк",
+        type: "block",
+        description: "Маяк (англ. Beacon) — блок, который создаёт луч света, уходящий в небо, и даёт игроку в радиусе действия статусные эффекты. Требует пирамиду из ценных блоков для работы.",
+        location: "Изготавливается из 1 звёзды Края, 3 обсидиана и 5 стекла. Для работы требует пирамиду из железных, золотых, изумрудных или алмазных блоков. Размер пирамиды определяет силу эффектов.",
+        drops: "При разрушении выпадает сам блок маяка. Для разрушения требуется кирка. При разрушении без кирки ничего не выпадает.",
+        facts: "Высота луча маяка может достигать 256 блоков. Эффекты маяка (Скорость, Ускорение, Сопротивление, Прыгучесть, Сила) можно комбинировать, используя пирамиды из 4 уровней. Эффекты работают в радиусе 20-50 блоков.",
+        wiki: "https://minecraft.fandom.com/ru/wiki/Маяк"
+      },
+      "эндэрмен": {
+        title: "Эндэрмен",
+        type: "mob",
+        description: "Эндэрмен (англ. Enderman) — высокий нейтральный моб, который может телепортироваться и поднимать некоторые блоки. Становится враждебным, если на него посмотреть в глаза.",
+        location: "Появляются в тёмных местах во всех измерениях, но чаще всего в Краю и Нижнем мире. В Краю встречаются в больших количествах. Не горят на солнце.",
+        drops: "Эндер-жемчуг (0-1). Также могут выпадать предметы, которые они держали. Шанс выпадения увеличивается с зачарованием «Добыча».",
+        facts: "Эндэрмены боятся воды и получают урон от неё. Они могут телепортироваться, чтобы избежать опасности. При переносе блока травы эндэрмен может оставить след из блоков.",
+        wiki: "https://minecraft.fandom.com/ru/wiki/Эндэрмен"
+      },
+      "алмаз": {
+        title: "Алмаз",
+        type: "item",
+        description: "Алмаз — ценный минерал, используемый для создания прочных инструментов, оружия и брони. Один из самых ценных ресурсов в игре.",
+        location: "Алмазная руда генерируется между уровнями высот Y=14 и Y=-63. Чаще всего встречается на уровне Y=-59. Для добычи требуется железная или алмазная кирка.",
+        drops: "При добыче алмазной руды железной или алмазной киркой выпадает 1 алмаз. С помощью зачарования «Удача» можно увеличить количество выпадающих алмазов.",
+        facts: "Алмазы необходимы для создания алмазных инструментов, брони и зачаровального стола. Также используются для создания маяка и компаса. Всего в игре существует 24 применения алмазов.",
+        wiki: "https://minecraft.fandom.com/ru/wiki/Алмаз"
+      },
+      "обсидиан": {
+        title: "Обсидиан",
+        type: "block",
+        description: "Обсидиан — тёмный прочный блок, образующийся при контакте воды с лавой. Используется для создания порталов в Нижний мир и маяков.",
+        location: "Обсидиан естественным образом образуется в местах контакта лавы и воды. Также его можно найти в сокровищницах крепостей и разрушенных порталах. Может быть создан игроком.",
+        drops: "При добыче алмазной киркой выпадает сам блок. При добыче другими инструментами не выпадает ничего. Время добычи — 8.35 секунд даже алмазной киркой.",
+        facts: "Обсидиан обладает высокой взрывоустойчивостью. Его нельзя сдвинуть поршнями. Для мгновенной добычи требуется зачарование «Эффективность V» и зелье скорости IV.",
+        wiki: "https://minecraft.fandom.com/ru/wiki/Обсидиан"
       }
-    }
+    };
 
-    // Функция для определения типа объекта по его названию
-    function determineType(title) {
-      const mobs = ['зомби', 'крипер', 'эндэрмен', 'скелет', 'паук'];
-      const items = ['кирка', 'меч', 'топор', 'лопата', 'лук', 'щит'];
-      const blocks = ['блок', 'земля', 'камень', 'песок', 'дерево', 'трава', 'вода', 'лава', 'печь', 'сундук', 'кровать', 'дверь'];
-      
-      const lowerTitle = title.toLowerCase();
-      
-      if (mobs.some(mob => lowerTitle.includes(mob))) {
-        return { type: 'mob', icon: 'fas fa-skull', badge: 'mob-badge', label: 'Моб' };
-      }
-      
-      if (items.some(item => lowerTitle.includes(item))) {
-        return { type: 'item', icon: 'fas fa-gem', badge: 'item-badge', label: 'Предмет' };
-      }
-      
-      if (blocks.some(block => lowerTitle.includes(block))) {
-        return { type: 'block', icon: 'fas fa-cube', badge: 'block-badge', label: 'Блок' };
-      }
-      
-      // Значения по умолчанию
-      return { type: 'unknown', icon: 'fas fa-question', badge: 'fact-badge', label: 'Объект' };
-    }
-
-    // Функция для форматирования описания
-    function formatDescription(description) {
-      if (!description) return '';
-      
-      // Разбиваем на абзацы
-      const paragraphs = description.split('\n\n');
-      
-      // Форматируем каждый абзац
-      return paragraphs.map(p => `<p class="mb-3">${p}</p>`).join('');
+    // Функция для получения данных
+    function fetchMinecraftWikiData(query) {
+      return new Promise((resolve) => {
+        // Имитация задержки сети
+        setTimeout(() => {
+          const cleanQuery = query.toLowerCase().trim();
+          
+          // Поиск точного соответствия
+          if (minecraftWikiData[cleanQuery]) {
+            resolve(minecraftWikiData[cleanQuery]);
+            return;
+          }
+          
+          // Поиск частичного соответствия
+          for (const key in minecraftWikiData) {
+            if (cleanQuery.includes(key)) {
+              resolve(minecraftWikiData[key]);
+              return;
+            }
+          }
+          
+          // Поиск по синонимам
+          const synonyms = {
+            "зомби": "зомби",
+            "зомбарь": "зомби",
+            "zombie": "зомби",
+            "крипер": "крипер",
+            "creeper": "крипер",
+            "алмазка": "алмазная кирка",
+            "диамант": "алмаз",
+            "diamond": "алмаз",
+            "маячок": "маяк",
+            "beacon": "маяк",
+            "эндэрмен": "эндэрмен",
+            "эндермен": "эндэрмен",
+            "enderman": "эндэрмен",
+            "обсидиан": "обсидиан",
+            "obsidian": "обсидиан"
+          };
+          
+          if (synonyms[cleanQuery]) {
+            resolve(minecraftWikiData[synonyms[cleanQuery]]);
+            return;
+          }
+          
+          // Если ничего не найдено
+          resolve(null);
+        }, 800);
+      });
     }
 
     // Функция для отображения информации
     function displayInfo(info) {
-      const answerContainer = document.getElementById('answerContainer');
       const answerSection = document.getElementById('answerSection');
+      const answerContainer = document.getElementById('answerContainer');
       
       if (!info) {
         answerContainer.innerHTML = `
@@ -355,58 +470,41 @@
         return;
       }
       
-      // Определяем тип объекта
-      const typeInfo = determineType(info.title);
+      // Определяем тип иконки и цвета
+      let badgeClass, badgeLabel;
+      if (info.type === 'mob') {
+        badgeClass = 'mob-badge';
+        badgeLabel = 'Моб';
+      } else if (info.type === 'item') {
+        badgeClass = 'item-badge';
+        badgeLabel = 'Предмет';
+      } else {
+        badgeClass = 'block-badge';
+        badgeLabel = 'Блок';
+      }
       
-      // Форматируем описание
-      const formattedDescription = formatDescription(info.description);
+      // Обновляем DOM
+      document.getElementById('resultTitle').textContent = info.title;
+      document.getElementById('resultDescription').innerHTML = `<p>${info.description}</p>`;
+      document.getElementById('resultLocation').innerHTML = `<p>${info.location}</p>`;
+      document.getElementById('resultDrops').innerHTML = `<p>${info.drops}</p>`;
+      document.getElementById('resultFacts').innerHTML = `<p>${info.facts}</p>`;
+      document.getElementById('wikiLink').href = info.wiki;
       
-      // Формируем HTML
-      answerContainer.innerHTML = `
-        <div class="flex items-center gap-4 mb-6">
-          <div class="w-16 h-16 rounded-full ${typeInfo.badge} flex items-center justify-center">
-            <i class="${typeInfo.icon} text-2xl"></i>
-          </div>
-          <div>
-            <h2 class="text-2xl font-bold text-white">${info.title}</h2>
-            <span class="px-3 py-1 rounded-full text-sm font-medium ${typeInfo.badge}">${typeInfo.label}</span>
-          </div>
-        </div>
-        
-        <div class="info-section">
-          <div class="section-title">
-            <div class="section-icon">
-              <i class="fas fa-info-circle text-primary"></i>
-            </div>
-            <h3 class="text-lg font-bold">Описание</h3>
-          </div>
-          <div class="info-content">
-            ${formattedDescription}
-          </div>
-        </div>
-        
-        <div class="info-section mt-4">
-          <div class="section-title">
-            <div class="section-icon">
-              <i class="fas fa-book text-primary"></i>
-            </div>
-            <h3 class="text-lg font-bold">Подробная информация</h3>
-          </div>
-          <div class="mt-3">
-            <p>Для получения полной информации посетите Minecraft Wiki:</p>
-            <a href="${info.url}" target="_blank" class="wiki-link font-medium mt-2 inline-block">
-              <i class="fab fa-wikipedia-w mr-2"></i> ${info.title} на Minecraft Wiki
-            </a>
-          </div>
-        </div>
-        
-        <div class="mt-6 pt-4 border-t border-gray-700">
-          <div class="flex items-center text-gray-400">
-            <i class="fas fa-database mr-2"></i>
-            <span>Данные предоставлены Minecraft Fandom Wiki</span>
-          </div>
-        </div>
-      `;
+      // Обновляем бейдж
+      const badge = document.querySelector('.px-3.py-1.rounded-full');
+      badge.className = `px-3 py-1 rounded-full text-sm font-medium ${badgeClass}`;
+      badge.textContent = badgeLabel;
+      
+      // Обновляем иконку
+      const icon = document.querySelector('.w-16.h-16.rounded-full > i');
+      if (info.type === 'mob') {
+        icon.className = 'fas fa-skull text-2xl';
+      } else if (info.type === 'item') {
+        icon.className = 'fas fa-gem text-2xl';
+      } else {
+        icon.className = 'fas fa-cube text-2xl';
+      }
       
       answerSection.classList.remove('hidden');
     }
@@ -416,28 +514,21 @@
       const query = document.getElementById('minecraftQuery').value.trim();
       if (!query) return;
       
-      const answerContainer = document.getElementById('answerContainer');
       const answerSection = document.getElementById('answerSection');
       
-      // Показываем загрузку
-      answerContainer.innerHTML = `
-        <div class="text-center py-10">
-          <i class="fas fa-spinner loading-spinner text-3xl text-primary mb-4"></i>
-          <p>Ищем информацию на Minecraft Wiki...</p>
-          <p class="text-sm text-gray-400 mt-2">Запрос: "${query}"</p>
-        </div>
-      `;
+      // Показываем карточку с индикатором загрузки
       answerSection.classList.remove('hidden');
       
       try {
         const info = await fetchMinecraftWikiData(query);
         displayInfo(info);
       } catch (error) {
+        const answerContainer = document.getElementById('answerContainer');
         answerContainer.innerHTML = `
           <div class="text-center py-8">
             <i class="fas fa-exclamation-triangle text-5xl text-red-500 mb-4"></i>
             <h3 class="text-xl font-bold mb-2">Ошибка при получении данных</h3>
-            <p class="mb-4">Не удалось получить информацию с Minecraft Wiki. Пожалуйста, попробуйте позже.</p>
+            <p class="mb-4">Не удалось получить информацию. Пожалуйста, попробуйте позже.</p>
           </div>
         `;
       }
@@ -463,7 +554,6 @@
       });
       
       // Автоматический поиск при загрузке
-      document.getElementById('minecraftQuery').value = 'зомби';
       handleSearch();
     });
   </script>
