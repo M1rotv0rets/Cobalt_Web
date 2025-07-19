@@ -219,6 +219,8 @@
       border-radius: 4px;
       font-size: 12px;
       font-weight: 500;
+      display: flex;
+      align-items: center;
     }
     
     .loader-tag {
@@ -228,6 +230,10 @@
       border-radius: 4px;
       font-size: 12px;
       font-weight: 500;
+      display: inline-flex;
+      align-items: center;
+      margin-right: 4px;
+      margin-bottom: 4px;
     }
     
     .sort-btn {
@@ -238,6 +244,8 @@
       border: 1px solid rgba(14, 165, 233, 0.3);
       cursor: pointer;
       transition: all 0.2s;
+      display: flex;
+      align-items: center;
     }
     
     .sort-btn.active {
@@ -582,6 +590,35 @@
       margin-right: 8px;
     }
     
+    .version-tag i {
+      margin-right: 4px;
+    }
+    
+    .loader-icon {
+      display: inline-block;
+      margin-right: 4px;
+      width: 14px;
+      text-align: center;
+    }
+    
+    .filter-icon {
+      margin-right: 8px;
+    }
+    
+    .pagination-icon {
+      font-size: 12px;
+    }
+    
+    .star-animation {
+      animation: pulse-star 0.8s;
+    }
+    
+    @keyframes pulse-star {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.5); }
+      100% { transform: scale(1); }
+    }
+    
     @media (min-width: 768px) {
       .desktop-menu {
         display: flex;
@@ -631,9 +668,6 @@
         <a href="notes.html" class="hover:text-primary transition-colors flex items-center">
           <i class="fas fa-sticky-note mr-2"></i> Заметки
         </a>
-        <a href="tools.html" class="hover:text-primary transition-colors flex items-center">
-          <i class="fas fa-tools mr-2"></i> Инструменты
-        </a>
         <a href="launcher.html" class="hover:text-primary transition-colors flex items-center">
           <i class="fas fa-rocket mr-2"></i> Лаунчер
         </a>
@@ -658,9 +692,6 @@
         </a> 
         <a href="notes.html" class="py-3 hover:text-primary transition-colors flex items-center">
           <i class="fas fa-sticky-note mr-3 w-5"></i> Заметки
-        </a>
-        <a href="tools.html" class="py-3 hover:text-primary transition-colors flex items-center">
-          <i class="fas fa-tools mr-3 w-5"></i> Инструменты
         </a>
         <a href="launcher.html" class="py-3 hover:text-primary transition-colors flex items-center">
           <i class="fas fa-rocket mr-3 w-5"></i> Лаунчер
@@ -1032,19 +1063,37 @@
       }
     }
     
+    function getLoaderIcon(loader) {
+      switch(loader) {
+        case 'forge': return '<i class="fas fa-fire loader-icon"></i>';
+        case 'fabric': return '<i class="fas fa-cut loader-icon"></i>';
+        case 'quilt': return '<i class="fas fa-layer-group loader-icon"></i>';
+        case 'liteloader': return '<i class="fas fa-feather-alt loader-icon"></i>';
+        case 'rift': return '<i class="fas fa-plug loader-icon"></i>';
+        case 'neoforge': return '<i class="fas fa-burn loader-icon"></i>';
+        default: return '<i class="fas fa-puzzle-piece loader-icon"></i>';
+      }
+    }
+    
     function isFavorited(id) {
       return favorites.some(mod => mod.id === id);
     }
     
     function toggleFavorite(mod) {
       const index = favorites.findIndex(m => m.id === mod.id);
+      const star = document.querySelector(`.favorite-btn[data-id="${mod.id}"]`);
       
       if (index === -1) {
         favorites.push(mod);
         showNotification('Добавлено в избранное');
+        if (star) {
+          star.classList.add('active', 'star-animation');
+          setTimeout(() => star.classList.remove('star-animation'), 800);
+        }
       } else {
         favorites.splice(index, 1);
         showNotification('Удалено из избранное');
+        if (star) star.classList.remove('active');
       }
       
       localStorage.setItem('mcFavorites', JSON.stringify(favorites));
@@ -1111,14 +1160,16 @@
               
               <div class="flex flex-wrap gap-1 mb-3">
                 ${versions.map(version => `
-                  <span class="version-tag">${version}</span>
+                  <span class="version-tag"><i class="fas fa-cube"></i>${version}</span>
                 `).join('')}
                 ${mod.versions && mod.versions.length > 3 ? `<span class="version-tag">+${mod.versions.length - 3}</span>` : ''}
               </div>
               
               <div class="flex flex-wrap gap-1">
                 ${loaders.map(loader => `
-                  <span class="loader-tag ${getLoaderClass(loader)}">${getLoaderName(loader)}</span>
+                  <span class="loader-tag ${getLoaderClass(loader)}">
+                    ${getLoaderIcon(loader)}${getLoaderName(loader)}
+                  </span>
                 `).join('')}
               </div>
               
@@ -1368,7 +1419,7 @@
       let html = '';
       const maxPages = 5;
       
-      html += `<div class="page-btn" id="prevPage"><i class="fas fa-chevron-left"></i></div>`;
+      html += `<div class="page-btn" id="prevPage"><i class="fas fa-chevron-left pagination-icon"></i></div>`;
       
       let startPage = Math.max(1, currentPage - Math.floor(maxPages / 2));
       let endPage = startPage + maxPages - 1;
@@ -1379,10 +1430,12 @@
       }
       
       for (let i = startPage; i <= endPage; i++) {
-        html += `<div class="page-btn ${i === currentPage ? 'active' : ''}" data-page="${i}">${i}</div>`;
+        html += `<div class="page-btn ${i === currentPage ? 'active' : ''}" data-page="${i}">
+          <i class="fas fa-cube mr-1"></i>${i}
+        </div>`;
       }
       
-      html += `<div class="page-btn" id="nextPage"><i class="fas fa-chevron-right"></i></div>`;
+      html += `<div class="page-btn" id="nextPage"><i class="fas fa-chevron-right pagination-icon"></i></div>`;
       
       pagination.innerHTML = html;
       
@@ -1621,7 +1674,17 @@
           "Krypton - Оптимизация сетевых взаимодействий",
           "Lazydfu - Ускоряет загрузку мира",
           "ModernFix - Улучшает производительность на Forge",
-          "ServerCore - Оптимизация серверов"
+          "ServerCore - Оптимизация серверов",
+          "Better FPS - Улучшение производительности",
+          "Clumps - Объединение опыта в один шар",
+          "FastWorkbench - Ускорение работы верстака",
+          "Get It Together, Drops! - Оптимизация дропа",
+          "Smooth Boot - Плавная загрузка игры",
+          "Canary - Предотвращение лагов",
+          "Memory Leak Fix - Исправление утечек памяти",
+          "AI Improvements - Улучшение ИИ мобов",
+          "FastSuite - Ускорение работы рецептов",
+          "Fastload - Ускорение загрузки модов"
         ],
         "геймплей": [
           "Biomes O' Plenty - Добавляет 80+ новых биомов",
@@ -1638,9 +1701,19 @@
           "Aquaculture 2 - Улучшенная рыбалка",
           "Dynamic Trees - Реалистичные растущие деревья",
           "Tetra - Модульная система инструментов",
-          "Waystones - Портал-камни для телепортации",
           "Guard Villagers - Охранники для деревень",
-          "Spice of Life - Необходимость разнообразия в еде"
+          "Spice of Life - Необходимость разнообразия в еде",
+          "TerraBlender - Улучшенная генерация биомов",
+          "Oh The Biomes You'll Go - Путешествие по биомам",
+          "Alex's Caves - Новые пещерные системы",
+          "Dungeons Enhanced - Улучшенные подземелья",
+          "AdventureZ - Новые боссы и приключения",
+          "Waystones - Портал-камни для телепортации",
+          "Champions - Улучшенные мобы с уровнями",
+          "Guard Villagers - Охранники деревень",
+          "Spider 2.0 - Улучшенные пауки",
+          "Zombie Awareness - Умные зомби",
+          "Better Animals Plus - Улучшенные животные"
         ],
         "технические": [
           "Applied Energistics 2 - Системы хранения энергии",
@@ -1659,7 +1732,17 @@
           "XNet - Продвинутая система кабелей",
           "Integrated Dynamics - Программируемая логика",
           "Simple Storage Network - Простое сетевое хранилище",
-          "Engineer's Decor - Декоративные технические блоки"
+          "Engineer's Decor - Декоративные технические блоки",
+          "Create - Механизмы и автоматизация",
+          "Mekanism Generators - Генераторы энергии",
+          "Thermal Innovation - Инновационные устройства",
+          "RFTools Control - Программируемая автоматизация",
+          "Mekanism Tools - Инструменты и броня",
+          "Advanced Peripherals - Дополнительные периферийные устройства",
+          "CC: Tweaked - Улучшенный Computercraft",
+          "Integrated Tunnels - Транспортировка предметов",
+          "Compact Machines - Компактные машины",
+          "Modular Routers - Модульные маршрутизаторы"
         ],
         "магия": [
           "Thaumcraft - Исследование магии и алхимии",
@@ -1678,7 +1761,17 @@
           "Malum - Тёмная ритуальная магия",
           "Hexcasting - Гексагональная магическая система",
           "Reliquary - Магические реликвии",
-          "Soul Magic - Магия душ"
+          "Soul Magic - Магия душ",
+          "Ars Elemental - Магия стихий",
+          "Spellblade Next - Магические мечи",
+          "Wizardry - Система заклинаний",
+          "Mana Gear - Магическая экипировка",
+          "Corail Tombstone - Магия смерти",
+          "Nature's Aura - Аура природы",
+          "Eidolon - Магия духов",
+          "Totemic - Ритуальная магия тотемов",
+          "ChromatiCraft - Цветная магия",
+          "Witchery - Ведьмовство"
         ],
         "строительство": [
           "Chisel - Множество новых вариантов блоков",
@@ -1697,7 +1790,17 @@
           "Decorative Blocks - Декоративные блоки",
           "Supplementaries - Дополнительные декоративные элементы",
           "Adorn - Простая мебель и декор",
-          "FramedBlocks - Декоративные рамки для блоков"
+          "FramedBlocks - Декоративные рамки для блоков",
+          "Building Gadgets - Инструменты для строительства",
+          "Create Deco - Декорации для Create",
+          "Connected Glass - Связное стекло",
+          "Dramatic Doors - Эффектные двери",
+          "Fairy Lights - Декоративные гирлянды",
+          "Extended Lights - Расширенные источники света",
+          "Exotic Blocks - Экзотические блоки",
+          "Decorative Blocks - Дополнительные декоративные блоки",
+          "Valhelsia Structures - Структуры для строительства",
+          "Supplementaries - Дополнительные элементы"
         ]
       },
       resourcepacks: {
@@ -1718,7 +1821,17 @@
           "Realism Mats - Физические материалы",
           "Voxel Photorealistic - Воксельный реализм",
           "Physical Beauty - Реалистичная красота",
-          "True Realism - Истинный реализм"
+          "True Realism - Истинный реализм",
+          "Patrix - Реалистичные текстуры",
+          "Realistico - Высококачественный реализм",
+          "R3D Craft - Реалистичные текстуры",
+          "Misa's Realistic - Реалистичный пакет",
+          "Realism Mats - Физические материалы",
+          "Defined PBR - PBR текстуры",
+          "Realistic World - Реалистичный мир",
+          "Nostalgia Shader - Реалистичные шейдеры",
+          "Continuum - Кинематографичная графика",
+          "Kappa - Реалистичные материалы"
         ],
         "стилизованные": [
           "Faithful - Классические текстуры в 32x",
@@ -1737,7 +1850,17 @@
           "Cocricot - Японский стиль",
           "Brixel - Стиль Lego",
           "Paper Cut-out - Бумажный стиль",
-          "VanillaBDcraft - Ванильный стиль комиксов"
+          "VanillaBDcraft - Ванильный стиль комиксов",
+          "Coterie Craft - Стилизованный средневековый",
+          "Bloom - Яркий и красочный",
+          "Mythic - Мифический стиль",
+          "Eldpack - Фэнтезийный стиль",
+          "Rustic Redemption - Деревенское возрождение",
+          "Chroma Hills - Фэнтезийный стиль",
+          "Conquest - Реалистичный фэнтези",
+          "Jicklus - Стилизованный реализм",
+          "Bare Bones - Минималистичный стиль",
+          "Ravenheart - Темный фэнтези"
         ],
         "pvp": [
           "Tightfault Revamp - Оптимизированный для PvP",
@@ -1756,7 +1879,17 @@
           "Revamp - Переработанный PvP пак",
           "Prism - Яркие и контрастные текстуры",
           "RusherHack - Для клиента RusherHack",
-          "Lemon - Четкие и контрастные текстуры"
+          "Lemon - Четкие и контрастные текстуры",
+          "Fade - Контрастный PvP пак",
+          "Flame - Яркий PvP пак",
+          "Vertex - Современный PvP пак",
+          "Sapphire - Синий PvP пак",
+          "Amethyst - Фиолетовый PvP пак",
+          "Ruby - Красный PvP пак",
+          "Emerald - Зеленый PvP пак",
+          "Diamond - Белый PvP пак",
+          "Gold - Золотой PvP пак",
+          "Platinum - Платиновый PvP пак"
         ],
         "ctm": [
           "Connected Textures - Поддержка CTM",
@@ -1775,7 +1908,17 @@
           "Vader - Темный стиль с CTM",
           "Brixel CTM - Lego стиль с CTM",
           "Cocricot CTM - Японский стиль с CTM",
-          "Paper Cut-out CTM - Бумажный стиль с CTM"
+          "Paper Cut-out CTM - Бумажный стиль с CTM",
+          "CTM Enhanced - Улучшенный CTM",
+          "CTM Vanilla - Ванильный CTM",
+          "CTM Fantasy - Фэнтези CTM",
+          "CTM Modern - Современный CTM",
+          "CTM Medieval - Средневековый CTM",
+          "CTM Realism - Реалистичный CTM",
+          "CTM Sci-Fi - Научно-фантастический CTM",
+          "CTM Adventure - Приключенческий CTM",
+          "CTM Magic - Магический CTM",
+          "CTM Nature - Природный CTM"
         ]
       },
       datapacks: {
@@ -1796,12 +1939,21 @@
           "Anti Enderman Grief - Защита от эндерменов",
           "Universal Dyeing - Красить любые блоки",
           "Custom Nether Portals - Настраиваемые порталы",
-          "Terralith - Генерация новых биомов"
+          "Terralith - Генерация новых биомов",
+          "Backpack - Рюкзаки для переноски вещей",
+          "Ender Chest - Общие эндер сундуки",
+          "Wandering Trader - Улучшенный торговец",
+          "Villager Workstations - Рабочие места жителей",
+          "Better Spawners - Улучшенные спавнеры",
+          "Graves - Могилы при смерти",
+          "Fast Leaf Decay - Быстрое опадание листьев",
+          "Silence Mobs - Заглушить звуки мобов",
+          "Anti Creeper Grief - Защита от криперов",
+          "More Beds - Больше кроватей"
         ],
         "сложность": [
           "Hardcore Darkness - Полная темнота ночью",
           "Tough Mobs - Мобы становятся сильнее",
-          "Terralith - Генерация новых биомов",
           "Graves - Могилы с вещами после смерти",
           "Hardcore Questing Mode - Система квестов",
           "Epic Fight - Продвинутая система боя",
@@ -1815,7 +1967,18 @@
           "Blood Moon - Кровавая луна",
           "Infernal Mobs - Инфернальные мобы",
           "Roguelike Dungeons - Рогаликовые подземелья",
-          "Zombie Awareness - Умные зомби"
+          "Zombie Awareness - Умные зомби",
+          "Harder Mobs - Сложные мобы",
+          "Better Combat - Улучшенный бой",
+          "Epic Siege - Осады мобов",
+          "Hardcore Death - Жесткая смерть",
+          "Better Nether - Улучшенный ад",
+          "Better End - Улучшенный край",
+          "Dungeon Crawl - Подземелья",
+          "Infernal Mobs - Инфернальные мобы",
+          "Mob Health Bars - Бары здоровья мобов",
+          "Realistic Torches - Реалистичные факелы",
+          "Survival Plus - Улучшенное выживание"
         ],
         "автоматизация": [
           "Auto Crafting Table - Автоматический крафт",
@@ -1834,7 +1997,17 @@
           "Auto Villager - Авто торговля с жителями",
           "Auto Smithing - Авто кузнец",
           "Auto Loom - Авто ткацкий станок",
-          "Auto Grindstone - Авто точило"
+          "Auto Grindstone - Авто точило",
+          "Auto Crafter - Автоматический крафт",
+          "Auto Farmer - Авто фермер",
+          "Auto Miner - Авто шахтер",
+          "Auto Fisher - Авто рыбак",
+          "Auto Butcher - Авто мясник",
+          "Auto Planter - Авто сажатель",
+          "Auto Shear - Авто стрижка овец",
+          "Auto Milker - Авто доение",
+          "Auto Honey - Авто сбор меда",
+          "Auto Composter - Авто компостирование"
         ]
       },
       shaders: {
@@ -1855,7 +2028,17 @@
           "Radiant - Реалистичное освещение",
           "Brixel - Реалистичные материалы",
           "Stratum - Физически корректные материалы",
-          "UMSOEA - Ультрареализм"
+          "UMSOEA - Ультрареализм",
+          "Path Traced Shaders - Трассировка путей",
+          "Continuum RT - Реалистичная трассировка",
+          "SEUS Renewed - Обновленный реализм",
+          "KappaPT - Трассировка путей",
+          "Nostalgia - Реалистичный вантовый",
+          "Rethinking Voxels - Переосмысленные воксели",
+          "Soft Voxels Lite - Легкий реализм",
+          "AstraLex Shaders - Реалистичные облака",
+          "Project LUMA - Фотореализм",
+          "TME Shaders - Атмосферный реализм"
         ],
         "стиль": [
           "BSL Shaders - Баланс красоты и производительности",
@@ -1874,7 +2057,17 @@
           "Vanilla Plus - Улучшенная ваниль",
           "Prism - Яркий и красочный",
           "Radiant - Стильное освещение",
-          "Starlight - Звездный стиль"
+          "Starlight - Звездный стиль",
+          "Sildur's Enhanced - Улучшенные цвета",
+          "BSL Edit - Редактируемый BSL",
+          "Complementary Reimagined - Переосмысленный",
+          "Chocapic13 Extreme - Экстремальный стиль",
+          "MakeUp Ultra - Ультра стиль",
+          "SFLP Ultra - Ультра легкий",
+          "AstraLex Lite - Легкий стилизованный",
+          "NostalgiaVX - Стильный вантовый",
+          "Rethinking Voxels Lite - Легкий стиль",
+          "Starlight Lite - Легкий звездный"
         ],
         "легкие": [
           "Sildur's Enhanced Default - Улучшенная ваниль",
@@ -1893,7 +2086,17 @@
           "Complementary Unbound - Легкая версия",
           "Iris & Sodium - Оптимизированные шейдеры",
           "Oculus & Rubidium - Легкие для Forge",
-          "Starlight Lite - Легкие звездные эффекты"
+          "Starlight Lite - Легкие звездные эффекты",
+          "Sildur's Basic - Базовые шейдеры",
+          "Chocapic13 Low - Низкие настройки",
+          "BSL Low - Низкая нагрузка",
+          "MakeUp Fast - Быстрые шейдеры",
+          "Complementary Light - Легкие шейдеры",
+          "Iris Light - Легкие для Fabric",
+          "Oculus Light - Легкие для Forge",
+          "SFLP Light - Супер легкие",
+          "Vanilla Plus Light - Легкая ваниль",
+          "RRe36's Light - Легкие шейдеры"
         ]
       }
     };
@@ -2092,6 +2295,14 @@
     }
     
     document.addEventListener('DOMContentLoaded', function() {
+      // Добавление иконок к кнопкам сортировки
+      document.querySelectorAll('.sort-btn').forEach(btn => {
+        const icon = btn.dataset.sort === 'relevance' ? 'fa-bullseye' : 
+                     btn.dataset.sort === 'downloads' ? 'fa-download' : 
+                     btn.dataset.sort === 'updated' ? 'fa-sync' : 'fa-heart';
+        btn.innerHTML = `<i class="fas ${icon} filter-icon"></i>${btn.textContent}`;
+      });
+      
       searchBtn.addEventListener('click', function() {
         searchTab.classList.add('active');
         favoritesContentTab.classList.remove('active');
