@@ -638,6 +638,40 @@
       animation: pulse-translate 1s infinite;
     }
     
+    .chat-btn {
+      background: rgba(14, 165, 233, 0.2);
+      color: white;
+      border-radius: 8px;
+      padding: 8px 12px;
+      font-size: 12px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s;
+      border: none;
+      margin: 4px;
+    }
+    
+    .chat-btn:hover {
+      background: rgba(14, 165, 233, 0.3);
+    }
+    
+    .search-container {
+      position: relative;
+    }
+    
+    .search-icon {
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #94a3b8;
+      pointer-events: none;
+    }
+    
+    .search-input {
+      padding-left: 40px;
+    }
+    
     @keyframes pulse-star {
       0% { transform: scale(1); }
       50% { transform: scale(1.5); }
@@ -672,6 +706,10 @@
       .modal-content {
         max-height: 90vh;
         overflow-y: auto;
+      }
+      .chat-btn {
+        padding: 6px 10px;
+        font-size: 11px;
       }
     }
   </style>
@@ -791,7 +829,14 @@
     </div>
     <div class="chat-messages" id="chatMessages">
       <div class="message bot-message">
-        Привет! Я помогу тебе выбрать моды, ресурспаки и шейдеры для Minecraft. Спроси меня что-нибудь!
+        <p>Привет! Я помогу тебе выбрать моды, ресурспаки и шейдеры для Minecraft. Выберите категорию:</p>
+        <div class="grid grid-cols-2 gap-2 mt-2">
+          <button class="chat-btn" data-query="моды магия">Моды: Магия</button>
+          <button class="chat-btn" data-query="моды оптимизация">Моды: Оптимизация</button>
+          <button class="chat-btn" data-query="ресурспаки реализм">Ресурспаки: Реализм</button>
+          <button class="chat-btn" data-query="шейдеры реалистичные">Шейдеры: Реалистичные</button>
+          <button class="chat-btn" data-query="шейдеры легкие">Шейдеры: Легкие</button>
+        </div>
       </div>
     </div>
     <div class="chat-input-container">
@@ -817,13 +862,17 @@
         </h2>
         
         <div class="mb-6">
-          <label class="block text-gray-300 mb-2">Поиск модов, ресурспаков, шейдеров</label>
-          <input 
-            type="text" 
-            id="searchInput" 
-            class="w-full form-input" 
-            placeholder="Например: Optifine, Sodium..."
-          >
+          <div class="search-container">
+            <div class="search-icon">
+              <i class="fas fa-search"></i>
+            </div>
+            <input 
+              type="text" 
+              id="searchInput" 
+              class="w-full form-input search-input" 
+              placeholder="Введите запрос"
+            >
+          </div>
         </div>
         
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
@@ -1148,7 +1197,6 @@
     async function translateDescription(text, id) {
       if (!text || text.length < 10) return text;
       
-      // Проверяем кеш
       if (translationsCache[text]) {
         return translationsCache[text];
       }
@@ -1173,7 +1221,6 @@
         
         if (data && data.responseData && data.responseData.translatedText) {
           const translatedText = data.responseData.translatedText;
-          // Кешируем результат
           translationsCache[text] = translatedText;
           return translatedText;
         }
@@ -1958,7 +2005,7 @@
           "Minecraft Realistic - Классический реализм",
           "UMSOEA - Ультра-реалистичные текстуры",
           "Rex's Realism - Натуральные текстуры",
-          "Newb X - Фотореалистичный пакет",
+          "Newb X - Фотореалистичный пак",
           "Real Source - Реалистичные ресурсы",
           "Definitive Realism - Высококачественный реализм",
           "Realism Mats - Физические материалы",
@@ -1968,7 +2015,7 @@
           "Patrix - Реалистичные текстуры",
           "Realistico - Высококачественный реализм",
           "R3D Craft - Реалистичные текстуры",
-          "Misa's Realistic - Реалистичный пакет",
+          "Misa's Realistic - Реалистичный пак",
           "Realism Mats - Физические материалы",
           "Defined PBR - PBR текстуры",
           "Realistic World - Реалистичный мир",
@@ -2589,6 +2636,14 @@
         if (downloadModal.classList.contains('open') && 
             e.target === downloadModal) {
           downloadModal.classList.remove('open');
+        }
+      });
+      
+      document.addEventListener('click', function(e) {
+        if (e.target.classList.contains('chat-btn')) {
+          const query = e.target.getAttribute('data-query');
+          addMessage(query, true);
+          handleUserMessage(query);
         }
       });
       
