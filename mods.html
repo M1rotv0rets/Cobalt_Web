@@ -1098,9 +1098,11 @@
       
       localStorage.setItem('mcFavorites', JSON.stringify(favorites));
       
+      // Обновляем только текущую вкладку
       if (document.getElementById('favoritesContentTab').classList.contains('active')) {
         showFavorites();
       } else {
+        // Обновляем текущие моды
         renderMods(window.currentMods);
       }
     }
@@ -1123,6 +1125,9 @@
         const versions = mod.versions ? mod.versions.slice(0, 3) : [];
         const isFav = isFavorited(mod.id);
         const loaders = mod.loaders || [];
+        
+        // Исправлено: добавлено отображение количества лайков
+        const likes = mod.follows ? formatNumber(mod.follows) : '0';
         
         html += `
           <div class="mod-card overflow-hidden">
@@ -1154,7 +1159,7 @@
                 </div>
                 <div class="flex items-center text-xs">
                   <i class="fas fa-heart text-primary mr-1"></i>
-                  <span>${formatNumber(mod.follows || 0)}</span>
+                  <span>${likes}</span>
                 </div>
               </div>
               
@@ -1513,7 +1518,7 @@
           icon_url: mod.icon_url,
           author: mod.author,
           downloads: mod.downloads,
-          follows: mod.follows,
+          follows: mod.follows, // количество лайков
           date_modified: mod.date_modified,
           project_type: mod.project_type,
           versions: mod.versions,
@@ -1571,6 +1576,7 @@
           icon_url: mod.icon_url,
           author: mod.author,
           downloads: mod.downloads,
+          follows: mod.follows, // количество лайков
           date_modified: mod.date_modified,
           project_type: mod.project_type,
           versions: mod.versions,
@@ -1613,6 +1619,7 @@
       
       resultsCounter.textContent = favorites.length;
       resultsTitle.textContent = 'Избранное';
+      window.currentMods = favorites;
       renderMods(favorites);
       pagination.innerHTML = '';
     }
@@ -2397,7 +2404,8 @@
         }
       });
       
-      trendingTab.click();
+      // Загружаем популярные моды при старте
+      getTrendingContent();
     });
   </script>
 </body>
