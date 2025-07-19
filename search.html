@@ -3,8 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Cobalt Search</title>
-  <link rel="icon" href="Images/icon.png">
+  <title>Cobalt Minecraft Search</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
@@ -315,28 +314,32 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
+      flex-wrap: wrap;
     }
     
     .tab-btn {
       padding: 0.75rem 1.5rem;
       border-radius: 8px;
-      background: rgba(15, 23, 42, 0.5);
+      background: linear-gradient(135deg, #0ea5e9, #0284c7);
       transition: all 0.3s ease;
       cursor: pointer;
       font-weight: 500;
       display: flex;
       align-items: center;
-      border: 2px solid transparent;
+      color: white;
+      box-shadow: 0 4px 15px rgba(2, 132, 199, 0.3);
+      margin-top: 10px;
+    }
+    
+    .tab-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 6px 20px rgba(2, 132, 199, 0.5);
     }
     
     .tab-btn.active {
-      background: rgba(14, 165, 233, 0.2);
-      color: #0ea5e9;
+      background: rgba(30, 41, 59, 0.7);
       border: 2px solid #0ea5e9;
-    }
-    
-    .tab-btn:hover:not(.active) {
-      background: rgba(14, 165, 233, 0.3);
+      color: #0ea5e9;
     }
     
     .user-icon {
@@ -454,6 +457,22 @@
       align-items: center;
     }
     
+    .info-container {
+      display: flex;
+      flex-direction: column;
+    }
+    
+    .warning-container {
+      display: flex;
+      align-items: center;
+      margin-top: 0.25rem;
+    }
+    
+    .tabs-wrapper {
+      display: flex;
+      gap: 10px;
+    }
+    
     @media (max-width: 767px) {
       .search-form {
         padding: 1.5rem;
@@ -490,8 +509,6 @@
       
       .tabs-wrapper {
         width: 100%;
-        display: flex;
-        justify-content: center;
         margin-top: 10px;
       }
     }
@@ -592,14 +609,14 @@
               </select>
             </div>
           </div>
-          <div class="mt-2 text-sm text-gray-400 flex items-start">
-            <i class="fas fa-info-circle mr-2 mt-1"></i> 
-            <div>
+          <div class="mt-2 text-sm text-gray-400 flex flex-col">
+            <div class="flex items-start">
+              <i class="fas fa-info-circle mr-2 mt-1"></i> 
               <p>Пишите запросы на английском для лучших результатов</p>
-              <p class="mt-1 text-red-300">
-                <i class="fas fa-exclamation-triangle mr-1"></i> 
-                Данный инструмент официально поддерживает только браузер Firefox
-              </p>
+            </div>
+            <div class="warning-container">
+              <i class="fas fa-exclamation-triangle mr-2 mt-1 text-red-300"></i>
+              <p class="text-red-300">Данный инструмент официально поддерживает только браузер Firefox</p>
             </div>
           </div>
         </div>
@@ -624,13 +641,11 @@
         </h2>
         
         <div class="tabs-wrapper">
-          <div class="flex gap-2">
-            <div class="tab-btn active" data-tab="all">
-              <i class="fas fa-globe mr-2"></i> Все
-            </div>
-            <div class="tab-btn" data-tab="favorites">
-              <i class="fas fa-star mr-2"></i> Избранное
-            </div>
+          <div class="tab-btn active" data-tab="all">
+            <i class="fas fa-globe mr-2"></i> Все
+          </div>
+          <div class="tab-btn" data-tab="favorites">
+            <i class="fas fa-star mr-2"></i> Избранное
           </div>
         </div>
       </div>
@@ -667,8 +682,11 @@
     const notificationContent = document.getElementById('notificationContent');
     const tabButtons = document.querySelectorAll('.tab-btn');
 
-    // Текущий выбранный язык для перевода
-    let currentLanguage = 'auto';
+    // Фиксированный перевод с английского на русский
+    const currentLanguage = 'en';
+
+    // Хранилище для последних результатов поиска
+    let lastSearchResults = [];
 
     const favorites = {
       getFavorites: function() {
@@ -815,8 +833,8 @@
         if (tab === 'favorites') {
           displayFavorites();
         } else {
-          const allCards = document.querySelectorAll('.result-card');
-          allCards.forEach(card => card.style.display = 'block');
+          // Показываем последние результаты поиска
+          displayResults(lastSearchResults);
         }
       });
     });
@@ -836,7 +854,8 @@
       if (!text || text.trim() === '') return '';
       
       try {
-        const response = await fetch(`https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=${currentLanguage}|ru`);
+        // Фиксированный перевод с английского на русский
+        const response = await fetch(`https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=en|ru`);
         const data = await response.json();
         return data.responseData.translatedText || text;
       } catch (error) {
@@ -1026,249 +1045,51 @@
       }
     }
     
-    async function performSearch() {
-      const query = searchQuery.value.trim();
-      const category = document.getElementById('searchCategory').value;
-      
-      if (!query) {
-        showNotification("Введите ключевые слова для поиска");
-        return;
-      }
-      
-      loader.classList.remove('hidden');
-      emptyState.style.display = 'none';
+    function displayResults(results) {
       resultsContainer.innerHTML = '';
       
-      try {
-        const results = await searchReddit(query);
+      if (results.length === 0) {
+        emptyState.innerHTML = `
+          <div class="text-5xl text-primary/50 mb-4">
+            <i class="fas fa-exclamation-triangle"></i>
+          </div>
+          <h3 class="text-xl font-bold mb-2 text-gray-300">Ничего не найдено</h3>
+          <p class="text-gray-400 mb-4">Попробуйте изменить поисковый запрос</p>
+        `;
+        emptyState.style.display = 'block';
+      } else {
+        results.forEach(result => {
+          const card = createResultCard(result);
+          resultsContainer.appendChild(card);
+        });
         
-        if (results.length === 0) {
-          emptyState.innerHTML = `
-            <div class="text-5xl text-primary/50 mb-4">
-              <i class="fas fa-exclamation-triangle"></i>
-            </div>
-            <h3 class="text-xl font-bold mb-2 text-gray-300">Ничего не найдено</h3>
-            <p class="text-gray-400 mb-4">Попробуйте изменить поисковый запрос</p>
-          `;
-          emptyState.style.display = 'block';
-        } else {
-          results.forEach(result => {
-            const card = createResultCard(result);
-            resultsContainer.appendChild(card);
-          });
-          
-          document.querySelectorAll('.favorite-btn-small').forEach(btn => {
-            btn.addEventListener('click', function() {
-              const id = this.getAttribute('data-id');
-              const isActive = this.classList.contains('active');
-              
-              if (isActive) {
-                if (favorites.removeFavorite(id)) {
-                  this.classList.remove('active');
-                  this.innerHTML = '<i class="far fa-star"></i>';
-                  this.setAttribute('title', 'Добавить в избранное');
-                  showNotification('Удалено из избранного');
-                }
-              } else {
-                const result = results.find(r => r.id === id);
-                if (result && favorites.addFavorite(result)) {
-                  this.classList.add('active');
-                  this.innerHTML = '<i class="fas fa-star"></i>';
-                  this.setAttribute('title', 'Удалить из избранного');
-                  showNotification('Добавлено в избранное');
-                }
-              }
-            });
-          });
-          
-          document.querySelectorAll('.copy-btn').forEach(btn => {
-            btn.addEventListener('click', function() {
-              const text = this.getAttribute('data-text');
-              copyToClipboard(text);
-            });
-          });
-          
-          document.querySelectorAll('.translate-btn').forEach(btn => {
-            btn.addEventListener('click', async function() {
-              const cardId = this.getAttribute('data-id');
-              const card = document.querySelector(`.result-card[data-id="${cardId}"]`);
-              const description = card.querySelector('p.text-gray-300');
-              
-              if (description.classList.contains('translated')) return;
-              
-              const originalBtnHTML = this.innerHTML;
-              this.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>';
-              
-              const translatedTitle = await translateText(card.querySelector('h3').textContent);
-              const translatedDesc = await translateText(description.textContent);
-              
-              card.querySelector('h3').textContent = translatedTitle;
-              description.textContent = translatedDesc;
-              description.classList.add('translated');
-              
-              this.innerHTML = originalBtnHTML;
-            });
-          });
-          
-          document.querySelectorAll('.comments-btn').forEach(btn => {
-            btn.addEventListener('click', async function() {
-              const postId = this.getAttribute('data-id');
-              const card = document.querySelector(`.result-card[data-id="${postId}"]`);
-              const commentsContainer = card.querySelector('.comments-container');
-              
-              if (commentsContainer.classList.contains('hidden')) {
-                commentsContainer.classList.remove('hidden');
-                
-                if (!commentsContainer.hasAttribute('data-loaded')) {
-                  const comments = await loadComments(postId);
-                  let commentsHTML = '';
-                  
-                  if (comments.length > 0) {
-                    comments.forEach(comment => {
-                      const commentEl = createCommentElement(comment);
-                      commentsHTML += commentEl.outerHTML;
-                    });
-                  } else {
-                    commentsHTML = '<p class="text-gray-400">Комментарии не найдены</p>';
-                  }
-                  
-                  commentsContainer.innerHTML = commentsHTML;
-                  commentsContainer.setAttribute('data-loaded', 'true');
-                  
-                  document.querySelectorAll('.comment-author').forEach(author => {
-                    author.addEventListener('click', function() {
-                      const username = this.getAttribute('data-author');
-                      window.open(`https://www.reddit.com/user/${username}`, '_blank');
-                    });
-                  });
-                  
-                  document.querySelectorAll('.copy-comment-btn').forEach(btn => {
-                    btn.addEventListener('click', function() {
-                      const text = this.getAttribute('data-text');
-                      copyToClipboard(text);
-                    });
-                  });
-                  
-                  document.querySelectorAll('.translate-comment-btn').forEach(btn => {
-                    btn.addEventListener('click', async function() {
-                      const commentId = this.getAttribute('data-id');
-                      const commentEl = document.querySelector(`.comment[data-id="${commentId}"]`);
-                      const body = commentEl.querySelector('.comment-body');
-                      
-                      if (body.classList.contains('translated')) return;
-                      
-                      const originalHTML = this.innerHTML;
-                      this.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
-                      
-                      const translatedText = await translateText(body.textContent);
-                      body.textContent = translatedText;
-                      body.classList.add('translated');
-                      
-                      this.innerHTML = originalHTML;
-                    });
-                  });
-                  
-                  document.querySelectorAll('.favorite-comment-btn').forEach(btn => {
-                    btn.addEventListener('click', function() {
-                      const commentId = this.getAttribute('data-id');
-                      const commentEl = document.querySelector(`.comment[data-id="${commentId}"]`);
-                      const body = commentEl.querySelector('.comment-body').textContent;
-                      const author = commentEl.querySelector('.comment-author').textContent;
-                      const ups = commentEl.querySelector('.like-btn').textContent.replace(/\D/g, '');
-                      
-                      const commentData = {
-                        id: commentId,
-                        body: body,
-                        author: author,
-                        ups: ups
-                      };
-                      
-                      const isActive = this.classList.contains('active');
-                      
-                      if (isActive) {
-                        if (commentFavorites.removeFavorite(commentId)) {
-                          this.classList.remove('active');
-                          this.innerHTML = '<i class="far fa-star"></i>';
-                          this.setAttribute('title', 'Добавить в избранное');
-                          showNotification('Комментарий удалён из избранного');
-                        }
-                      } else {
-                        if (commentFavorites.addFavorite(commentData)) {
-                          this.classList.add('active');
-                          this.innerHTML = '<i class="fas fa-star"></i>';
-                          this.setAttribute('title', 'Удалить из избранного');
-                          showNotification('Комментарий добавлен в избранное');
-                        }
-                      }
-                    });
-                  });
-                }
-              } else {
-                commentsContainer.classList.add('hidden');
-              }
-            });
-          });
-          
-          document.querySelectorAll('.like-btn').forEach(btn => {
-            btn.addEventListener('click', function() {
-              const id = this.getAttribute('data-id');
-              const result = results.find(r => r.id === id);
-              
-              if (result) {
-                result.liked = !result.liked;
-                this.classList.toggle('active', result.liked);
-                
-                if (result.liked) {
-                  result.votes++;
-                } else {
-                  result.votes--;
-                }
-                
-                this.innerHTML = `<i class="fas fa-heart mr-1"></i> ${result.votes}`;
-              }
-            });
-          });
-          
-          showNotification(`Найдено ${results.length} результатов на Reddit`);
-        }
-      } finally {
-        loader.classList.add('hidden');
+        addCardEventListeners(results);
+        
+        showNotification(`Найдено ${results.length} результатов на Reddit`);
       }
     }
     
-    function displayFavorites() {
-      resultsContainer.innerHTML = '';
-      const favs = favorites.getFavorites();
-      
-      if (favs.length === 0) {
-        emptyState.innerHTML = `
-          <div class="text-5xl text-primary/50 mb-4">
-            <i class="fas fa-star"></i>
-          </div>
-          <h3 class="text-xl font-bold mb-2 text-gray-300">Нет избранных результатов</h3>
-          <p class="text-gray-400 mb-4">Добавьте результаты в избранное, чтобы они отображались здесь</p>
-        `;
-        emptyState.style.display = 'block';
-        return;
-      }
-      
-      favs.forEach(result => {
-        const card = createResultCard(result);
-        resultsContainer.appendChild(card);
-      });
-      
+    function addCardEventListeners(results) {
       document.querySelectorAll('.favorite-btn-small').forEach(btn => {
         btn.addEventListener('click', function() {
           const id = this.getAttribute('data-id');
+          const isActive = this.classList.contains('active');
           
-          if (favorites.removeFavorite(id)) {
-            this.closest('.result-card').remove();
-            
-            if (resultsContainer.children.length === 0) {
-              displayFavorites();
+          if (isActive) {
+            if (favorites.removeFavorite(id)) {
+              this.classList.remove('active');
+              this.innerHTML = '<i class="far fa-star"></i>';
+              this.setAttribute('title', 'Добавить в избранное');
+              showNotification('Удалено из избранного');
             }
-            
-            showNotification('Удалено из избранного');
+          } else {
+            const result = results.find(r => r.id === id);
+            if (result && favorites.addFavorite(result)) {
+              this.classList.add('active');
+              this.innerHTML = '<i class="fas fa-star"></i>';
+              this.setAttribute('title', 'Удалить из избранного');
+              showNotification('Добавлено в избранное');
+            }
           }
         });
       });
@@ -1301,6 +1122,166 @@
           this.innerHTML = originalBtnHTML;
         });
       });
+      
+      document.querySelectorAll('.comments-btn').forEach(btn => {
+        btn.addEventListener('click', async function() {
+          const postId = this.getAttribute('data-id');
+          const card = document.querySelector(`.result-card[data-id="${postId}"]`);
+          const commentsContainer = card.querySelector('.comments-container');
+          
+          if (commentsContainer.classList.contains('hidden')) {
+            commentsContainer.classList.remove('hidden');
+            
+            if (!commentsContainer.hasAttribute('data-loaded')) {
+              const comments = await loadComments(postId);
+              let commentsHTML = '';
+              
+              if (comments.length > 0) {
+                comments.forEach(comment => {
+                  const commentEl = createCommentElement(comment);
+                  commentsHTML += commentEl.outerHTML;
+                });
+              } else {
+                commentsHTML = '<p class="text-gray-400">Комментарии не найдены</p>';
+              }
+              
+              commentsContainer.innerHTML = commentsHTML;
+              commentsContainer.setAttribute('data-loaded', 'true');
+              
+              document.querySelectorAll('.comment-author').forEach(author => {
+                author.addEventListener('click', function() {
+                  const username = this.getAttribute('data-author');
+                  window.open(`https://www.reddit.com/user/${username}`, '_blank');
+                });
+              });
+              
+              document.querySelectorAll('.copy-comment-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                  const text = this.getAttribute('data-text');
+                  copyToClipboard(text);
+                });
+              });
+              
+              document.querySelectorAll('.translate-comment-btn').forEach(btn => {
+                btn.addEventListener('click', async function() {
+                  const commentId = this.getAttribute('data-id');
+                  const commentEl = document.querySelector(`.comment[data-id="${commentId}"]`);
+                  const body = commentEl.querySelector('.comment-body');
+                  
+                  if (body.classList.contains('translated')) return;
+                  
+                  const originalHTML = this.innerHTML;
+                  this.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+                  
+                  const translatedText = await translateText(body.textContent);
+                  body.textContent = translatedText;
+                  body.classList.add('translated');
+                  
+                  this.innerHTML = originalHTML;
+                });
+              });
+              
+              document.querySelectorAll('.favorite-comment-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                  const commentId = this.getAttribute('data-id');
+                  const commentEl = document.querySelector(`.comment[data-id="${commentId}"]`);
+                  const body = commentEl.querySelector('.comment-body').textContent;
+                  const author = commentEl.querySelector('.comment-author').textContent;
+                  const ups = commentEl.querySelector('.like-btn').textContent.replace(/\D/g, '');
+                  
+                  const commentData = {
+                    id: commentId,
+                    body: body,
+                    author: author,
+                    ups: ups
+                  };
+                  
+                  const isActive = this.classList.contains('active');
+                  
+                  if (isActive) {
+                    if (commentFavorites.removeFavorite(commentId)) {
+                      this.classList.remove('active');
+                      this.innerHTML = '<i class="far fa-star"></i>';
+                      this.setAttribute('title', 'Добавить в избранное');
+                      showNotification('Комментарий удалён из избранного');
+                    }
+                  } else {
+                    if (commentFavorites.addFavorite(commentData)) {
+                      this.classList.add('active');
+                      this.innerHTML = '<i class="fas fa-star"></i>';
+                      this.setAttribute('title', 'Удалить из избранного');
+                      showNotification('Комментарий добавлен в избранное');
+                    }
+                  }
+                });
+              });
+            }
+          } else {
+            commentsContainer.classList.add('hidden');
+          }
+        });
+      });
+      
+      document.querySelectorAll('.like-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+          const id = this.getAttribute('data-id');
+          const result = results.find(r => r.id === id);
+          
+          if (result) {
+            result.liked = !result.liked;
+            this.classList.toggle('active', result.liked);
+            
+            if (result.liked) {
+              result.votes++;
+            } else {
+              result.votes--;
+            }
+            
+            this.innerHTML = `<i class="fas fa-heart mr-1"></i> ${result.votes}`;
+          }
+        });
+      });
+    }
+    
+    async function performSearch() {
+      const query = searchQuery.value.trim();
+      const category = document.getElementById('searchCategory').value;
+      
+      if (!query) {
+        showNotification("Введите ключевые слова для поиска");
+        return;
+      }
+      
+      loader.classList.remove('hidden');
+      emptyState.style.display = 'none';
+      resultsContainer.innerHTML = '';
+      
+      try {
+        const results = await searchReddit(query);
+        lastSearchResults = results;
+        displayResults(results);
+      } finally {
+        loader.classList.add('hidden');
+      }
+    }
+    
+    function displayFavorites() {
+      resultsContainer.innerHTML = '';
+      const favs = favorites.getFavorites();
+      
+      if (favs.length === 0) {
+        emptyState.innerHTML = `
+          <div class="text-5xl text-primary/50 mb-4">
+            <i class="fas fa-star"></i>
+          </div>
+          <h3 class="text-xl font-bold mb-2 text-gray-300">Нет избранных результатов</h3>
+          <p class="text-gray-400 mb-4">Добавьте результаты в избранное, чтобы они отображались здесь</p>
+        `;
+        emptyState.style.display = 'block';
+        return;
+      }
+      
+      displayResults(favs);
     }
     
     searchBtn.addEventListener('click', performSearch);
