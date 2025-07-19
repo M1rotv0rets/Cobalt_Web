@@ -137,13 +137,17 @@
       border-left: 4px solid #0ea5e9;
       box-shadow: 0 5px 15px rgba(0,0,0,0.3);
       transform: translateX(120%);
-      transition: transform 0.4s ease;
+      transition: transform 0.4s ease, opacity 0.4s ease;
       z-index: 1000;
       max-width: 350px;
+      display: none;
+      opacity: 0;
+      will-change: transform;
     }
     
     .notification.show {
       transform: translateX(0);
+      opacity: 1;
     }
     
     .notification-title {
@@ -679,11 +683,9 @@
     const notificationContent = document.getElementById('notificationContent');
     const tabButtons = document.querySelectorAll('.tab-btn');
 
-    // Фиксированный перевод с английского на русский
-    const currentLanguage = 'en';
-
     // Хранилище для последних результатов поиска
     let lastSearchResults = [];
+    let notificationTimeout = null;
 
     const favorites = {
       getFavorites: function() {
@@ -812,12 +814,31 @@
     });
     
     function showNotification(message) {
-      notificationContent.textContent = message;
-      notification.classList.add('show');
-      
-      setTimeout(() => {
+      // Отменяем предыдущее уведомление
+      if (notificationTimeout) {
+        clearTimeout(notificationTimeout);
         notification.classList.remove('show');
-      }, 3000);
+        setTimeout(() => {
+          notification.style.display = 'none';
+        }, 100);
+      }
+      
+      notificationContent.textContent = message;
+      notification.style.display = 'block';
+      
+      // Даем браузеру время на рендеринг
+      setTimeout(() => {
+        notification.classList.add('show');
+        
+        notificationTimeout = setTimeout(() => {
+          notification.classList.remove('show');
+          
+          // После завершения анимации скрытия
+          setTimeout(() => {
+            notification.style.display = 'none';
+          }, 400);
+        }, 3000);
+      }, 10);
     }
     
     tabButtons.forEach(button => {
@@ -883,6 +904,7 @@
         showNotification('Текст скопирован в буфер обмена');
       }).catch(err => {
         console.error('Failed to copy: ', err);
+        showNotification('Ошибка копирования');
       });
     }
     
@@ -1002,7 +1024,6 @@
     
     async function searchReddit(query) {
       try {
-        loader.classList.remove('hidden');
         const response = await fetch(`https://www.reddit.com/search.json?q=${encodeURIComponent(query + ' minecraft')}&limit=15`);
         const data = await response.json();
         
@@ -1037,8 +1058,6 @@
         console.error('Reddit search error:', error);
         showNotification('Ошибка при поиске на Reddit');
         return [];
-      } finally {
-        loader.classList.add('hidden');
       }
     }
     
@@ -1061,8 +1080,6 @@
         });
         
         addCardEventListeners(results);
-        
-        showNotification(`Найдено ${results.length} результатов на Reddit`);
       }
     }
     
@@ -1117,6 +1134,7 @@
           description.classList.add('translated');
           
           this.innerHTML = originalBtnHTML;
+          showNotification('Перевод выполнен');
         });
       });
       
@@ -1175,6 +1193,7 @@
                   body.classList.add('translated');
                   
                   this.innerHTML = originalHTML;
+                  showNotification('Комментарий переведен');
                 });
               });
               
@@ -1230,8 +1249,10 @@
             
             if (result.liked) {
               result.votes++;
+              showNotification('Пост добавлен в лайки');
             } else {
               result.votes--;
+              showNotification('Пост удален из лайков');
             }
             
             this.innerHTML = `<i class="fas fa-heart mr-1"></i> ${result.votes}`;
@@ -1249,6 +1270,11 @@
         return;
       }
       
+      // Обновляем состояние кнопки
+      const originalBtnHTML = searchBtn.innerHTML;
+      searchBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Поиск...';
+      searchBtn.disabled = true;
+      
       loader.classList.remove('hidden');
       emptyState.style.display = 'none';
       resultsContainer.innerHTML = '';
@@ -1256,9 +1282,21 @@
       try {
         const results = await searchReddit(query);
         lastSearchResults = results;
+        
+        if (results.length > 0) {
+          showNotification(`Найдено ${results.length} результатов на Reddit`);
+        } else {
+          showNotification("Ничего не найдено, попробуйте другой запрос");
+        }
+        
         displayResults(results);
+      } catch (error) {
+        console.error('Search error:', error);
+        showNotification('Ошибка при выполнении поиска');
       } finally {
         loader.classList.add('hidden');
+        searchBtn.innerHTML = originalBtnHTML;
+        searchBtn.disabled = false;
       }
     }
     
@@ -1279,6 +1317,7 @@
       }
       
       displayResults(favs);
+      showNotification(`Показано ${favs.length} избранных постов`);
     }
     
     searchBtn.addEventListener('click', performSearch);
@@ -1291,6 +1330,11 @@
     
     document.addEventListener('DOMContentLoaded', function() {
       searchQuery.focus();
+      
+      // Тестовое уведомление при загрузке
+      setTimeout(() => {
+        showNotification("Добро пожаловать! Введите запрос для поиска");
+      }, 1000);
     });
   </script>
 </body>
