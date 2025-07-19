@@ -23,10 +23,12 @@
             fabric: '#0ea5e9',
             quilt: '#8b5cf6',
             liteloader: '#f59e0b',
-            rift: '#10b981'
+            rift: '#10b981',
+            translate: '#8b5cf6'
           },
           animation: {
-            'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite'
+            'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+            'pulse-translate': 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1)'
           }
         }
       }
@@ -613,6 +615,31 @@
       animation: pulse-star 0.8s;
     }
     
+    .translate-btn {
+      background: rgba(139, 92, 246, 0.15);
+      color: #8b5cf6;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 11px;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: inline-flex;
+      align-items: center;
+      margin-top: 4px;
+    }
+    
+    .translate-btn:hover {
+      background: rgba(139, 92, 246, 0.25);
+    }
+    
+    .translate-btn i {
+      margin-right: 4px;
+    }
+    
+    .translate-loading {
+      animation: pulse-translate 1s infinite;
+    }
+    
     @keyframes pulse-star {
       0% { transform: scale(1); }
       50% { transform: scale(1.5); }
@@ -865,9 +892,15 @@
   <section class="py-10 px-4 relative">
     <div class="max-w-4xl mx-auto">
       <div class="flex flex-wrap gap-3 mb-6">
-        <button class="tab-btn active" id="searchTab">Поиск</button>
-        <button class="tab-btn" id="favoritesContentTab">Избранное</button>
-        <button class="tab-btn" id="trendingTab">Популярное</button>
+        <button class="tab-btn active" id="searchTab">
+          <i class="fas fa-search mr-2"></i> Поиск
+        </button>
+        <button class="tab-btn" id="favoritesContentTab">
+          <i class="fas fa-star mr-2"></i> Избранное
+        </button>
+        <button class="tab-btn" id="trendingTab">
+          <i class="fas fa-fire mr-2"></i> Популярное
+        </button>
       </div>
       
       <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6">
@@ -877,10 +910,18 @@
         </h2>
         
         <div class="flex flex-wrap gap-2" id="sortButtons">
-          <button class="sort-btn active" data-sort="relevance">По релевантности</button>
-          <button class="sort-btn" data-sort="downloads">По загрузкам</button>
-          <button class="sort-btn" data-sort="updated">По обновлению</button>
-          <button class="sort-btn" data-sort="follows">По подписчикам</button>
+          <button class="sort-btn active" data-sort="relevance">
+            <i class="fas fa-bullseye filter-icon"></i>По релевантности
+          </button>
+          <button class="sort-btn" data-sort="downloads">
+            <i class="fas fa-download filter-icon"></i>По загрузкам
+          </button>
+          <button class="sort-btn" data-sort="updated">
+            <i class="fas fa-sync filter-icon"></i>По обновлению
+          </button>
+          <button class="sort-btn" data-sort="follows">
+            <i class="fas fa-heart filter-icon"></i>По подписчикам
+          </button>
         </div>
       </div>
       
@@ -1098,12 +1139,50 @@
       
       localStorage.setItem('mcFavorites', JSON.stringify(favorites));
       
-      // Обновляем только текущую вкладку
       if (document.getElementById('favoritesContentTab').classList.contains('active')) {
         showFavorites();
       } else {
-        // Обновляем текущие моды
         renderMods(window.currentMods);
+      }
+    }
+    
+    async function translateDescription(text, id) {
+      try {
+        const btn = document.querySelector(`.translate-btn[data-id="${id}"]`);
+        if (btn) {
+          btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+          btn.classList.add('translate-loading');
+        }
+        
+        const response = await fetch('https://api.mymemory.translated.net/get', {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          params: {
+            q: text,
+            langpair: 'en|ru'
+          }
+        });
+        
+        const data = await response.json();
+        
+        if (btn) {
+          btn.innerHTML = '<i class="fas fa-language"></i> Оригинал';
+          btn.classList.remove('translate-loading');
+        }
+        
+        if (data && data.responseData && data.responseData.translatedText) {
+          return data.responseData.translatedText;
+        }
+        return text;
+      } catch (error) {
+        console.error('Translation error:', error);
+        if (btn) {
+          btn.innerHTML = '<i class="fas fa-language"></i> Оригинал';
+          btn.classList.remove('translate-loading');
+        }
+        return text;
       }
     }
     
@@ -1125,8 +1204,6 @@
         const versions = mod.versions ? mod.versions.slice(0, 3) : [];
         const isFav = isFavorited(mod.id);
         const loaders = mod.loaders || [];
-        
-        // Исправлено: добавлено отображение количества лайков
         const likes = mod.follows ? formatNumber(mod.follows) : '0';
         
         html += `
@@ -1146,7 +1223,14 @@
             </div>
             <div class="p-4">
               <a href="${mod.page_url}" target="_blank" class="text-lg font-bold mb-2 text-white hover:text-primary block">${mod.title}</a>
-              <p class="text-gray-400 text-sm mb-3 line-clamp-2">${mod.description || 'Описание отсутствует'}</p>
+              <div class="relative">
+                <p class="text-gray-400 text-sm mb-3 line-clamp-2 desc-text" id="desc-${mod.id}">${mod.description || 'Описание отсутствует'}</p>
+                ${mod.description ? `
+                  <button class="translate-btn" data-id="${mod.id}" data-original="${mod.description}">
+                    <i class="fas fa-language"></i> Перевести
+                  </button>
+                ` : ''}
+              </div>
               
               <div class="flex flex-wrap gap-3 mb-3">
                 <div class="flex items-center text-xs">
@@ -1201,6 +1285,23 @@
           const id = this.getAttribute('data-id');
           currentMod = window.currentMods.find(m => m.id === id);
           if (currentMod) openDownloadModal(currentMod);
+        });
+      });
+      
+      document.querySelectorAll('.translate-btn').forEach(btn => {
+        btn.addEventListener('click', async function() {
+          const id = this.getAttribute('data-id');
+          const originalText = this.getAttribute('data-original');
+          const descElement = document.getElementById(`desc-${id}`);
+          
+          if (this.textContent.includes('Перевести')) {
+            const translatedText = await translateDescription(originalText, id);
+            descElement.textContent = translatedText;
+            this.innerHTML = '<i class="fas fa-language"></i> Оригинал';
+          } else {
+            descElement.textContent = originalText;
+            this.innerHTML = '<i class="fas fa-language"></i> Перевести';
+          }
         });
       });
     }
@@ -1518,7 +1619,7 @@
           icon_url: mod.icon_url,
           author: mod.author,
           downloads: mod.downloads,
-          follows: mod.follows, // количество лайков
+          follows: mod.follows,
           date_modified: mod.date_modified,
           project_type: mod.project_type,
           versions: mod.versions,
@@ -1576,7 +1677,7 @@
           icon_url: mod.icon_url,
           author: mod.author,
           downloads: mod.downloads,
-          follows: mod.follows, // количество лайков
+          follows: mod.follows,
           date_modified: mod.date_modified,
           project_type: mod.project_type,
           versions: mod.versions,
@@ -1691,7 +1792,10 @@
           "Memory Leak Fix - Исправление утечек памяти",
           "AI Improvements - Улучшение ИИ мобов",
           "FastSuite - Ускорение работы рецептов",
-          "Fastload - Ускорение загрузки модов"
+          "Fastload - Ускорение загрузки модов",
+          "CensoredASM - Улучшение производительности",
+          "Dynamic View - Динамическая дальность прорисовки",
+          "FastChest - Оптимизация сундуков"
         ],
         "геймплей": [
           "Biomes O' Plenty - Добавляет 80+ новых биомов",
@@ -1720,7 +1824,10 @@
           "Guard Villagers - Охранники деревень",
           "Spider 2.0 - Улучшенные пауки",
           "Zombie Awareness - Умные зомби",
-          "Better Animals Plus - Улучшенные животные"
+          "Better Animals Plus - Улучшенные животные",
+          "Vault Hunters - Охота за сокровищами",
+          "Better Combat - Улучшенный бой",
+          "Artifacts - Коллекционные артефакты"
         ],
         "технические": [
           "Applied Energistics 2 - Системы хранения энергии",
@@ -1749,7 +1856,10 @@
           "CC: Tweaked - Улучшенный Computercraft",
           "Integrated Tunnels - Транспортировка предметов",
           "Compact Machines - Компактные машины",
-          "Modular Routers - Модульные маршрутизаторы"
+          "Modular Routers - Модульные маршрутизаторы",
+          "Flux Networks - Сеть передачи энергии",
+          "LaserIO - Транспортировка предметов лазерами",
+          "Pipez - Универсальные трубы"
         ],
         "магия": [
           "Thaumcraft - Исследование магии и алхимии",
@@ -1778,7 +1888,10 @@
           "Eidolon - Магия духов",
           "Totemic - Ритуальная магия тотемов",
           "ChromatiCraft - Цветная магия",
-          "Witchery - Ведьмовство"
+          "Witchery - Ведьмовство",
+          "Ars Magica - Система заклинаний",
+          "Mystical Agriculture - Магическое сельское хозяйство",
+          "Essence - Система магических сущностей"
         ],
         "строительство": [
           "Chisel - Множество новых вариантов блоков",
@@ -1807,7 +1920,10 @@
           "Exotic Blocks - Экзотические блоки",
           "Decorative Blocks - Дополнительные декоративные блоки",
           "Valhelsia Structures - Структуры для строительства",
-          "Supplementaries - Дополнительные элементы"
+          "Supplementaries - Дополнительные элементы",
+          "ArchitectureCraft - Продвинутые строительные инструменты",
+          "Blockus - Стилизованные блоки",
+          "Decorative Blocks Addon - Дополнения для декора"
         ]
       },
       resourcepacks: {
@@ -1838,7 +1954,10 @@
           "Realistic World - Реалистичный мир",
           "Nostalgia Shader - Реалистичные шейдеры",
           "Continuum - Кинематографичная графика",
-          "Kappa - Реалистичные материалы"
+          "Kappa - Реалистичные материалы",
+          "Real Source 2 - Продвинутый реализм",
+          "Physically Based - Физически корректные материалы",
+          "Ultimate Immersion - Полное погружение"
         ],
         "стилизованные": [
           "Faithful - Классические текстуры в 32x",
@@ -1867,7 +1986,10 @@
           "Conquest - Реалистичный фэнтези",
           "Jicklus - Стилизованный реализм",
           "Bare Bones - Минималистичный стиль",
-          "Ravenheart - Темный фэнтези"
+          "Ravenheart - Темный фэнтези",
+          "Cocricot Lite - Упрощенный японский стиль",
+          "ModernArch Lite - Легкий современный стиль",
+          "Fantasy Realm - Королевство фэнтези"
         ],
         "pvp": [
           "Tightfault Revamp - Оптимизированный для PvP",
@@ -1896,7 +2018,10 @@
           "Emerald - Зеленый PvP пак",
           "Diamond - Белый PvP пак",
           "Gold - Золотой PvP пак",
-          "Platinum - Платиновый PvP пак"
+          "Platinum - Платиновый PvP пак",
+          "Cyanide - Быстрый PvP пак",
+          "Inferno - Огненный PvP пак",
+          "Arctic - Ледяной PvP пак"
         ],
         "ctm": [
           "Connected Textures - Поддержка CTM",
@@ -1925,7 +2050,10 @@
           "CTM Sci-Fi - Научно-фантастический CTM",
           "CTM Adventure - Приключенческий CTM",
           "CTM Magic - Магический CTM",
-          "CTM Nature - Природный CTM"
+          "CTM Nature - Природный CTM",
+          "CTM Future - Футуристический CTM",
+          "CTM Retro - Ретро стиль CTM",
+          "CTM Abstract - Абстрактный CTM"
         ]
       },
       datapacks: {
@@ -1956,7 +2084,10 @@
           "Fast Leaf Decay - Быстрое опадание листьев",
           "Silence Mobs - Заглушить звуки мобов",
           "Anti Creeper Grief - Защита от криперов",
-          "More Beds - Больше кроватей"
+          "More Beds - Больше кроватей",
+          "Silence Guardians - Заглушить стражей",
+          "Silence Phantoms - Заглушить фантомов",
+          "Auto Replant - Автоматическая посадка"
         ],
         "сложность": [
           "Hardcore Darkness - Полная темнота ночью",
@@ -1985,7 +2116,10 @@
           "Infernal Mobs - Инфернальные мобы",
           "Mob Health Bars - Бары здоровья мобов",
           "Realistic Torches - Реалистичные факелы",
-          "Survival Plus - Улучшенное выживание"
+          "Survival Plus - Улучшенное выживание",
+          "Hostile Worlds - Враждебные миры",
+          "Epic Raids - Эпичные рейды",
+          "Brutal Bosses - Жестокие боссы"
         ],
         "автоматизация": [
           "Auto Crafting Table - Автоматический крафт",
@@ -2014,7 +2148,10 @@
           "Auto Shear - Авто стрижка овец",
           "Auto Milker - Авто доение",
           "Auto Honey - Авто сбор меда",
-          "Auto Composter - Авто компостирование"
+          "Auto Composter - Авто компостирование",
+          "Auto Smoker - Авто коптильня",
+          "Auto Blast Furnace - Авто плавильня",
+          "Auto Crafter Advanced - Продвинутый автокрафт"
         ]
       },
       shaders: {
@@ -2045,7 +2182,10 @@
           "Soft Voxels Lite - Легкий реализм",
           "AstraLex Shaders - Реалистичные облака",
           "Project LUMA - Фотореализм",
-          "TME Shaders - Атмосферный реализм"
+          "TME Shaders - Атмосферный реализм",
+          "Sonic Ether - Реалистичное освещение",
+          "Chocapic RT - Трассировка лучей",
+          "BSL RT - Реалистичная трассировка"
         ],
         "стиль": [
           "BSL Shaders - Баланс красоты и производительности",
@@ -2074,7 +2214,10 @@
           "AstraLex Lite - Легкий стилизованный",
           "NostalgiaVX - Стильный вантовый",
           "Rethinking Voxels Lite - Легкий стиль",
-          "Starlight Lite - Легкий звездный"
+          "Starlight Lite - Легкий звездный",
+          "Sildur's Fantasy - Фэнтезийный стиль",
+          "Chocapic Fantasy - Магический стиль",
+          "BSL Fantasy - Фэнтезийная графика"
         ],
         "легкие": [
           "Sildur's Enhanced Default - Улучшенная ваниль",
@@ -2103,7 +2246,10 @@
           "Oculus Light - Легкие для Forge",
           "SFLP Light - Супер легкие",
           "Vanilla Plus Light - Легкая ваниль",
-          "RRe36's Light - Легкие шейдеры"
+          "RRe36's Light - Легкие шейдеры",
+          "Chocapic13 Mobile - Для мобильных устройств",
+          "BSL Mobile - Мобильная версия",
+          "MakeUp Mobile - Для слабых устройств"
         ]
       }
     };
@@ -2302,14 +2448,6 @@
     }
     
     document.addEventListener('DOMContentLoaded', function() {
-      // Добавление иконок к кнопкам сортировки
-      document.querySelectorAll('.sort-btn').forEach(btn => {
-        const icon = btn.dataset.sort === 'relevance' ? 'fa-bullseye' : 
-                     btn.dataset.sort === 'downloads' ? 'fa-download' : 
-                     btn.dataset.sort === 'updated' ? 'fa-sync' : 'fa-heart';
-        btn.innerHTML = `<i class="fas ${icon} filter-icon"></i>${btn.textContent}`;
-      });
-      
       searchBtn.addEventListener('click', function() {
         searchTab.classList.add('active');
         favoritesContentTab.classList.remove('active');
@@ -2404,7 +2542,6 @@
         }
       });
       
-      // Загружаем популярные моды при старте
       getTrendingContent();
     });
   </script>
