@@ -74,39 +74,6 @@
       box-shadow: 0 6px 20px rgba(2, 132, 199, 0.5);
     }
     
-    .btn-mobs {
-      background: linear-gradient(135deg, #EF4444, #B91C1C);
-      transition: all 0.3s ease;
-      box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3);
-    }
-    
-    .btn-mobs:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 6px 20px rgba(239, 68, 68, 0.5);
-    }
-    
-    .btn-items {
-      background: linear-gradient(135deg, #F59E0B, #D97706);
-      transition: all 0.3s ease;
-      box-shadow: 0 4px 15px rgba(245, 158, 11, 0.3);
-    }
-    
-    .btn-items:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 6px 20px rgba(245, 158, 11, 0.5);
-    }
-    
-    .btn-blocks {
-      background: linear-gradient(135deg, #8B5CF6, #7C3AED);
-      transition: all 0.3s ease;
-      box-shadow: 0 4px 15px rgba(139, 92, 246, 0.3);
-    }
-    
-    .btn-blocks:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 6px 20px rgba(139, 92, 246, 0.5);
-    }
-    
     .form-input {
       background: rgba(15, 23, 42, 0.6);
       border: 1px solid rgba(14, 165, 233, 0.3);
@@ -164,6 +131,7 @@
       transition: all 0.3s;
       border-radius: 8px;
       padding: 0.5rem;
+      background: rgba(14, 165, 233, 0.1);
     }
     
     .example-query:hover {
@@ -205,6 +173,27 @@
       gap: 0.5rem;
     }
     
+    .info-content {
+      line-height: 1.6;
+    }
+    
+    .section-title {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 15px;
+    }
+    
+    .section-icon {
+      background: rgba(14, 165, 233, 0.2);
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
     @media (max-width: 768px) {
       .mobile-flex-col {
         flex-direction: column;
@@ -228,16 +217,13 @@
     </div>
   </header>
 
-  <main class="max-w-6xl mx-auto px-4 py-10">
+  <main class="max-w-4xl mx-auto px-4 py-10">
     <section class="mb-12 text-center">
-      <h2 class="text-3xl font-bold mb-4 text-white">Узнай всё о Minecraft!</h2>
-      <p class="text-lg text-gray-300 mb-6">Спроси про мобов, предметы или блоки и получи подробную информацию</p>
-      
       <div class="relative max-w-2xl mx-auto">
         <input 
           type="text" 
           id="minecraftQuery" 
-          placeholder="Например: Что такое зомби?" 
+          placeholder="Введите запрос (моб, предмет или блок)" 
           class="w-full form-input text-lg py-4 pl-5 pr-14"
           autocomplete="off"
         >
@@ -246,137 +232,110 @@
         </button>
       </div>
       
-      <div class="flex flex-wrap justify-center gap-4 mt-6">
-        <button data-type="mob" class="btn-mobs px-4 py-2 rounded-lg font-medium text-white flex items-center">
-          <i class="fas fa-skull mr-2"></i> Популярные мобы
-        </button>
-        <button data-type="item" class="btn-items px-4 py-2 rounded-lg font-medium text-white flex items-center">
-          <i class="fas fa-gem mr-2"></i> Популярные предметы
-        </button>
-        <button data-type="block" class="btn-blocks px-4 py-2 rounded-lg font-medium text-white flex items-center">
-          <i class="fas fa-cube mr-2"></i> Популярные блоки
-        </button>
-      </div>
-      
       <div class="mt-8">
         <p class="text-gray-400 mb-3">Примеры запросов:</p>
         <div class="flex flex-wrap justify-center gap-3">
-          <div class="example-query" data-query="зомби">Что такое зомби?</div>
-          <div class="example-query" data-query="алмазная кирка">Для чего нужна алмазная кирка?</div>
-          <div class="example-query" data-query="маяк">Как работает маяк?</div>
-          <div class="example-query" data-query="крипер">Что делает крипер?</div>
+          <div class="example-query" data-query="зомби">
+            <i class="fas fa-skull mr-2"></i> Зомби
+          </div>
+          <div class="example-query" data-query="алмазная кирка">
+            <i class="fas fa-gem mr-2"></i> Алмазная кирка
+          </div>
+          <div class="example-query" data-query="маяк">
+            <i class="fas fa-broadcast-tower mr-2"></i> Маяк
+          </div>
+          <div class="example-query" data-query="крипер">
+            <i class="fas fa-bomb mr-2"></i> Крипер
+          </div>
         </div>
       </div>
     </section>
     
     <section id="answerSection" class="hidden">
-      <h2 class="text-2xl font-bold mb-6 text-white flex items-center">
-        <i class="fas fa-info-circle mr-3 text-primary"></i> Результат
-      </h2>
-      
       <div id="answerContainer" class="minecraft-card p-6">
-        <!-- Здесь будет появляться информация -->
-      </div>
-    </section>
-    
-    <section id="popularSection" class="mt-16">
-      <h2 class="text-2xl font-bold mb-6 text-white flex items-center">
-        <i class="fas fa-book mr-3 text-primary"></i> База знаний Minecraft
-      </h2>
-      
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div class="minecraft-card p-6">
-          <div class="flex items-center mb-4">
-            <div class="w-12 h-12 rounded-full bg-red-500/20 flex items-center justify-center mr-3">
-              <i class="fas fa-skull text-red-400"></i>
-            </div>
-            <h3 class="text-xl font-bold text-white">Мобы</h3>
-          </div>
-          <p class="text-gray-300 mb-4">Узнайте о различных существах, населяющих мир Minecraft</p>
-          <ul class="space-y-2">
-            <li class="flex items-center"><i class="fas fa-check text-green-400 mr-2"></i> Враждебные мобы</li>
-            <li class="flex items-center"><i class="fas fa-check text-green-400 mr-2"></i> Дружелюбные мобы</li>
-            <li class="flex items-center"><i class="fas fa-check text-green-400 mr-2"></i> Нейтральные мобы</li>
-            <li class="flex items-center"><i class="fas fa-check text-green-400 mr-2"></i> Боссы</li>
-          </ul>
-        </div>
-        
-        <div class="minecraft-card p-6">
-          <div class="flex items-center mb-4">
-            <div class="w-12 h-12 rounded-full bg-yellow-500/20 flex items-center justify-center mr-3">
-              <i class="fas fa-gem text-yellow-400"></i>
-            </div>
-            <h3 class="text-xl font-bold text-white">Предметы</h3>
-          </div>
-          <p class="text-gray-300 mb-4">Информация о всех предметах, их использовании и получении</p>
-          <ul class="space-y-2">
-            <li class="flex items-center"><i class="fas fa-check text-green-400 mr-2"></i> Инструменты</li>
-            <li class="flex items-center"><i class="fas fa-check text-green-400 mr-2"></i> Оружие</li>
-            <li class="flex items-center"><i class="fas fa-check text-green-400 mr-2"></i> Броня</li>
-            <li class="flex items-center"><i class="fas fa-check text-green-400 mr-2"></i> Ресурсы</li>
-          </ul>
-        </div>
-        
-        <div class="minecraft-card p-6">
-          <div class="flex items-center mb-4">
-            <div class="w-12 h-12 rounded-full bg-purple-500/20 flex items-center justify-center mr-3">
-              <i class="fas fa-cube text-purple-400"></i>
-            </div>
-            <h3 class="text-xl font-bold text-white">Блоки</h3>
-          </div>
-          <p class="text-gray-300 mb-4">Подробное описание всех блоков и их особенностей</p>
-          <ul class="space-y-2">
-            <li class="flex items-center"><i class="fas fa-check text-green-400 mr-2"></i> Строительные блоки</li>
-            <li class="flex items-center"><i class="fas fa-check text-green-400 mr-2"></i> Функциональные блоки</li>
-            <li class="flex items-center"><i class="fas fa-check text-green-400 mr-2"></i> Декоративные блоки</li>
-            <li class="flex items-center"><i class="fas fa-check text-green-400 mr-2"></i> Природные блоки</li>
-          </ul>
-        </div>
+        <!-- Результаты будут здесь -->
       </div>
     </section>
   </main>
 
-  <footer class="py-8 border-t border-gray-800 mt-12">
-    <div class="max-w-4xl mx-auto px-4 text-center">
-      <p class="text-gray-400">Cobalt Minecraft Assistant - ваш гид по миру Minecraft</p>
-      <p class="text-gray-500 mt-2">Информация предоставлена на основе данных с Minecraft Wiki</p>
-      <div class="mt-4 flex justify-center gap-4">
-        <a href="https://minecraft.fandom.com/ru/wiki/Minecraft_Wiki" target="_blank" class="text-gray-400 hover:text-white">
-          <i class="fab fa-wikipedia-w fa-lg"></i>
-        </a>
-        <a href="https://github.com" class="text-gray-400 hover:text-white"><i class="fab fa-github fa-lg"></i></a>
-        <a href="https://discord.com" class="text-gray-400 hover:text-white"><i class="fab fa-discord fa-lg"></i></a>
-        <a href="https://t.me" class="text-gray-400 hover:text-white"><i class="fab fa-telegram fa-lg"></i></a>
-      </div>
-    </div>
-  </footer>
-
   <script>
-    // Функция для получения данных из Minecraft Wiki
+    // Функция для получения реальных данных из Minecraft Wiki Fandom
     async function fetchMinecraftWikiData(query) {
       try {
-        // Эмуляция запроса к реальной Wiki через прокси
-        const response = await fetch(`https://en.wikipedia.org/w/api.php?action=query&list=search&srsearch=${encodeURIComponent(query + ' minecraft')}&format=json&origin=*`);
-        const data = await response.json();
+        // Преобразуем запрос в формат для URL
+        const formattedQuery = encodeURIComponent(query);
         
-        // Эмуляция извлечения данных из Wiki
-        const pageTitle = data.query.search[0]?.title || query;
-        const pageId = data.query.search[0]?.pageid;
+        // Создаем URL для поиска страницы
+        const searchUrl = `https://minecraft.fandom.com/ru/api.php?action=query&list=search&srsearch=${formattedQuery}&format=json&origin=*`;
         
-        // Возвращаем структурированные данные, которые обычно можно получить из Wiki
+        // Выполняем запрос для поиска страницы
+        const searchResponse = await fetch(searchUrl);
+        const searchData = await searchResponse.json();
+        
+        // Проверяем, есть ли результаты
+        if (!searchData.query || !searchData.query.search || searchData.query.search.length === 0) {
+          return null;
+        }
+        
+        // Получаем ID первой найденной страницы
+        const pageId = searchData.query.search[0].pageid;
+        
+        // Создаем URL для получения содержимого страницы
+        const contentUrl = `https://minecraft.fandom.com/ru/api.php?action=query&prop=extracts|pageprops&exintro=true&explaintext=true&pageids=${pageId}&format=json&origin=*`;
+        
+        // Выполняем запрос для получения содержимого страницы
+        const contentResponse = await fetch(contentUrl);
+        const contentData = await contentResponse.json();
+        
+        // Извлекаем информацию о странице
+        const page = contentData.query.pages[pageId];
+        
+        // Возвращаем структурированные данные
         return {
-          title: pageTitle,
-          url: `https://minecraft.fandom.com/ru/wiki/${encodeURIComponent(pageTitle)}`,
-          description: `Зомби (англ. Zombie) — распространённый враждебный моб. Является нежитью, поэтому горит на солнечном свете.`,
-          location: "Зомби появляются в тёмных местах (уровень освещения 0) в верхнем мире, а также в любом месте в Нижнем мире. Днем горят на солнце.",
-          drops: "Гнилая плоть (0-2 единицы). Редко: железо, морковь, картофель. Также могут выпадать предметы, которые они подобрали.",
-          facts: "Зомби могут ломать деревянные двери на сложном уровне сложности. Они могут превращать жителей в зомби-жителей, если убьют их.",
-          type: "mob"
+          title: page.title,
+          url: `https://minecraft.fandom.com/ru/wiki/${encodeURIComponent(page.title)}`,
+          description: page.extract,
+          type: page.pageprops ? page.pageprops.wikibase_item : null
         };
       } catch (error) {
         console.error('Ошибка при получении данных:', error);
         return null;
       }
+    }
+
+    // Функция для определения типа объекта по его названию
+    function determineType(title) {
+      const mobs = ['зомби', 'крипер', 'эндэрмен', 'скелет', 'паук'];
+      const items = ['кирка', 'меч', 'топор', 'лопата', 'лук', 'щит'];
+      const blocks = ['блок', 'земля', 'камень', 'песок', 'дерево', 'трава', 'вода', 'лава', 'печь', 'сундук', 'кровать', 'дверь'];
+      
+      const lowerTitle = title.toLowerCase();
+      
+      if (mobs.some(mob => lowerTitle.includes(mob))) {
+        return { type: 'mob', icon: 'fas fa-skull', badge: 'mob-badge', label: 'Моб' };
+      }
+      
+      if (items.some(item => lowerTitle.includes(item))) {
+        return { type: 'item', icon: 'fas fa-gem', badge: 'item-badge', label: 'Предмет' };
+      }
+      
+      if (blocks.some(block => lowerTitle.includes(block))) {
+        return { type: 'block', icon: 'fas fa-cube', badge: 'block-badge', label: 'Блок' };
+      }
+      
+      // Значения по умолчанию
+      return { type: 'unknown', icon: 'fas fa-question', badge: 'fact-badge', label: 'Объект' };
+    }
+
+    // Функция для форматирования описания
+    function formatDescription(description) {
+      if (!description) return '';
+      
+      // Разбиваем на абзацы
+      const paragraphs = description.split('\n\n');
+      
+      // Форматируем каждый абзац
+      return paragraphs.map(p => `<p class="mb-3">${p}</p>`).join('');
     }
 
     // Функция для отображения информации
@@ -390,88 +349,61 @@
             <i class="fas fa-question-circle text-5xl text-gray-500 mb-4"></i>
             <h3 class="text-xl font-bold mb-2">Информация не найдена</h3>
             <p class="mb-4">Попробуйте уточнить запрос или задать вопрос по-другому</p>
-            <p>Примеры запросов:</p>
-            <ul class="mt-2 space-y-1">
-              <li>• Что такое зомби?</li>
-              <li>• Как работает маяк?</li>
-              <li>• Что выпадает из крипера?</li>
-              <li>• Где найти алмазы?</li>
-            </ul>
           </div>
         `;
         answerSection.classList.remove('hidden');
         return;
       }
       
-      // Определяем тип иконки и цвета
-      let iconClass, badgeClass, badgeText;
-      if (info.type === 'mob') {
-        iconClass = 'fas fa-skull';
-        badgeClass = 'mob-badge';
-        badgeText = 'Моб';
-      } else if (info.type === 'item') {
-        iconClass = 'fas fa-gem';
-        badgeClass = 'item-badge';
-        badgeText = 'Предмет';
-      } else {
-        iconClass = 'fas fa-cube';
-        badgeClass = 'block-badge';
-        badgeText = 'Блок';
-      }
+      // Определяем тип объекта
+      const typeInfo = determineType(info.title);
+      
+      // Форматируем описание
+      const formattedDescription = formatDescription(info.description);
       
       // Формируем HTML
       answerContainer.innerHTML = `
-        <div class="flex flex-col md:flex-row gap-6">
-          <div class="flex-shrink-0">
-            <div class="w-24 h-24 rounded-full ${badgeClass} flex items-center justify-center">
-              <i class="${iconClass} text-3xl"></i>
-            </div>
+        <div class="flex items-center gap-4 mb-6">
+          <div class="w-16 h-16 rounded-full ${typeInfo.badge} flex items-center justify-center">
+            <i class="${typeInfo.icon} text-2xl"></i>
           </div>
-          
-          <div class="flex-1">
-            <div class="flex flex-wrap items-center gap-3 mb-4">
-              <h3 class="text-2xl font-bold text-white">${info.title}</h3>
-              <span class="px-3 py-1 rounded-full text-sm font-medium ${badgeClass}">${badgeText}</span>
+          <div>
+            <h2 class="text-2xl font-bold text-white">${info.title}</h2>
+            <span class="px-3 py-1 rounded-full text-sm font-medium ${typeInfo.badge}">${typeInfo.label}</span>
+          </div>
+        </div>
+        
+        <div class="info-section">
+          <div class="section-title">
+            <div class="section-icon">
+              <i class="fas fa-info-circle text-primary"></i>
             </div>
-            
-            <div class="info-section">
-              <h4 class="font-bold text-lg mb-2 flex items-center">
-                <i class="fas fa-question-circle mr-2 text-primary"></i> Описание
-              </h4>
-              <p>${info.description}</p>
+            <h3 class="text-lg font-bold">Описание</h3>
+          </div>
+          <div class="info-content">
+            ${formattedDescription}
+          </div>
+        </div>
+        
+        <div class="info-section mt-4">
+          <div class="section-title">
+            <div class="section-icon">
+              <i class="fas fa-book text-primary"></i>
             </div>
-            
-            <div class="info-grid mt-4">
-              <div class="info-item">
-                <div class="info-label">
-                  <i class="fas fa-map-marker-alt minecraft-icon"></i>
-                  Где встречается
-                </div>
-                <p>${info.location}</p>
-              </div>
-              
-              <div class="info-item">
-                <div class="info-label">
-                  <i class="fas fa-gift minecraft-icon"></i>
-                  Что выпадает
-                </div>
-                <p>${info.drops}</p>
-              </div>
-              
-              <div class="info-item">
-                <div class="info-label">
-                  <i class="fas fa-lightbulb minecraft-icon"></i>
-                  Интересные факты
-                </div>
-                <p>${info.facts}</p>
-              </div>
-            </div>
-            
-            <div class="mt-6">
-              <a href="${info.url}" target="_blank" class="wiki-link font-medium">
-                <i class="fab fa-wikipedia-w mr-2"></i> Подробнее на Minecraft Wiki
-              </a>
-            </div>
+            <h3 class="text-lg font-bold">Подробная информация</h3>
+          </div>
+          <div class="mt-3">
+            <p>Для получения полной информации посетите Minecraft Wiki:</p>
+            <a href="${info.url}" target="_blank" class="wiki-link font-medium mt-2 inline-block">
+              <i class="fab fa-wikipedia-w mr-2"></i> ${info.title} на Minecraft Wiki
+            </a>
+          </div>
+        </div>
+        
+        <div class="mt-6 pt-4 border-t border-gray-700">
+          <div class="flex items-center text-gray-400">
+            <i class="fas fa-database mr-2"></i>
+            <span>Данные предоставлены Minecraft Fandom Wiki</span>
           </div>
         </div>
       `;
@@ -492,6 +424,7 @@
         <div class="text-center py-10">
           <i class="fas fa-spinner loading-spinner text-3xl text-primary mb-4"></i>
           <p>Ищем информацию на Minecraft Wiki...</p>
+          <p class="text-sm text-gray-400 mt-2">Запрос: "${query}"</p>
         </div>
       `;
       answerSection.classList.remove('hidden');
@@ -529,26 +462,7 @@
         });
       });
       
-      // Обработчики кнопок категорий
-      document.querySelectorAll('[data-type]').forEach(button => {
-        button.addEventListener('click', () => {
-          const type = button.getAttribute('data-type');
-          let query = '';
-          
-          if (type === 'mob') {
-            query = 'зомби';
-          } else if (type === 'item') {
-            query = 'алмазная кирка';
-          } else {
-            query = 'маяк';
-          }
-          
-          document.getElementById('minecraftQuery').value = query;
-          handleSearch();
-        });
-      });
-      
-      // Загружаем начальные данные
+      // Автоматический поиск при загрузке
       document.getElementById('minecraftQuery').value = 'зомби';
       handleSearch();
     });
