@@ -486,9 +486,6 @@
             <button id="sendLogBtn" class="btn-diagnostic support-button py-1.5 rounded-lg font-medium text-white text-sm">
               <i class="fas fa-paper-plane mr-2"></i> Отправить лог в поддержку
             </button>
-            <button id="translateLogBtn" class="btn-diagnostic support-button py-1.5 rounded-lg font-medium text-white text-sm">
-              <i class="fas fa-language mr-2"></i> Перевести лог (MemoryApi)
-            </button>
           </div>
           <p class="text-xs text-center text-gray-400 mt-2">Отправьте свой лог в поддержку в виде файла</p>
         </div>
@@ -652,7 +649,6 @@
     const analyzeBtn = document.getElementById('analyzeBtn');
     const clearBtn = document.getElementById('clearBtn');
     const sendLogBtn = document.getElementById('sendLogBtn');
-    const translateLogBtn = document.getElementById('translateLogBtn');
     const resultContainer = document.getElementById('resultContainer');
     const emptyResult = document.getElementById('emptyResult');
     const errorSummary = document.getElementById('errorSummary');
@@ -1131,6 +1127,336 @@
           "Проверьте моды, связанные с многопоточностью",
           "Сообщите разработчику мода об ошибке"
         ]
+      },
+      "java.net.UnknownHostException": {
+        title: "Неизвестный хост",
+        severity: "medium",
+        description: "Попытка подключения к неизвестному или недоступному серверу.",
+        solutions: [
+          "Проверьте подключение к интернету",
+          "Убедитесь в правильности имени сервера",
+          "Обновите сетевые настройки"
+        ]
+      },
+      "java.net.ConnectException": {
+        title: "Ошибка подключения",
+        severity: "medium",
+        description: "Попытка подключения к серверу, который недоступен.",
+        solutions: [
+          "Проверьте доступность сервера",
+          "Отключите брандмауэр или антивирус",
+          "Проверьте настройки прокси"
+        ]
+      },
+      "java.lang.ClassCircularityError": {
+        title: "Циклическая зависимость классов",
+        severity: "high",
+        description: "Обнаружена циклическая зависимость при инициализации классов.",
+        solutions: [
+          "Проверьте целостность установленных модов",
+          "Удалите конфликтующие моды",
+          "Обновите Forge/Fabric Loader"
+        ]
+      },
+      "java.lang.InvocationTargetException": {
+        title: "Ошибка вызова метода",
+        severity: "high",
+        description: "Исключение произошло во время вызова метода через reflection.",
+        solutions: [
+          "Обновите проблемный мод",
+          "Проверьте совместимость версий модов",
+          "Сообщите разработчику мода об ошибке"
+        ]
+      },
+      "java.lang.NoSuchMethodException": {
+        title: "Метод не найден",
+        severity: "high",
+        description: "Попытка вызова несуществующего метода через reflection.",
+        solutions: [
+          "Обновите мод до последней версии",
+          "Проверьте совместимость версий модов",
+          "Временно удалите мод"
+        ]
+      },
+      "java.lang.IllegalAccessError": {
+        title: "Ошибка доступа",
+        severity: "high",
+        description: "Попытка доступа к недоступному методу или полю класса.",
+        solutions: [
+          "Обновите проблемный мод",
+          "Проверьте совместимость версий модов",
+          "Удалите конфликтующие моды"
+        ]
+      },
+      "java.lang.AssertionError": {
+        title: "Ошибка утверждения",
+        severity: "medium",
+        description: "Сбой в утверждении (assert) в коде программы.",
+        solutions: [
+          "Обновите проблемный мод",
+          "Запустите игру с отключенными утверждениями (-da в аргументах JVM)",
+          "Сообщите разработчику мода об ошибке"
+        ]
+      },
+      "java.lang.TypeNotPresentException": {
+        title: "Тип не найден",
+        severity: "high",
+        description: "Запрашиваемый тип недоступен во время выполнения.",
+        solutions: [
+          "Проверьте наличие всех зависимостей",
+          "Обновите проблемный мод",
+          "Убедитесь в совместимости версий Java"
+        ]
+      },
+      "java.lang.EnumConstantNotPresentException": {
+        title: "Константа перечисления не найдена",
+        severity: "medium",
+        description: "Запрошенная константа перечисления отсутствует.",
+        solutions: [
+          "Обновите проблемный мод",
+          "Проверьте конфигурации мода",
+          "Сообщите разработчику мода об ошибке"
+        ]
+      },
+      "java.lang.annotation.AnnotationTypeMismatchException": {
+        title: "Несоответствие типа аннотации",
+        severity: "medium",
+        description: "Попытка доступа к элементу аннотации с неверным типом.",
+        solutions: [
+          "Обновите проблемный мод",
+          "Проверьте совместимость версий модов",
+          "Удалите конфликтующие моды"
+        ]
+      },
+      "java.lang.reflect.MalformedParameterizedTypeException": {
+        title: "Некорректный параметризованный тип",
+        severity: "high",
+        description: "Ошибка в параметризованном типе во время выполнения.",
+        solutions: [
+          "Обновите проблемный мод",
+          "Проверьте целостность файлов мода",
+          "Сообщите разработчику мода об ошибке"
+        ]
+      },
+      "java.lang.reflect.UndeclaredThrowableException": {
+        title: "Необъявленное исключение",
+        severity: "medium",
+        description: "Исключение, не объявленное в сигнатуре метода.",
+        solutions: [
+          "Обновите проблемный мод",
+          "Проверьте совместимость версий модов",
+          "Удалите конфликтующие моды"
+        ]
+      },
+      "java.nio.channels.ClosedChannelException": {
+        title: "Канал закрыт",
+        severity: "medium",
+        description: "Попытка выполнения операции на закрытом канале ввода-вывода.",
+        solutions: [
+          "Обновите проблемные моды",
+          "Проверьте моды, связанные с сетевым взаимодействием",
+          "Сообщите разработчику мода об ошибке"
+        ]
+      },
+      "java.nio.channels.FileLockInterruptionException": {
+        title: "Прерывание блокировки файла",
+        severity: "medium",
+        description: "Попытка блокировки файла была прервана.",
+        solutions: [
+          "Обновите проблемные моды",
+          "Отключите антивирусное ПО",
+          "Проверьте доступ к файлам"
+        ]
+      },
+      "java.sql.SQLException": {
+        title: "Ошибка базы данных",
+        severity: "medium",
+        description: "Проблема при работе с базой данных.",
+        solutions: [
+          "Проверьте подключение к базе данных",
+          "Обновите драйверы базы данных",
+          "Проверьте логи базы данных"
+        ]
+      },
+      "javax.net.ssl.SSLException": {
+        title: "Ошибка SSL",
+        severity: "medium",
+        description: "Проблема с SSL-соединением.",
+        solutions: [
+          "Обновите сертификаты безопасности",
+          "Проверьте системное время",
+          "Отключите SSL-проверку (не рекомендуется)"
+        ]
+      },
+      "java.awt.HeadlessException": {
+        title: "Ошибка графического интерфейса",
+        severity: "medium",
+        description: "Попытка создания графического интерфейса в среде без дисплея.",
+        solutions: [
+          "Убедитесь, что сервер запущен в графической среде",
+          "Используйте параметр -Djava.awt.headless=true",
+          "Обновите настройки сервера"
+        ]
+      },
+      "java.util.EmptyStackException": {
+        title: "Пустой стек",
+        severity: "medium",
+        description: "Попытка извлечения элемента из пустого стека.",
+        solutions: [
+          "Обновите проблемный мод",
+          "Проверьте логику работы мода",
+          "Сообщите разработчику мода об ошибке"
+        ]
+      },
+      "java.util.NoSuchElementException": {
+        title: "Элемент не найден",
+        severity: "medium",
+        description: "Попытка доступа к несуществующему элементу коллекции.",
+        solutions: [
+          "Обновите проблемный мод",
+          "Проверьте конфигурации мода",
+          "Сообщите разработчику мода об ошибке"
+        ]
+      },
+      "java.util.InputMismatchException": {
+        title: "Несоответствие ввода",
+        severity: "medium",
+        description: "Получен ввод, который не соответствует ожидаемому типу.",
+        solutions: [
+          "Проверьте входные данные",
+          "Обновите проблемный мод",
+          "Сообщите разработчику мода об ошибке"
+        ]
+      },
+      "java.util.IllegalFormatException": {
+        title: "Недопустимый формат",
+        severity: "medium",
+        description: "Некорректный формат строки.",
+        solutions: [
+          "Проверьте форматирование строк",
+          "Обновите проблемный мод",
+          "Сообщите разработчику мода об ошибке"
+        ]
+      },
+      "java.util.DuplicateFormatFlagsException": {
+        title: "Дублирующиеся флаги формата",
+        severity: "medium",
+        description: "Обнаружены дублирующиеся флаги в строке формата.",
+        solutions: [
+          "Проверьте строки форматирования",
+          "Обновите проблемный мод",
+          "Сообщите разработчику мода об ошибке"
+        ]
+      },
+      "java.util.MissingFormatArgumentException": {
+        title: "Отсутствует аргумент формата",
+        severity: "medium",
+        description: "Отсутствует аргумент для спецификатора формата.",
+        solutions: [
+          "Проверьте строки форматирования",
+          "Обновите проблемный мод",
+          "Сообщите разработчику мода об ошибке"
+        ]
+      },
+      "java.util.MissingFormatWidthException": {
+        title: "Отсутствует ширина формата",
+        severity: "medium",
+        description: "Отсутствует ширина для спецификатора формата.",
+        solutions: [
+          "Проверьте строки форматирования",
+          "Обновите проблемный мод",
+          "Сообщите разработчику мода об ошибке"
+        ]
+      },
+      "java.util.UnknownFormatConversionException": {
+        title: "Неизвестное преобразование формата",
+        severity: "medium",
+        description: "Обнаружен неизвестный спецификатор преобразования.",
+        solutions: [
+          "Проверьте строки форматирования",
+          "Обновите проблемный мод",
+          "Сообщите разработчику мода об ошибке"
+        ]
+      },
+      "java.util.UnknownFormatFlagsException": {
+        title: "Неизвестный флаг формата",
+        severity: "medium",
+        description: "Обнаружен неизвестный флаг в спецификаторе формата.",
+        solutions: [
+          "Проверьте строки форматирования",
+          "Обновите проблемный мод",
+          "Сообщите разработчику мода об ошибке"
+        ]
+      },
+      "java.util.IllformedLocaleException": {
+        title: "Некорректная локаль",
+        severity: "medium",
+        description: "Переданы некорректные параметры локали.",
+        solutions: [
+          "Проверьте настройки локализации",
+          "Обновите проблемный мод",
+          "Установите системную локаль"
+        ]
+      },
+      "java.util.ServiceConfigurationError": {
+        title: "Ошибка конфигурации сервиса",
+        severity: "high",
+        description: "Ошибка при загрузке конфигурации сервиса.",
+        solutions: [
+          "Проверьте файлы конфигурации сервисов",
+          "Обновите проблемный мод",
+          "Переустановите поврежденные сервисы"
+        ]
+      },
+      "java.util.concurrent.CancellationException": {
+        title: "Операция отменена",
+        severity: "medium",
+        description: "Попытка получить результат отмененной операции.",
+        solutions: [
+          "Обновите проблемные моды",
+          "Проверьте многопоточные операции",
+          "Сообщите разработчику мода об ошибке"
+        ]
+      },
+      "java.util.concurrent.CompletionException": {
+        title: "Ошибка завершения",
+        severity: "medium",
+        description: "Исключение, возникшее при завершении асинхронной операции.",
+        solutions: [
+          "Обновите проблемные моды",
+          "Проверьте асинхронные операции",
+          "Сообщите разработчику мода об ошибке"
+        ]
+      },
+      "java.util.concurrent.ExecutionException": {
+        title: "Ошибка выполнения",
+        severity: "medium",
+        description: "Исключение, возникшее при попытке получить результат задачи.",
+        solutions: [
+          "Обновите проблемные моды",
+          "Проверьте выполнение задач",
+          "Сообщите разработчику мода об ошибке"
+        ]
+      },
+      "java.util.concurrent.RejectedExecutionException": {
+        title: "Отклоненное выполнение",
+        severity: "medium",
+        description: "Попытка отправить задачу в закрытый пул потоков.",
+        solutions: [
+          "Обновите проблемные моды",
+          "Проверьте управление потоками",
+          "Сообщите разработчику мода об ошибке"
+        ]
+      },
+      "java.util.concurrent.TimeoutException": {
+        title: "Тайм-аут операции",
+        severity: "medium",
+        description: "Истекло время ожидания выполнения операции.",
+        solutions: [
+          "Увеличьте время ожидания",
+          "Проверьте производительность системы",
+          "Оптимизируйте ресурсоемкие операции"
+        ]
       }
     };
 
@@ -1232,33 +1558,6 @@
         throw new Error('Не удалось выполнить перевод. Попробуйте позже или отправьте лог вручную.');
       }
     }
-    
-    async function translateLog() {
-      const logText = logInput.value.trim();
-      if (logText.length === 0) {
-        showNotification("Пожалуйста, введите или загрузите лог для перевода", "error");
-        return;
-      }
-      
-      const originalText = translateLogBtn.innerHTML;
-      translateLogBtn.innerHTML = '<i class="fas fa-spinner spinner mr-2"></i> Перевод...';
-      translateLogBtn.disabled = true;
-      
-      try {
-        const translatedText = await translateWithMyMemory(logText);
-        logInput.value = translatedText;
-        addToLogHistory("Лог переведен с помощью MemoryApi");
-        showNotification("Лог успешно переведен!", "success");
-      } catch (error) {
-        console.error("Ошибка перевода:", error);
-        showNotification(error.message, "error");
-      } finally {
-        translateLogBtn.innerHTML = originalText;
-        translateLogBtn.disabled = false;
-      }
-    }
-    
-    translateLogBtn.addEventListener('click', translateLog);
     
     function showNotification(message, type = "info") {
       const notification = document.createElement('div');
@@ -1401,20 +1700,25 @@
           const severityClass = `severity-${error.severity}`;
           
           const errorHTML = `
-            <div class="${severityClass} p-4 rounded-lg">
+            <div class="${severityClass} p-4 rounded-lg" id="error-${index}">
               <div class="flex justify-between items-start">
                 <div>
                   <h5 class="font-bold text-lg">${index + 1}. ${error.title}</h5>
                   <p class="text-gray-300 text-sm mt-1">${error.description}</p>
                 </div>
-                <span class="error-tag">${error.severity === 'critical' ? 'Критично' : 
-                  error.severity === 'high' ? 'Высокая' : 
-                  error.severity === 'medium' ? 'Средняя' : 'Низкая'}</span>
+                <div class="flex items-center">
+                  <span class="error-tag">${error.severity === 'critical' ? 'Критично' : 
+                    error.severity === 'high' ? 'Высокая' : 
+                    error.severity === 'medium' ? 'Средняя' : 'Низкая'}</span>
+                  <button class="translate-error-btn ml-2 text-primary hover:text-primary-dark text-sm" data-error-index="${index}">
+                    <i class="fas fa-language"></i>
+                  </button>
+                </div>
               </div>
               
               <div class="mt-3">
                 <p class="text-gray-400 text-sm">Найдено вхождений: ${error.occurrences}</p>
-                <div class="mt-2 max-h-24 overflow-y-auto bg-gray-900/50 p-2 rounded">
+                <div class="mt-2 max-h-24 overflow-y-auto bg-gray-900/50 p-2 rounded" id="error-lines-${index}">
                   ${error.lines.slice(0, 5).map(line => 
                     `<div class="log-line text-xs">${line}</div>`
                   ).join('')}
@@ -1425,6 +1729,13 @@
           `;
           
           errorDetails.innerHTML += errorHTML;
+        });
+        
+        document.querySelectorAll('.translate-error-btn').forEach(btn => {
+          btn.addEventListener('click', function() {
+            const errorIndex = this.getAttribute('data-error-index');
+            translateErrorLines(errorIndex);
+          });
         });
         
         const uniqueSolutions = new Set();
@@ -1451,6 +1762,59 @@
             </div>
           `;
         }
+      }
+    }
+    
+    async function translateErrorLines(errorIndex) {
+      const errorElement = document.getElementById(`error-${errorIndex}`);
+      if (!errorElement) return;
+      
+      const errorLinesElement = document.getElementById(`error-lines-${errorIndex}`);
+      if (!errorLinesElement) return;
+      
+      const translateBtn = errorElement.querySelector('.translate-error-btn');
+      if (!translateBtn) return;
+      
+      if (translateBtn.classList.contains('translating')) return;
+      
+      translateBtn.classList.add('translating');
+      translateBtn.innerHTML = '<i class="fas fa-spinner spinner"></i>';
+      
+      try {
+        const errorLines = [];
+        errorLinesElement.querySelectorAll('.log-line').forEach(line => {
+          if (!line.classList.contains('translated')) {
+            errorLines.push(line.textContent);
+          }
+        });
+        
+        if (errorLines.length === 0) {
+          showNotification("Нет строк для перевода", "info");
+          return;
+        }
+        
+        const translatedLines = [];
+        for (const line of errorLines) {
+          const translated = await translateWithMyMemory(line);
+          translatedLines.push(translated);
+        }
+        
+        let translatedContent = '';
+        translatedLines.forEach((line, i) => {
+          translatedContent += `<div class="log-line text-xs translated">${line}</div>`;
+          if (i === 4 && translatedLines.length > 5) {
+            translatedContent += `<div class="text-gray-500 text-xs mt-1">...и еще ${translatedLines.length - 5} строк переведено</div>`;
+          }
+        });
+        
+        errorLinesElement.innerHTML = translatedContent;
+        showNotification("Строки ошибки переведены", "success");
+      } catch (error) {
+        console.error("Ошибка перевода:", error);
+        showNotification(error.message || "Ошибка перевода", "error");
+      } finally {
+        translateBtn.classList.remove('translating');
+        translateBtn.innerHTML = '<i class="fas fa-language"></i>';
       }
     }
     
