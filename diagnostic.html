@@ -275,20 +275,30 @@
       position: fixed;
       top: 20px;
       right: 20px;
-      background: rgba(30, 41, 59, 0.95);
       color: white;
       padding: 1rem 2rem;
       border-radius: 8px;
-      border-left: 4px solid #0ea5e9;
       box-shadow: 0 5px 15px rgba(0,0,0,0.3);
       transform: translateX(120%);
       transition: transform 0.4s ease;
       z-index: 1000;
       max-width: 350px;
+      border-left: 4px solid #0ea5e9;
+      background: #1e293b;
     }
     
     .notification.show {
       transform: translateX(0);
+    }
+    
+    .notification.error {
+      background: #dc2626;
+      border-left: 4px solid #b91c1c;
+    }
+    
+    .notification.success {
+      background: #16a34a;
+      border-left: 4px solid #15803d;
     }
     
     .notification-title {
@@ -296,7 +306,7 @@
       align-items: center;
       font-weight: bold;
       margin-bottom: 0.5rem;
-      color: #0ea5e9;
+      color: white;
     }
     
     .log-input {
@@ -1051,6 +1061,76 @@
           "Переустановите проблемный мод",
           "Очистите кэш ресурсов Minecraft"
         ]
+      },
+      "java.lang.ArithmeticException": {
+        title: "Арифметическая ошибка",
+        severity: "medium",
+        description: "Попытка выполнения недопустимой арифметической операции (например, деление на ноль).",
+        solutions: [
+          "Обновите проблемный мод",
+          "Проверьте конфигурации мода",
+          "Сообщите разработчику мода об ошибке"
+        ]
+      },
+      "java.lang.NumberFormatException": {
+        title: "Ошибка формата числа",
+        severity: "medium",
+        description: "Попытка преобразовать строку в неправильном формате в число.",
+        solutions: [
+          "Проверьте конфигурационные файлы",
+          "Обновите проблемный мод",
+          "Удалите поврежденные файлы конфигурации"
+        ]
+      },
+      "java.lang.UnsupportedOperationException": {
+        title: "Неподдерживаемая операция",
+        severity: "medium",
+        description: "Попытка выполнить операцию, которая не поддерживается.",
+        solutions: [
+          "Обновите проблемный мод",
+          "Проверьте версию мода и Minecraft",
+          "Сообщите разработчику мода об ошибке"
+        ]
+      },
+      "java.nio.file.AccessDeniedException": {
+        title: "Доступ запрещен",
+        severity: "medium",
+        description: "Попытка доступа к файлу или каталогу без необходимых прав.",
+        solutions: [
+          "Проверьте права доступа к папке .minecraft",
+          "Запустите лаунчер от имени администратора",
+          "Отключите антивирус на время игры"
+        ]
+      },
+      "java.nio.file.NoSuchFileException": {
+        title: "Файл не найден",
+        severity: "medium",
+        description: "Попытка доступа к несуществующему файлу или каталогу.",
+        solutions: [
+          "Проверьте целостность файлов игры",
+          "Переустановите проблемный мод",
+          "Очистите кэш лаунчера"
+        ]
+      },
+      "java.lang.InterruptedException": {
+        title: "Прерывание потока",
+        severity: "low",
+        description: "Поток был прерван во время выполнения операции.",
+        solutions: [
+          "Обновите проблемные моды",
+          "Проверьте моды, связанные с многопоточностью",
+          "Сообщите разработчику мода об ошибке"
+        ]
+      },
+      "java.util.Concurrent.CancellationException": {
+        title: "Отмена операции",
+        severity: "low",
+        description: "Попытка выполнить отмененную операцию.",
+        solutions: [
+          "Обновите проблемные моды",
+          "Проверьте моды, связанные с многопоточностью",
+          "Сообщите разработчику мода об ошибке"
+        ]
       }
     };
 
@@ -1100,7 +1180,7 @@
       const logText = logInput.value.trim();
       
       if (logText.length === 0) {
-        alert("Пожалуйста, введите или загрузите лог для анализа");
+        showNotification("Пожалуйста, введите или загрузите лог для анализа", "error");
         return;
       }
       
@@ -1119,7 +1199,7 @@
     sendLogBtn.addEventListener('click', () => {
       const logText = logInput.value.trim();
       if (logText.length === 0) {
-        alert("Пожалуйста, введите или загрузите лог для отправки");
+        showNotification("Пожалуйста, введите или загрузите лог для отправки", "error");
         return;
       }
       
@@ -1128,12 +1208,16 @@
     
     async function translateWithMyMemory(text) {
       try {
+        if (text.length > 5000) {
+          return "Лог слишком длинный для перевода. Пожалуйста, отправьте файл напрямую.";
+        }
+        
         const response = await fetch(
           `https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=en|ru`
         );
         
         if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
+          throw new Error(`Ошибка HTTP: ${response.status}`);
         }
         
         const data = await response.json();
@@ -1141,18 +1225,18 @@
         if (data && data.responseData && data.responseData.translatedText) {
           return data.responseData.translatedText;
         } else {
-          throw new Error('No translation found in response');
+          throw new Error('Перевод не найден в ответе API');
         }
       } catch (error) {
-        console.error('Translation error:', error);
-        throw new Error('Не удалось выполнить перевод. Попробуйте позже.');
+        console.error('Ошибка перевода:', error);
+        throw new Error('Не удалось выполнить перевод. Попробуйте позже или отправьте лог вручную.');
       }
     }
     
     async function translateLog() {
       const logText = logInput.value.trim();
       if (logText.length === 0) {
-        alert("Пожалуйста, введите или загрузите лог для перевода");
+        showNotification("Пожалуйста, введите или загрузите лог для перевода", "error");
         return;
       }
       
@@ -1166,8 +1250,8 @@
         addToLogHistory("Лог переведен с помощью MemoryApi");
         showNotification("Лог успешно переведен!", "success");
       } catch (error) {
-        console.error("Translation failed:", error);
-        showNotification("Ошибка перевода: " + error.message, "error");
+        console.error("Ошибка перевода:", error);
+        showNotification(error.message, "error");
       } finally {
         translateLogBtn.innerHTML = originalText;
         translateLogBtn.disabled = false;
@@ -1178,10 +1262,10 @@
     
     function showNotification(message, type = "info") {
       const notification = document.createElement('div');
-      notification.className = `notification ${type === 'error' ? 'bg-error/20 border-error' : 'bg-success/20 border-success'}`;
+      notification.className = `notification ${type}`;
       notification.innerHTML = `
         <div class="notification-title">
-          <i class="fas ${type === 'error' ? 'fa-exclamation-circle text-error' : 'fa-check-circle text-success'} mr-2"></i>
+          <i class="fas ${type === 'error' ? 'fa-exclamation-circle' : 'fa-check-circle'} mr-2"></i>
           ${type === 'error' ? 'Ошибка' : 'Успех'}
         </div>
         <p>${message}</p>
