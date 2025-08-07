@@ -18,13 +18,6 @@
           },
           animation: {
             'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
-            'float': 'float 6s ease-in-out infinite',
-          },
-          keyframes: {
-            float: {
-              '0%, 100%': { transform: 'translateY(0)' },
-              '50%': { transform: 'translateY(-10px)' },
-            }
           }
         }
       }
@@ -35,7 +28,6 @@
     
     body {
       font-family: 'Montserrat', sans-serif;
-      scroll-behavior: smooth;
       background: linear-gradient(135deg, #0f172a, #1e293b);
       color: #f1f5f9;
       min-height: 100vh;
@@ -45,42 +37,8 @@
       position: sticky;
       top: 0;
       z-index: 50;
-      transition: all 0.4s ease;
       backdrop-filter: blur(10px);
       background: rgba(15, 23, 42, 0.85);
-    }
-    
-    .scrolled {
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
-    }
-    
-    .burger-line {
-      display: block;
-      height: 2px;
-      width: 25px;
-      background: white;
-      margin: 5px auto;
-      transition: all 0.3s ease;
-    }
-    
-    .mobile-menu {
-      max-height: 0;
-      overflow: hidden;
-      transition: max-height 0.5s ease-out;
-    }
-    
-    .mobile-menu.open {
-      max-height: 300px;
-    }
-    
-    .btn-primary {
-      background: linear-gradient(135deg, #0ea5e9, #0284c7);
-      transition: all 0.3s ease;
-    }
-    
-    .btn-primary:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 6px 20px rgba(2, 132, 199, 0.5);
     }
     
     .text-editor {
@@ -92,13 +50,6 @@
       min-height: 300px;
       font-family: 'Montserrat', sans-serif;
       resize: vertical;
-      transition: all 0.3s ease;
-    }
-    
-    .text-editor:focus {
-      outline: none;
-      border-color: #0ea5e9;
-      box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.3);
     }
     
     .info-card {
@@ -195,19 +146,6 @@
       box-shadow: 0 6px 20px rgba(255, 215, 0, 0.4);
     }
     
-    .book-icon {
-      background: linear-gradient(135deg, #1e293b, #0f172a);
-      border: 1px solid rgba(14, 165, 233, 0.3);
-      width: 60px;
-      height: 60px;
-      border-radius: 12px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 24px;
-      color: #0ea5e9;
-    }
-    
     .char-count {
       background: rgba(14, 165, 233, 0.15);
       color: #0ea5e9;
@@ -217,24 +155,59 @@
       font-weight: 500;
     }
     
-    .loader-spinner {
-      border: 4px solid rgba(14, 165, 233, 0.2);
-      border-top: 4px solid #0ea5e9;
-      border-radius: 50%;
+    .number-badge {
+      display: flex;
+      align-items: center;
+      justify-content: center;
       width: 40px;
       height: 40px;
-      animation: spin 1s linear infinite;
-      margin: 0 auto;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #0ea5e9, #0284c7);
+      color: white;
+      font-size: 20px;
+      font-weight: bold;
+      margin-right: 15px;
     }
     
-    @keyframes spin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
+    .action-buttons {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      margin-top: 20px;
+      flex-wrap: wrap;
+    }
+    
+    .action-btn {
+      display: flex;
+      align-items: center;
+      padding: 12px 24px;
+      border-radius: 8px;
+      font-weight: 600;
+      transition: all 0.3s ease;
+    }
+    
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+      100% { transform: scale(1); }
+    }
+    
+    .copied-animation {
+      animation: pulse 0.5s;
     }
     
     @media (max-width: 768px) {
       .text-tools {
         flex-direction: column;
+      }
+      
+      .action-buttons {
+        flex-direction: column;
+      }
+      
+      .action-btn {
+        width: 100%;
+        justify-content: center;
       }
     }
   </style>
@@ -292,30 +265,14 @@
   </header>
 
   <main class="max-w-7xl mx-auto px-4 py-8">
-    <div class="text-center mb-12">
-      <h2 class="text-3xl md:text-4xl font-bold mb-4 text-white">
-        <i class="fas fa-book-open mr-2 text-primary"></i> Инструменты для книг Minecraft
-      </h2>
-      <p class="text-xl text-gray-300 max-w-3xl mx-auto">
-        Правильно форматируйте тексты книг перед публикацией в Minecraft
-      </p>
-    </div>
-
     <section class="mb-16">
-      <div class="flex items-center mb-6">
-        <div class="flex-1">
-          <h3 class="text-2xl font-bold text-white flex items-center">
-            <i class="fas fa-align-left mr-3 text-primary"></i> Редактор текста книги
-          </h3>
-          <p class="text-gray-400 mt-1">
-            Чтобы отправить книгу, нужно убрать отступы. Зачем это делать? Чтобы текст не мешал просмотру кода.
-          </p>
-        </div>
-        <a href="https://t.me/sun_community_chat/10053" 
-           class="btn-minecraft px-6 py-3 rounded-lg font-medium text-white flex items-center"
-           target="_blank">
-          <i class="fab fa-telegram mr-2"></i> Отправить книгу
-        </a>
+      <div class="mb-6">
+        <h3 class="text-2xl font-bold text-white flex items-center">
+          <i class="fas fa-align-left mr-3 text-primary"></i> Редактор текста книги
+        </h3>
+        <p class="text-gray-400 mt-1">
+          Чтобы отправить книгу, нужно убрать отступы. Зачем это делать? Чтобы текст не мешал просмотру кода.
+        </p>
       </div>
 
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -324,9 +281,6 @@
             <div class="flex items-center">
               <span class="char-count" id="charCount">0 символов</span>
             </div>
-            <button id="formatBtn" class="btn-primary px-4 py-2 rounded-lg font-medium text-white flex items-center">
-              <i class="fas fa-eraser mr-2"></i> Удалить отступы
-            </button>
           </div>
           <textarea id="textEditor" class="text-editor w-full" placeholder="Введите текст вашей книги здесь..."></textarea>
         </div>
@@ -337,6 +291,22 @@
             <p class="text-gray-400">Здесь появится текст без лишних отступов</p>
           </div>
         </div>
+      </div>
+
+      <div class="action-buttons">
+        <button id="formatBtn" class="action-btn bg-primary text-white">
+          <i class="fas fa-eraser mr-2"></i> Удалить отступы
+        </button>
+        
+        <button id="copyBtn" class="action-btn bg-purple-600 text-white">
+          <i class="fas fa-copy mr-2"></i> Скопировать текст
+        </button>
+        
+        <a href="https://t.me/sun_community_chat/10053" 
+           class="action-btn bg-green-600 text-white"
+           target="_blank">
+          <i class="fab fa-telegram mr-2"></i> Отправить книгу
+        </a>
       </div>
     </section>
 
@@ -413,46 +383,40 @@
       <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
         <div class="guide-card">
           <div class="flex items-center mb-4">
-            <div class="book-icon">
-              <i class="fas fa-book"></i>
-            </div>
-            <h4 class="text-xl font-semibold ml-4">Основы работы</h4>
+            <div class="number-badge">1</div>
+            <h4 class="text-xl font-semibold">Основы работы</h4>
           </div>
           <p class="text-gray-400 mb-4">
             Узнайте, как создавать, редактировать и публиковать книги с помощью мода Textbook.
           </p>
           <div class="bg-gray-800 rounded-lg h-48 mb-4 flex items-center justify-center">
-            <i class="fas fa-book text-5xl text-primary"></i>
+            <div class="text-6xl font-bold text-primary opacity-30">1</div>
           </div>
         </div>
         
         <div class="guide-card">
           <div class="flex items-center mb-4">
-            <div class="book-icon">
-              <i class="fas fa-code"></i>
-            </div>
-            <h4 class="text-xl font-semibold ml-4">Форматирование текста</h4>
+            <div class="number-badge">2</div>
+            <h4 class="text-xl font-semibold">Форматирование текста</h4>
           </div>
           <p class="text-gray-400 mb-4">
             Специальные символы, цветовое оформление и другие возможности форматирования.
           </p>
           <div class="bg-gray-800 rounded-lg h-48 mb-4 flex items-center justify-center">
-            <i class="fas fa-font text-5xl text-primary"></i>
+            <div class="text-6xl font-bold text-primary opacity-30">2</div>
           </div>
         </div>
         
         <div class="guide-card">
           <div class="flex items-center mb-4">
-            <div class="book-icon">
-              <i class="fas fa-users"></i>
-            </div>
-            <h4 class="text-xl font-semibold ml-4">Публикация и библиотеки</h4>
+            <div class="number-badge">3</div>
+            <h4 class="text-xl font-semibold">Публикация и библиотеки</h4>
           </div>
           <p class="text-gray-400 mb-4">
             Как делиться своими книгами с сообществом и создавать библиотеки.
           </p>
           <div class="bg-gray-800 rounded-lg h-48 mb-4 flex items-center justify-center">
-            <i class="fas fa-share-alt text-5xl text-primary"></i>
+            <div class="text-6xl font-bold text-primary opacity-30">3</div>
           </div>
         </div>
       </div>
@@ -482,8 +446,25 @@
           <i class="fas fa-code-branch mr-2"></i> Версия Minecraft
         </div>
         <div class="versions-list" id="versionsList">
-          <div class="flex justify-center py-4">
-            <div class="loader-spinner"></div>
+          <div class="version-item">
+            <div class="font-medium">1.20.1 (Forge)</div>
+            <div class="text-xs text-gray-400">2023-10-15 · Рекомендуется</div>
+          </div>
+          <div class="version-item">
+            <div class="font-medium">1.19.4 (Fabric)</div>
+            <div class="text-xs text-gray-400">2023-07-22</div>
+          </div>
+          <div class="version-item">
+            <div class="font-medium">1.18.2 (Forge)</div>
+            <div class="text-xs text-gray-400">2023-03-10</div>
+          </div>
+          <div class="version-item">
+            <div class="font-medium">1.17.1 (Fabric)</div>
+            <div class="text-xs text-gray-400">2022-11-30</div>
+          </div>
+          <div class="version-item">
+            <div class="font-medium">1.16.5 (Forge)</div>
+            <div class="text-xs text-gray-400">2022-08-15</div>
           </div>
         </div>
       </div>
@@ -492,7 +473,7 @@
         <div class="modal-section-title flex items-center text-gold mb-2">
           <i class="fas fa-plug mr-2"></i> Зависимости
         </div>
-        <div class="dependencies-list" id="dependenciesList">
+        <div class="dependencies-list">
           <div class="version-item flex items-center">
             <input type="checkbox" class="mr-3" checked>
             <div>
@@ -525,61 +506,68 @@
 
   <script>
     document.addEventListener('DOMContentLoaded', function() {
-      const burgerBtn = document.getElementById('burgerBtn');
-      const mobileMenu = document.getElementById('mobileMenu');
       const textEditor = document.getElementById('textEditor');
       const resultPreview = document.getElementById('resultPreview');
       const formatBtn = document.getElementById('formatBtn');
+      const copyBtn = document.getElementById('copyBtn');
       const charCount = document.getElementById('charCount');
       const downloadBtn = document.getElementById('downloadBtn');
       const downloadModal = document.getElementById('downloadModal');
       const closeModal = document.getElementById('closeModal');
       const confirmDownload = document.getElementById('confirmDownload');
-      const versionsList = document.getElementById('versionsList');
       
-      function toggleMobileMenu() {
-        mobileMenu.classList.toggle('open');
-        const lines = document.querySelectorAll('.burger-line');
-        if (mobileMenu.classList.contains('open')) {
-          lines[0].style.transform = 'translateY(7px) rotate(45deg)';
-          lines[1].style.opacity = '0';
-          lines[2].style.transform = 'translateY(-7px) rotate(-45deg)';
-        } else {
-          lines[0].style.transform = 'none';
-          lines[1].style.opacity = '1';
-          lines[2].style.transform = 'none';
-        }
-      }
-
-      burgerBtn.addEventListener('click', function(e) {
-        e.stopPropagation();
-        toggleMobileMenu();
-      });
-      
-      document.addEventListener('click', function(e) {
-        if (mobileMenu.classList.contains('open') && 
-            !mobileMenu.contains(e.target) && 
-            !burgerBtn.contains(e.target)) {
-          toggleMobileMenu();
-        }
-      });
-      
+      // Обновление счетчика символов
       textEditor.addEventListener('input', function() {
         const text = textEditor.value;
         charCount.textContent = `${text.length} символов`;
       });
       
+      // Форматирование текста - удаление отступов
       formatBtn.addEventListener('click', function() {
         let text = textEditor.value;
+        
+        // Удаляем лишние пробелы и табуляции в начале каждой строки
         text = text.replace(/^[ \t]+/gm, '');
+        
+        // Удаляем лишние пробелы в конце каждой строки
         text = text.replace(/[ \t]+$/gm, '');
+        
+        // Удаляем пустые строки в начале и конце текста
         text = text.replace(/^\s+|\s+$/g, '');
+        
+        // Обновляем область предпросмотра
         resultPreview.innerHTML = text.replace(/\n/g, '<br>');
       });
       
+      // Копирование текста
+      copyBtn.addEventListener('click', function() {
+        if (resultPreview.innerText.trim() === "") {
+          alert("Сначала отформатируйте текст!");
+          return;
+        }
+        
+        // Создаем временный элемент для копирования
+        const textarea = document.createElement('textarea');
+        textarea.value = resultPreview.innerText;
+        document.body.appendChild(textarea);
+        textarea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textarea);
+        
+        // Анимация подтверждения
+        copyBtn.classList.add('copied-animation');
+        const originalText = copyBtn.innerHTML;
+        copyBtn.innerHTML = '<i class="fas fa-check mr-2"></i> Скопировано!';
+        
+        setTimeout(() => {
+          copyBtn.classList.remove('copied-animation');
+          copyBtn.innerHTML = originalText;
+        }, 2000);
+      });
+      
+      // Управление модальным окном
       downloadBtn.addEventListener('click', function() {
         downloadModal.classList.add('open');
-        loadVersions();
       });
       
       closeModal.addEventListener('click', function() {
@@ -593,63 +581,27 @@
           return;
         }
         
-        const version = selectedVersion.getAttribute('data-version');
-        const loader = selectedVersion.getAttribute('data-loader');
-        
-        alert(`Скачивание Textbook для Minecraft ${version} (${loader}) началось!`);
+        alert(`Скачивание началось! Проверьте папку загрузок.`);
         downloadModal.classList.remove('open');
       });
       
-      async function loadVersions() {
-        versionsList.innerHTML = '<div class="flex justify-center py-4"><div class="loader-spinner"></div></div>';
-        
-        try {
-          await new Promise(resolve => setTimeout(resolve, 800));
-          
-          const mockVersions = [
-            { version: "1.20.1", loader: "Forge", date: "2023-10-15", recommended: true },
-            { version: "1.19.4", loader: "Fabric", date: "2023-07-22" },
-            { version: "1.18.2", loader: "Forge", date: "2023-03-10" },
-            { version: "1.17.1", loader: "Fabric", date: "2022-11-30" },
-            { version: "1.16.5", loader: "Forge", date: "2022-08-15" }
-          ];
-          
-          let html = '';
-          mockVersions.forEach(ver => {
-            html += `
-              <div class="version-item ${ver.recommended ? 'selected' : ''}" 
-                   data-version="${ver.version}" 
-                   data-loader="${ver.loader}">
-                <div class="font-medium">${ver.version} (${ver.loader})</div>
-                <div class="text-xs text-gray-400">${ver.date} ${ver.recommended ? '· Рекомендуется' : ''}</div>
-              </div>
-            `;
-          });
-          
-          versionsList.innerHTML = html;
-          
-          document.querySelectorAll('.version-item').forEach(item => {
-            item.addEventListener('click', function() {
-              document.querySelectorAll('.version-item').forEach(i => i.classList.remove('selected'));
-              this.classList.add('selected');
-            });
-          });
-        } catch (error) {
-          versionsList.innerHTML = '<div class="text-center py-4 text-gray-400">Ошибка загрузки версий</div>';
-        }
-      }
+      // Выбор версии
+      document.querySelectorAll('.version-item').forEach(item => {
+        item.addEventListener('click', function() {
+          document.querySelectorAll('.version-item').forEach(i => i.classList.remove('selected'));
+          this.classList.add('selected');
+        });
+      });
       
+      // Пример текста
       textEditor.value = `    В далекой галактике, среди бесчисленных звезд и туманностей,
     существовала планета под названием Элизиум. Её поверхность 
     была покрыта кристальными лесами, сияющими всеми цветами радуги.
     
-        Жители Элизиума, кристаллиды, обладали уникальной способностью 
-    преобразовывать свет в энергию. Они строили свои города из живых 
-    кристаллов, которые росли и меняли форму по их желанию.
-    
-            Но однажды на планету пришла тьма. Странные существа, 
+        Но однажды на планету пришла тьма. Странные существа, 
     питающиеся светом, начали уничтожать кристальные леса...`;
       
+      // Инициализация счетчика символов
       charCount.textContent = `${textEditor.value.length} символов`;
     });
   </script>
