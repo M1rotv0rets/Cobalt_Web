@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Textbook Tools - Форматирование книг для Minecraft</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: '#0ea5e9',
+            dark: '#0f172a',
+            minecraft: '#4CAF50',
+            gold: '#FFD700'
+          },
+          animation: {
+            'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+            'float': 'float 6s ease-in-out infinite',
+          },
+          keyframes: {
+            float: {
+              '0%, 100%': { transform: 'translateY(0)' },
+              '50%': { transform: 'translateY(-10px)' },
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap');
+    
+    body {
+      font-family: 'Montserrat', sans-serif;
+      scroll-behavior: smooth;
+      background: linear-gradient(135deg, #0f172a, #1e293b);
+      color: #f1f5f9;
+      min-height: 100vh;
+    }
+    
+    .sticky-header {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      transition: all 0.4s ease;
+      backdrop-filter: blur(10px);
+      background: rgba(15, 23, 42, 0.85);
+    }
+    
+    .scrolled {
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+    }
+    
+    .burger-line {
+      display: block;
+      height: 2px;
+      width: 25px;
+      background: white;
+      margin: 5px auto;
+      transition: all 0.3s ease;
+    }
+    
+    .mobile-menu {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.5s ease-out;
+    }
+    
+    .mobile-menu.open {
+      max-height: 300px;
+    }
+    
+    .btn-primary {
+      background: linear-gradient(135deg, #0ea5e9, #0284c7);
+      transition: all 0.3s ease;
+    }
+    
+    .btn-primary:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 6px 20px rgba(2, 132, 199, 0.5);
+    }
+    
+    .text-editor {
+      background: rgba(15, 23, 42, 0.6);
+      border: 1px solid rgba(14, 165, 233, 0.3);
+      color: white;
+      padding: 1rem;
+      border-radius: 8px;
+      min-height: 300px;
+      font-family: 'Montserrat', sans-serif;
+      resize: vertical;
+      transition: all 0.3s ease;
+    }
+    
+    .text-editor:focus {
+      outline: none;
+      border-color: #0ea5e9;
+      box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.3);
+    }
+    
+    .info-card {
+      background: linear-gradient(145deg, #1e293b, #0f172a);
+      border: 1px solid rgba(14, 165, 233, 0.2);
+      border-radius: 12px;
+      padding: 1.5rem;
+    }
+    
+    .guide-card {
+      background: linear-gradient(145deg, #1e293b, #0f172a);
+      border: 1px solid rgba(14, 165, 233, 0.2);
+      border-radius: 12px;
+      padding: 1.5rem;
+      height: 100%;
+      transition: all 0.3s ease;
+    }
+    
+    .guide-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 20px rgba(14, 165, 233, 0.2);
+    }
+    
+    .download-modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.7);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 200;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+    
+    .download-modal.open {
+      opacity: 1;
+      pointer-events: all;
+    }
+    
+    .modal-content {
+      background: rgba(30, 41, 59, 0.95);
+      border-radius: 15px;
+      padding: 25px;
+      width: 90%;
+      max-width: 500px;
+      border: 1px solid rgba(14, 165, 233, 0.3);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+    }
+    
+    .versions-list {
+      max-height: 200px;
+      overflow-y: auto;
+      margin: 15px 0;
+      border: 1px solid rgba(14, 165, 233, 0.2);
+      border-radius: 10px;
+      padding: 10px;
+    }
+    
+    .version-item {
+      padding: 10px 15px;
+      border-radius: 8px;
+      margin-bottom: 8px;
+      background: rgba(15, 23, 42, 0.6);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    
+    .version-item:hover {
+      background: rgba(14, 165, 233, 0.2);
+    }
+    
+    .btn-minecraft {
+      background: linear-gradient(135deg, #4CAF50, #388E3C);
+      transition: all 0.3s ease;
+    }
+    
+    .btn-minecraft:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 6px 20px rgba(76, 175, 80, 0.4);
+    }
+    
+    .btn-gold {
+      background: linear-gradient(135deg, #FFD700, #FFA000);
+      transition: all 0.3s ease;
+    }
+    
+    .btn-gold:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 6px 20px rgba(255, 215, 0, 0.4);
+    }
+    
+    .book-icon {
+      background: linear-gradient(135deg, #1e293b, #0f172a);
+      border: 1px solid rgba(14, 165, 233, 0.3);
+      width: 60px;
+      height: 60px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      color: #0ea5e9;
+    }
+    
+    .char-count {
+      background: rgba(14, 165, 233, 0.15);
+      color: #0ea5e9;
+      padding: 3px 8px;
+      border-radius: 4px;
+      font-size: 12px;
+      font-weight: 500;
+    }
+    
+    .loader-spinner {
+      border: 4px solid rgba(14, 165, 233, 0.2);
+      border-top: 4px solid #0ea5e9;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      animation: spin 1s linear infinite;
+      margin: 0 auto;
+    }
+    
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    
+    @media (max-width: 768px) {
+      .text-tools {
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+<body class="bg-dark text-gray-200">
+  <header class="sticky-header">
+    <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+      <div class="flex items-center">
+        <div class="w-10 h-10 rounded-full bg-primary flex items-center justify-center mr-3">
+          <i class="fas fa-book text-white"></i>
+        </div>
+        <h1 class="text-2xl font-bold text-white">Cobalt Книги</h1>
+      </div>
+      
+      <div class="hidden lg:flex space-x-8">
+        <a href="#" class="hover:text-primary transition-colors flex items-center">
+          <i class="fas fa-home mr-2"></i> Главная
+        </a> 
+        <a href="#" class="hover:text-primary transition-colors flex items-center">
+          <i class="fas fa-sticky-note mr-2"></i> Заметки
+        </a>
+        <a href="#" class="hover:text-primary transition-colors flex items-center">
+          <i class="fas fa-rocket mr-2"></i> Лаунчер
+        </a>
+        <a href="https://t.me/sun_community_chat" class="hover:text-primary transition-colors flex items-center">
+          <i class="fas fa-users mr-2"></i> Сообщество
+        </a>
+      </div>
+      
+      <div class="block lg:hidden">
+        <button id="burgerBtn" class="text-white focus:outline-none z-50">
+          <div class="burger-line"></div>
+          <div class="burger-line"></div>
+          <div class="burger-line"></div>
+        </button>
+      </div>
+    </div>
+    
+    <div id="mobileMenu" class="mobile-menu bg-gray-900 lg:hidden">
+      <div class="flex flex-col px-6 py-4">
+        <a href="#" class="py-3 hover:text-primary transition-colors flex items-center">
+          <i class="fas fa-home mr-3 w-5"></i> Главная
+        </a> 
+        <a href="#" class="py-3 hover:text-primary transition-colors flex items-center">
+          <i class="fas fa-sticky-note mr-3 w-5"></i> Заметки
+        </a>
+        <a href="#" class="py-3 hover:text-primary transition-colors flex items-center">
+          <i class="fas fa-rocket mr-3 w-5"></i> Лаунчер
+        </a>
+        <a href="https://t.me/sun_community_chat" class="py-3 hover:text-primary transition-colors flex items-center">
+          <i class="fas fa-users mr-3 w-5"></i> Сообщество
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <main class="max-w-7xl mx-auto px-4 py-8">
+    <div class="text-center mb-12">
+      <h2 class="text-3xl md:text-4xl font-bold mb-4 text-white">
+        <i class="fas fa-book-open mr-2 text-primary"></i> Инструменты для книг Minecraft
+      </h2>
+      <p class="text-xl text-gray-300 max-w-3xl mx-auto">
+        Правильно форматируйте тексты книг перед публикацией в Minecraft
+      </p>
+    </div>
+
+    <section class="mb-16">
+      <div class="flex items-center mb-6">
+        <div class="flex-1">
+          <h3 class="text-2xl font-bold text-white flex items-center">
+            <i class="fas fa-align-left mr-3 text-primary"></i> Редактор текста книги
+          </h3>
+          <p class="text-gray-400 mt-1">
+            Чтобы отправить книгу, нужно убрать отступы. Зачем это делать? Чтобы текст не мешал просмотру кода.
+          </p>
+        </div>
+        <a href="https://t.me/sun_community_chat/10053" 
+           class="btn-minecraft px-6 py-3 rounded-lg font-medium text-white flex items-center"
+           target="_blank">
+          <i class="fab fa-telegram mr-2"></i> Отправить книгу
+        </a>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div>
+          <div class="text-tools flex justify-between mb-4">
+            <div class="flex items-center">
+              <span class="char-count" id="charCount">0 символов</span>
+            </div>
+            <button id="formatBtn" class="btn-primary px-4 py-2 rounded-lg font-medium text-white flex items-center">
+              <i class="fas fa-eraser mr-2"></i> Удалить отступы
+            </button>
+          </div>
+          <textarea id="textEditor" class="text-editor w-full" placeholder="Введите текст вашей книги здесь..."></textarea>
+        </div>
+        
+        <div>
+          <h4 class="text-xl font-semibold text-white mb-4">Результат форматирования</h4>
+          <div id="resultPreview" class="text-editor bg-opacity-50 overflow-auto">
+            <p class="text-gray-400">Здесь появится текст без лишних отступов</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="mb-16">
+      <div class="flex items-center mb-6">
+        <h3 class="text-2xl font-bold text-white flex items-center">
+          <i class="fas fa-clipboard-list mr-3 text-primary"></i> Правила публикации книги
+        </h3>
+      </div>
+      
+      <div class="info-card">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <h4 class="text-xl font-semibold text-white mb-4">Основные требования</h4>
+            <ul class="space-y-3">
+              <li class="flex items-start">
+                <i class="fas fa-check-circle text-green-500 mt-1 mr-2"></i>
+                <span>Уберите все лишние отступы и пробелы в начале строк</span>
+              </li>
+              <li class="flex items-start">
+                <i class="fas fa-check-circle text-green-500 mt-1 mr-2"></i>
+                <span>Максимальная длина книги - 256 страниц</span>
+              </li>
+              <li class="flex items-start">
+                <i class="fas fa-check-circle text-green-500 mt-1 mr-2"></i>
+                <span>Используйте только стандартные символы Minecraft</span>
+              </li>
+              <li class="flex items-start">
+                <i class="fas fa-check-circle text-green-500 mt-1 mr-2"></i>
+                <span>Не используйте запрещенные символы или теги</span>
+              </li>
+            </ul>
+          </div>
+          
+          <div>
+            <h4 class="text-xl font-semibold text-white mb-4">Рекомендации</h4>
+            <ul class="space-y-3">
+              <li class="flex items-start">
+                <i class="fas fa-lightbulb text-yellow-500 mt-1 mr-2"></i>
+                <span>Разделяйте текст на страницы по 256 символов</span>
+              </li>
+              <li class="flex items-start">
+                <i class="fas fa-lightbulb text-yellow-500 mt-1 mr-2"></i>
+                <span>Используйте форматирование через символ §</span>
+              </li>
+              <li class="flex items-start">
+                <i class="fas fa-lightbulb text-yellow-500 mt-1 mr-2"></i>
+                <span>Проверяйте текст на наличие ошибок перед публикацией</span>
+              </li>
+              <li class="flex items-start">
+                <i class="fas fa-lightbulb text-yellow-500 mt-1 mr-2"></i>
+                <span>Добавляйте оглавление для длинных книг</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+        
+        <div class="mt-6 pt-6 border-t border-gray-700">
+          <p class="text-gray-400">
+            <i class="fas fa-exclamation-triangle text-yellow-500 mr-2"></i>
+            Нарушение правил публикации может привести к удалению книги и ограничению доступа
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section class="mb-16">
+      <div class="flex items-center mb-6">
+        <h3 class="text-2xl font-bold text-white flex items-center">
+          <i class="fas fa-graduation-cap mr-3 text-primary"></i> Гайды по моде Textbook
+        </h3>
+      </div>
+      
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="guide-card">
+          <div class="flex items-center mb-4">
+            <div class="book-icon">
+              <i class="fas fa-book"></i>
+            </div>
+            <h4 class="text-xl font-semibold ml-4">Основы работы</h4>
+          </div>
+          <p class="text-gray-400 mb-4">
+            Узнайте, как создавать, редактировать и публиковать книги с помощью мода Textbook.
+          </p>
+          <div class="bg-gray-800 rounded-lg h-48 mb-4 flex items-center justify-center">
+            <i class="fas fa-book text-5xl text-primary"></i>
+          </div>
+        </div>
+        
+        <div class="guide-card">
+          <div class="flex items-center mb-4">
+            <div class="book-icon">
+              <i class="fas fa-code"></i>
+            </div>
+            <h4 class="text-xl font-semibold ml-4">Форматирование текста</h4>
+          </div>
+          <p class="text-gray-400 mb-4">
+            Специальные символы, цветовое оформление и другие возможности форматирования.
+          </p>
+          <div class="bg-gray-800 rounded-lg h-48 mb-4 flex items-center justify-center">
+            <i class="fas fa-font text-5xl text-primary"></i>
+          </div>
+        </div>
+        
+        <div class="guide-card">
+          <div class="flex items-center mb-4">
+            <div class="book-icon">
+              <i class="fas fa-users"></i>
+            </div>
+            <h4 class="text-xl font-semibold ml-4">Публикация и библиотеки</h4>
+          </div>
+          <p class="text-gray-400 mb-4">
+            Как делиться своими книгами с сообществом и создавать библиотеки.
+          </p>
+          <div class="bg-gray-800 rounded-lg h-48 mb-4 flex items-center justify-center">
+            <i class="fas fa-share-alt text-5xl text-primary"></i>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="text-center mb-16">
+      <button id="downloadBtn" class="btn-gold px-8 py-4 rounded-lg font-bold text-white text-lg flex items-center mx-auto">
+        <i class="fas fa-download mr-3"></i> Скачать Textbook
+      </button>
+      <p class="text-gray-400 mt-4">Выберите версию и зависимости для вашего Minecraft</p>
+    </section>
+  </main>
+
+  <div class="download-modal" id="downloadModal">
+    <div class="modal-content">
+      <div class="flex justify-between items-center mb-4">
+        <h3 class="text-xl font-bold text-white flex items-center">
+          <i class="fas fa-download mr-2 text-gold"></i> Скачать Textbook
+        </h3>
+        <button id="closeModal" class="text-gray-400 hover:text-white">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      
+      <div class="modal-section mb-6">
+        <div class="modal-section-title flex items-center text-gold mb-2">
+          <i class="fas fa-code-branch mr-2"></i> Версия Minecraft
+        </div>
+        <div class="versions-list" id="versionsList">
+          <div class="flex justify-center py-4">
+            <div class="loader-spinner"></div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="modal-section mb-6">
+        <div class="modal-section-title flex items-center text-gold mb-2">
+          <i class="fas fa-plug mr-2"></i> Зависимости
+        </div>
+        <div class="dependencies-list" id="dependenciesList">
+          <div class="version-item flex items-center">
+            <input type="checkbox" class="mr-3" checked>
+            <div>
+              <div class="font-medium">Forge</div>
+              <div class="text-xs text-gray-400">Требуется для работы</div>
+            </div>
+          </div>
+          <div class="version-item flex items-center">
+            <input type="checkbox" class="mr-3">
+            <div>
+              <div class="font-medium">OptiFine</div>
+              <div class="text-xs text-gray-400">Опционально - улучшает графику</div>
+            </div>
+          </div>
+          <div class="version-item flex items-center">
+            <input type="checkbox" class="mr-3" checked>
+            <div>
+              <div class="font-medium">Bookshelf API</div>
+              <div class="text-xs text-gray-400">Требуется для работы библиотек</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <button id="confirmDownload" class="btn-gold w-full mt-4 py-3 rounded-lg font-medium text-white flex items-center justify-center">
+        <i class="fas fa-download mr-2"></i> Скачать выбранную версию
+      </button>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const burgerBtn = document.getElementById('burgerBtn');
+      const mobileMenu = document.getElementById('mobileMenu');
+      const textEditor = document.getElementById('textEditor');
+      const resultPreview = document.getElementById('resultPreview');
+      const formatBtn = document.getElementById('formatBtn');
+      const charCount = document.getElementById('charCount');
+      const downloadBtn = document.getElementById('downloadBtn');
+      const downloadModal = document.getElementById('downloadModal');
+      const closeModal = document.getElementById('closeModal');
+      const confirmDownload = document.getElementById('confirmDownload');
+      const versionsList = document.getElementById('versionsList');
+      
+      function toggleMobileMenu() {
+        mobileMenu.classList.toggle('open');
+        const lines = document.querySelectorAll('.burger-line');
+        if (mobileMenu.classList.contains('open')) {
+          lines[0].style.transform = 'translateY(7px) rotate(45deg)';
+          lines[1].style.opacity = '0';
+          lines[2].style.transform = 'translateY(-7px) rotate(-45deg)';
+        } else {
+          lines[0].style.transform = 'none';
+          lines[1].style.opacity = '1';
+          lines[2].style.transform = 'none';
+        }
+      }
+
+      burgerBtn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        toggleMobileMenu();
+      });
+      
+      document.addEventListener('click', function(e) {
+        if (mobileMenu.classList.contains('open') && 
+            !mobileMenu.contains(e.target) && 
+            !burgerBtn.contains(e.target)) {
+          toggleMobileMenu();
+        }
+      });
+      
+      textEditor.addEventListener('input', function() {
+        const text = textEditor.value;
+        charCount.textContent = `${text.length} символов`;
+      });
+      
+      formatBtn.addEventListener('click', function() {
+        let text = textEditor.value;
+        text = text.replace(/^[ \t]+/gm, '');
+        text = text.replace(/[ \t]+$/gm, '');
+        text = text.replace(/^\s+|\s+$/g, '');
+        resultPreview.innerHTML = text.replace(/\n/g, '<br>');
+      });
+      
+      downloadBtn.addEventListener('click', function() {
+        downloadModal.classList.add('open');
+        loadVersions();
+      });
+      
+      closeModal.addEventListener('click', function() {
+        downloadModal.classList.remove('open');
+      });
+      
+      confirmDownload.addEventListener('click', function() {
+        const selectedVersion = document.querySelector('.version-item.selected');
+        if (!selectedVersion) {
+          alert('Пожалуйста, выберите версию Minecraft');
+          return;
+        }
+        
+        const version = selectedVersion.getAttribute('data-version');
+        const loader = selectedVersion.getAttribute('data-loader');
+        
+        alert(`Скачивание Textbook для Minecraft ${version} (${loader}) началось!`);
+        downloadModal.classList.remove('open');
+      });
+      
+      async function loadVersions() {
+        versionsList.innerHTML = '<div class="flex justify-center py-4"><div class="loader-spinner"></div></div>';
+        
+        try {
+          await new Promise(resolve => setTimeout(resolve, 800));
+          
+          const mockVersions = [
+            { version: "1.20.1", loader: "Forge", date: "2023-10-15", recommended: true },
+            { version: "1.19.4", loader: "Fabric", date: "2023-07-22" },
+            { version: "1.18.2", loader: "Forge", date: "2023-03-10" },
+            { version: "1.17.1", loader: "Fabric", date: "2022-11-30" },
+            { version: "1.16.5", loader: "Forge", date: "2022-08-15" }
+          ];
+          
+          let html = '';
+          mockVersions.forEach(ver => {
+            html += `
+              <div class="version-item ${ver.recommended ? 'selected' : ''}" 
+                   data-version="${ver.version}" 
+                   data-loader="${ver.loader}">
+                <div class="font-medium">${ver.version} (${ver.loader})</div>
+                <div class="text-xs text-gray-400">${ver.date} ${ver.recommended ? '· Рекомендуется' : ''}</div>
+              </div>
+            `;
+          });
+          
+          versionsList.innerHTML = html;
+          
+          document.querySelectorAll('.version-item').forEach(item => {
+            item.addEventListener('click', function() {
+              document.querySelectorAll('.version-item').forEach(i => i.classList.remove('selected'));
+              this.classList.add('selected');
+            });
+          });
+        } catch (error) {
+          versionsList.innerHTML = '<div class="text-center py-4 text-gray-400">Ошибка загрузки версий</div>';
+        }
+      }
+      
+      textEditor.value = `    В далекой галактике, среди бесчисленных звезд и туманностей,
+    существовала планета под названием Элизиум. Её поверхность 
+    была покрыта кристальными лесами, сияющими всеми цветами радуги.
+    
+        Жители Элизиума, кристаллиды, обладали уникальной способностью 
+    преобразовывать свет в энергию. Они строили свои города из живых 
+    кристаллов, которые росли и меняли форму по их желанию.
+    
+            Но однажды на планету пришла тьма. Странные существа, 
+    питающиеся светом, начали уничтожать кристальные леса...`;
+      
+      charCount.textContent = `${textEditor.value.length} символов`;
+    });
+  </script>
+</body>
+</html>
