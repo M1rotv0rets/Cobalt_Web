@@ -3,8 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Textbook Tools - Форматирование книг для Minecraft</title>
+  <title>Cobalt Книги</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="icon" href="Images/icon.png">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <script>
     tailwind.config = {
@@ -71,79 +72,6 @@
     .guide-card:hover {
       transform: translateY(-5px);
       box-shadow: 0 8px 20px rgba(14, 165, 233, 0.2);
-    }
-    
-    .download-modal {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0, 0, 0, 0.7);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 200;
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity 0.3s ease;
-    }
-    
-    .download-modal.open {
-      opacity: 1;
-      pointer-events: all;
-    }
-    
-    .modal-content {
-      background: rgba(30, 41, 59, 0.95);
-      border-radius: 15px;
-      padding: 25px;
-      width: 90%;
-      max-width: 500px;
-      border: 1px solid rgba(14, 165, 233, 0.3);
-      box-shadow: 0 10px 30px rgba(0,0,0,0.4);
-    }
-    
-    .versions-list {
-      max-height: 200px;
-      overflow-y: auto;
-      margin: 15px 0;
-      border: 1px solid rgba(14, 165, 233, 0.2);
-      border-radius: 10px;
-      padding: 10px;
-    }
-    
-    .version-item {
-      padding: 10px 15px;
-      border-radius: 8px;
-      margin-bottom: 8px;
-      background: rgba(15, 23, 42, 0.6);
-      cursor: pointer;
-      transition: all 0.2s;
-    }
-    
-    .version-item:hover {
-      background: rgba(14, 165, 233, 0.2);
-    }
-    
-    .btn-minecraft {
-      background: linear-gradient(135deg, #4CAF50, #388E3C);
-      transition: all 0.3s ease;
-    }
-    
-    .btn-minecraft:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 6px 20px rgba(76, 175, 80, 0.4);
-    }
-    
-    .btn-gold {
-      background: linear-gradient(135deg, #FFD700, #FFA000);
-      transition: all 0.3s ease;
-    }
-    
-    .btn-gold:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 6px 20px rgba(255, 215, 0, 0.4);
     }
     
     .char-count {
@@ -229,17 +157,17 @@
         <div class="w-10 h-10 rounded-full bg-primary flex items-center justify-center mr-3">
           <i class="fas fa-book text-white"></i>
         </div>
-        <h1 class="text-2xl font-bold text-white">Подготовка книг для Minecraft</h1>
+        <h1 class="text-2xl font-bold text-white">Cobalt Книги</h1>
       </div>
       
       <div class="hidden lg:flex space-x-8">
-        <a href="#" class="hover:text-primary transition-colors flex items-center">
+        <a href="index.html" class="hover:text-primary transition-colors flex items-center">
           <i class="fas fa-home mr-2"></i> Главная
         </a> 
-        <a href="#" class="hover:text-primary transition-colors flex items-center">
+        <a href="notes.html" class="hover:text-primary transition-colors flex items-center">
           <i class="fas fa-sticky-note mr-2"></i> Заметки
         </a>
-        <a href="#" class="hover:text-primary transition-colors flex items-center">
+        <a href="launcher.html" class="hover:text-primary transition-colors flex items-center">
           <i class="fas fa-rocket mr-2"></i> Лаунчер
         </a>
         <a href="https://t.me/sun_community_chat" class="hover:text-primary transition-colors flex items-center">
@@ -258,13 +186,13 @@
     
     <div id="mobileMenu" class="mobile-menu bg-gray-900 lg:hidden">
       <div class="flex flex-col px-6 py-4">
-        <a href="#" class="py-3 hover:text-primary transition-colors flex items-center">
+        <a href="index.html" class="py-3 hover:text-primary transition-colors flex items-center">
           <i class="fas fa-home mr-3 w-5"></i> Главная
         </a> 
-        <a href="#" class="py-3 hover:text-primary transition-colors flex items-center">
+        <a href="notes.html" class="py-3 hover:text-primary transition-colors flex items-center">
           <i class="fas fa-sticky-note mr-3 w-5"></i> Заметки
         </a>
-        <a href="#" class="py-3 hover:text-primary transition-colors flex items-center">
+        <a href="launcher.html" class="py-3 hover:text-primary transition-colors flex items-center">
           <i class="fas fa-rocket mr-3 w-5"></i> Лаунчер
         </a>
         <a href="https://t.me/sun_community_chat" class="py-3 hover:text-primary transition-colors flex items-center">
@@ -439,86 +367,13 @@
     </section>
 
     <section class="text-center mb-16">
-      <button id="downloadBtn" class="btn-gold px-8 py-4 rounded-lg font-bold text-white text-lg flex items-center mx-auto">
+      <a href="https://m1rotv0rets.github.io/Cobalt_Web/mods.html" 
+         class="btn-gold px-8 py-4 rounded-lg font-bold text-white text-lg flex items-center mx-auto w-fit">
         <i class="fas fa-download mr-3"></i> Скачать Textbook
-      </button>
-      <p class="text-gray-400 mt-4">Выберите версию и зависимости для вашего Minecraft</p>
+      </a>
+      <p class="text-gray-400 mt-4">Получите мод для создания и публикации книг</p>
     </section>
   </main>
-
-  <div class="download-modal" id="downloadModal">
-    <div class="modal-content">
-      <div class="flex justify-between items-center mb-4">
-        <h3 class="text-xl font-bold text-white flex items-center">
-          <i class="fas fa-download mr-2 text-gold"></i> Скачать Textbook
-        </h3>
-        <button id="closeModal" class="text-gray-400 hover:text-white">
-          <i class="fas fa-times"></i>
-        </button>
-      </div>
-      
-      <div class="modal-section mb-6">
-        <div class="modal-section-title flex items-center text-gold mb-2">
-          <i class="fas fa-code-branch mr-2"></i> Версия Minecraft
-        </div>
-        <div class="versions-list">
-          <div class="version-item">
-            <div class="font-medium">1.20.1 (Forge)</div>
-            <div class="text-xs text-gray-400">2023-10-15 · Рекомендуется</div>
-          </div>
-          <div class="version-item">
-            <div class="font-medium">1.19.4 (Fabric)</div>
-            <div class="text-xs text-gray-400">2023-07-22</div>
-          </div>
-          <div class="version-item">
-            <div class="font-medium">1.18.2 (Forge)</div>
-            <div class="text-xs text-gray-400">2023-03-10</div>
-          </div>
-          <div class="version-item">
-            <div class="font-medium">1.17.1 (Fabric)</div>
-            <div class="text-xs text-gray-400">2022-11-30</div>
-          </div>
-          <div class="version-item">
-            <div class="font-medium">1.16.5 (Forge)</div>
-            <div class="text-xs text-gray-400">2022-08-15</div>
-          </div>
-        </div>
-      </div>
-      
-      <div class="modal-section mb-6">
-        <div class="modal-section-title flex items-center text-gold mb-2">
-          <i class="fas fa-plug mr-2"></i> Зависимости
-        </div>
-        <div class="dependencies-list">
-          <div class="version-item flex items-center">
-            <input type="checkbox" class="mr-3" checked>
-            <div>
-              <div class="font-medium">Forge</div>
-              <div class="text-xs text-gray-400">Требуется для работы</div>
-            </div>
-          </div>
-          <div class="version-item flex items-center">
-            <input type="checkbox" class="mr-3">
-            <div>
-              <div class="font-medium">OptiFine</div>
-              <div class="text-xs text-gray-400">Опционально - улучшает графику</div>
-            </div>
-          </div>
-          <div class="version-item flex items-center">
-            <input type="checkbox" class="mr-3" checked>
-            <div>
-              <div class="font-medium">Bookshelf API</div>
-              <div class="text-xs text-gray-400">Требуется для работы библиотек</div>
-            </div>
-          </div>
-        </div>
-      </div>
-      
-      <button id="confirmDownload" class="btn-gold w-full mt-4 py-3 rounded-lg font-medium text-white flex items-center justify-center">
-        <i class="fas fa-download mr-2"></i> Скачать выбранную версию
-      </button>
-    </div>
-  </div>
 
   <script>
     document.addEventListener('DOMContentLoaded', function() {
@@ -527,39 +382,23 @@
       const formatBtn = document.getElementById('formatBtn');
       const copyBtn = document.getElementById('copyBtn');
       const charCount = document.getElementById('charCount');
-      const downloadBtn = document.getElementById('downloadBtn');
-      const downloadModal = document.getElementById('downloadModal');
-      const closeModal = document.getElementById('closeModal');
-      const confirmDownload = document.getElementById('confirmDownload');
-      
-      // Инициализация примера текста
-      textEditor.value = `В далекой галактике, среди бесчисленных звезд и туманностей,
-существовала планета под названием Элизиум. Её поверхность 
-была покрыта кристальными лесами, сияющими всеми цветами радуги.`;
-      
-      // Инициализация счетчика символов
+    
       charCount.textContent = `${textEditor.value.length} символов`;
       
-      // Обновление счетчика символов
       textEditor.addEventListener('input', function() {
         const text = textEditor.value;
         charCount.textContent = `${text.length} символов`;
       });
-      
-      // Форматирование текста - преобразование в одну строку
+
       formatBtn.addEventListener('click', function() {
         let text = textEditor.value;
         
-        // Удаляем все переносы строк
         text = text.replace(/\n/g, ' ');
         
-        // Заменяем множественные пробелы на один
         text = text.replace(/\s+/g, ' ');
         
-        // Удаляем пробелы в начале и конце
         text = text.trim();
         
-        // Обновляем область предпросмотра
         if (text.length > 0) {
           resultPreview.innerHTML = `<p>${text}</p>`;
         } else {
@@ -567,7 +406,6 @@
         }
       });
       
-      // Копирование текста
       copyBtn.addEventListener('click', function() {
         const resultText = resultPreview.innerText;
         
@@ -576,10 +414,8 @@
           return;
         }
         
-        // Копирование в буфер обмена
         navigator.clipboard.writeText(resultText)
           .then(() => {
-            // Анимация подтверждения
             copyBtn.classList.add('copied-animation');
             const originalText = copyBtn.innerHTML;
             copyBtn.innerHTML = '<i class="fas fa-check mr-2"></i> Скопировано!';
@@ -593,34 +429,6 @@
             console.error('Ошибка копирования: ', err);
             alert("Не удалось скопировать текст");
           });
-      });
-      
-      // Управление модальным окном
-      downloadBtn.addEventListener('click', function() {
-        downloadModal.classList.add('open');
-      });
-      
-      closeModal.addEventListener('click', function() {
-        downloadModal.classList.remove('open');
-      });
-      
-      confirmDownload.addEventListener('click', function() {
-        const selectedVersion = document.querySelector('.version-item.selected');
-        if (!selectedVersion) {
-          alert('Пожалуйста, выберите версию Minecraft');
-          return;
-        }
-        
-        alert(`Скачивание началось! Проверьте папку загрузок.`);
-        downloadModal.classList.remove('open');
-      });
-      
-      // Выбор версии
-      document.querySelectorAll('.version-item').forEach(item => {
-        item.addEventListener('click', function() {
-          document.querySelectorAll('.version-item').forEach(i => i.classList.remove('selected'));
-          this.classList.add('selected');
-        });
       });
     });
   </script>
