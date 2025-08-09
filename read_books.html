@@ -138,6 +138,65 @@
       margin: 10px 0;
     }
     
+    .mobile-menu {
+      display: none;
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      background: rgba(15, 23, 42, 0.95);
+      z-index: 40;
+    }
+    
+    .mobile-menu.active {
+      display: block;
+    }
+    
+    .burger-line {
+      width: 25px;
+      height: 3px;
+      background-color: white;
+      margin: 4px 0;
+      transition: all 0.3s ease;
+    }
+    
+    #burgerBtn.active .burger-line:nth-child(1) {
+      transform: rotate(45deg) translate(5px, 5px);
+    }
+    
+    #burgerBtn.active .burger-line:nth-child(2) {
+      opacity: 0;
+    }
+    
+    #burgerBtn.active .burger-line:nth-child(3) {
+      transform: rotate(-45deg) translate(7px, -6px);
+    }
+    
+    .id-display {
+      background: rgba(30, 41, 59, 0.7);
+      border: 1px solid #0ea5e9;
+      border-radius: 8px;
+      padding: 12px 16px;
+      font-size: 18px;
+      font-weight: 600;
+      color: #0ea5e9;
+      text-align: center;
+      letter-spacing: 2px;
+      margin: 15px 0;
+      min-height: 50px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .id-buttons {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      margin-top: 15px;
+      flex-wrap: wrap;
+    }
+    
     @media (max-width: 768px) {
       .action-buttons {
         flex-direction: column;
@@ -146,6 +205,14 @@
       .action-btn {
         width: 100%;
         justify-content: center;
+      }
+      
+      .id-buttons {
+        flex-direction: column;
+      }
+      
+      .id-buttons .action-btn {
+        width: 100%;
       }
     }
   </style>
@@ -246,11 +313,52 @@
           <i class="fas fa-copy mr-2"></i> Скопировать текст
         </button>
         
+        <button id="clearBtn" class="action-btn bg-orange-600 text-white">
+          <i class="fas fa-trash-alt mr-2"></i> Удалить текст
+        </button>
+        
         <a href="https://t.me/sun_community_chat/10053" 
            class="action-btn bg-green-600 text-white"
            target="_blank">
           <i class="fab fa-telegram mr-2"></i> Отправить книгу
         </a>
+      </div>
+    </section>
+
+    <section class="mb-16">
+      <div class="flex items-center mb-6">
+        <h3 class="text-2xl font-bold text-white flex items-center">
+          <i class="fas fa-id-card mr-3 text-primary"></i> Генератор ID книги
+        </h3>
+      </div>
+      
+      <div class="info-card">
+        <div class="grid grid-cols-1 gap-6">
+          <div>
+            <h4 class="text-xl font-semibold text-white mb-4">Уникальный идентификатор</h4>
+            <p class="text-gray-400 mb-4">
+              Сгенерируйте уникальный ID для вашей книги. ID используется для идентификации книги в системе.
+            </p>
+            
+            <div id="idDisplay" class="id-display">
+              Нажмите "Сгенерировать ID"
+            </div>
+            
+            <div class="id-buttons">
+              <button id="generateIdBtn" class="action-btn bg-primary text-white">
+                <i class="fas fa-key mr-2"></i> Сгенерировать ID
+              </button>
+              
+              <button id="copyIdBtn" class="action-btn bg-purple-600 text-white">
+                <i class="fas fa-copy mr-2"></i> Скопировать ID
+              </button>
+              
+              <button id="clearIdBtn" class="action-btn bg-orange-600 text-white">
+                <i class="fas fa-trash-alt mr-2"></i> Удалить ID
+              </button>
+            </div>
+          </div>
+        </div>
       </div>
     </section>
 
@@ -324,7 +432,7 @@
         </h3>
       </div>
       
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-6">
         <div class="guide-card">
           <div class="flex items-center mb-4">
             <div class="number-badge">1</div>
@@ -363,15 +471,40 @@
             <div class="text-6xl font-bold text-primary opacity-30">3</div>
           </div>
         </div>
+        
+        <div class="guide-card">
+          <div class="flex items-center mb-4">
+            <div class="number-badge">4</div>
+            <h4 class="text-xl font-semibold">Продвинутые функции</h4>
+          </div>
+          <p class="text-gray-400 mb-4">
+            Работа с интерактивными элементами и ссылками в книгах.
+          </p>
+          <div class="bg-gray-800 rounded-lg h-48 mb-4 flex items-center justify-center">
+            <div class="text-6xl font-bold text-primary opacity-30">4</div>
+          </div>
+        </div>
+        
+        <div class="guide-card">
+          <div class="flex items-center mb-4">
+            <div class="number-badge">5</div>
+            <h4 class="text-xl font-semibold">Оптимизация</h4>
+          </div>
+          <p class="text-gray-400 mb-4">
+            Как сделать книги легкими и быстрыми для загрузки.
+          </p>
+          <div class="bg-gray-800 rounded-lg h-48 mb-4 flex items-center justify-center">
+            <div class="text-6xl font-bold text-primary opacity-30">5</div>
+          </div>
+        </div>
       </div>
     </section>
 
     <section class="text-center mb-16">
       <a href="https://m1rotv0rets.github.io/Cobalt_Web/mods.html" 
-         class="btn-gold px-8 py-4 rounded-lg font-bold text-white text-lg flex items-center mx-auto w-fit">
+         class="px-8 py-4 rounded-lg font-bold text-lg flex items-center mx-auto w-fit border-2 border-gold text-gold hover:bg-gold hover:bg-opacity-10 transition-colors">
         <i class="fas fa-download mr-3"></i> Скачать Textbook
       </a>
-      <p class="text-gray-400 mt-4">Получите мод для создания и публикации книг</p>
     </section>
   </main>
 
@@ -381,22 +514,26 @@
       const resultPreview = document.getElementById('resultPreview');
       const formatBtn = document.getElementById('formatBtn');
       const copyBtn = document.getElementById('copyBtn');
+      const clearBtn = document.getElementById('clearBtn');
       const charCount = document.getElementById('charCount');
-    
-      charCount.textContent = `${textEditor.value.length} символов`;
+      const burgerBtn = document.getElementById('burgerBtn');
+      const mobileMenu = document.getElementById('mobileMenu');
+      const generateIdBtn = document.getElementById('generateIdBtn');
+      const copyIdBtn = document.getElementById('copyIdBtn');
+      const clearIdBtn = document.getElementById('clearIdBtn');
+      const idDisplay = document.getElementById('idDisplay');
+      
+      charCount.textContent = '0 символов';
       
       textEditor.addEventListener('input', function() {
         const text = textEditor.value;
         charCount.textContent = `${text.length} символов`;
       });
-
+      
       formatBtn.addEventListener('click', function() {
         let text = textEditor.value;
-        
         text = text.replace(/\n/g, ' ');
-        
         text = text.replace(/\s+/g, ' ');
-        
         text = text.trim();
         
         if (text.length > 0) {
@@ -429,6 +566,72 @@
             console.error('Ошибка копирования: ', err);
             alert("Не удалось скопировать текст");
           });
+      });
+      
+      clearBtn.addEventListener('click', function() {
+        textEditor.value = '';
+        resultPreview.innerHTML = '<p class="text-gray-400">Здесь появится текст в одной строке без переносов</p>';
+        charCount.textContent = '0 символов';
+      });
+      
+      burgerBtn.addEventListener('click', function() {
+        burgerBtn.classList.toggle('active');
+        mobileMenu.classList.toggle('active');
+      });
+      
+      document.addEventListener('click', function(e) {
+        if (!mobileMenu.contains(e.target) && !burgerBtn.contains(e.target)) {
+          burgerBtn.classList.remove('active');
+          mobileMenu.classList.remove('active');
+        }
+      });
+      
+      function generateRandomId() {
+        const min = 100000000;
+        const max = 999999999;
+        return Math.floor(Math.random() * (max - min + 1)) + min;
+      }
+      
+      generateIdBtn.addEventListener('click', function() {
+        const newId = generateRandomId();
+        idDisplay.textContent = newId;
+        idDisplay.classList.add('text-green-500');
+        
+        setTimeout(() => {
+          idDisplay.classList.remove('text-green-500');
+        }, 1000);
+      });
+      
+      copyIdBtn.addEventListener('click', function() {
+        if (idDisplay.textContent === "Нажмите 'Сгенерировать ID'") {
+          alert("Сначала сгенерируйте ID!");
+          return;
+        }
+        
+        navigator.clipboard.writeText(idDisplay.textContent)
+          .then(() => {
+            copyIdBtn.classList.add('copied-animation');
+            const originalText = copyIdBtn.innerHTML;
+            copyIdBtn.innerHTML = '<i class="fas fa-check mr-2"></i> Скопировано!';
+            
+            setTimeout(() => {
+              copyIdBtn.classList.remove('copied-animation');
+              copyIdBtn.innerHTML = originalText;
+            }, 2000);
+          })
+          .catch(err => {
+            console.error('Ошибка копирования ID: ', err);
+            alert("Не удалось скопировать ID");
+          });
+      });
+      
+      clearIdBtn.addEventListener('click', function() {
+        idDisplay.textContent = "Нажмите 'Сгенерировать ID'";
+        idDisplay.classList.add('text-red-500');
+        
+        setTimeout(() => {
+          idDisplay.classList.remove('text-red-500');
+        }, 1000);
       });
     });
   </script>
