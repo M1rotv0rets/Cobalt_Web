@@ -23,7 +23,8 @@
             textgen: '#0ea5e9'
           },
           animation: {
-            'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite'
+            'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+            'obfuscate': 'obfuscate 0.5s infinite'
           }
         }
       }
@@ -136,30 +137,6 @@
       margin-right: 15px;
     }
     
-    .enchant-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-      gap: 15px;
-    }
-    
-    .enchant-item {
-      padding: 15px;
-      border-radius: 8px;
-      background: rgba(30, 41, 59, 0.6);
-      cursor: pointer;
-      transition: all 0.3s ease;
-    }
-    
-    .enchant-item:hover {
-      background: rgba(236, 72, 153, 0.2);
-      transform: translateY(-3px);
-    }
-    
-    .enchant-item.selected {
-      background: rgba(236, 72, 153, 0.3);
-      border: 1px solid #ec4899;
-    }
-    
     .page-preview {
       min-height: 200px;
       background: rgba(255, 255, 255, 0.05);
@@ -187,17 +164,6 @@
       align-items: center;
       padding: 0 10px;
       border-radius: 4px;
-    }
-    
-    .color-preview {
-      width: 30px;
-      height: 30px;
-      border-radius: 4px;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      margin-right: 10px;
-      font-weight: bold;
     }
     
     .tooltip {
@@ -232,32 +198,7 @@
     .obfuscated-text {
       font-family: 'Courier New', monospace;
       letter-spacing: 2px;
-    }
-    
-    .wood-option {
-      display: flex;
-      align-items: center;
-      padding: 8px 12px;
-      border-radius: 8px;
-      background: rgba(30, 41, 59, 0.6);
-      cursor: pointer;
-      transition: all 0.3s ease;
-    }
-    
-    .wood-option:hover {
-      background: rgba(249, 115, 22, 0.2);
-    }
-    
-    .wood-option.selected {
-      background: rgba(249, 115, 22, 0.3);
-      border: 1px solid #f97316;
-    }
-    
-    .wood-color {
-      width: 20px;
-      height: 20px;
-      border-radius: 4px;
-      margin-right: 10px;
+      animation: obfuscate 0.5s infinite;
     }
     
     .copy-btn {
@@ -308,32 +249,6 @@
       font-weight: bold;
       margin-bottom: 0.5rem;
       color: #0ea5e9;
-    }
-    
-    .tabs {
-      display: flex;
-      gap: 10px;
-      margin-bottom: 20px;
-      overflow-x: auto;
-      padding-bottom: 10px;
-    }
-    
-    .tab {
-      padding: 10px 20px;
-      border-radius: 30px;
-      background: rgba(30, 41, 59, 0.6);
-      cursor: pointer;
-      transition: all 0.3s ease;
-      white-space: nowrap;
-    }
-    
-    .tab:hover {
-      background: rgba(59, 130, 246, 0.2);
-    }
-    
-    .tab.active {
-      background: #3b82f6;
-      color: white;
     }
     
     .text-format-btn {
@@ -402,9 +317,8 @@
     
     .color-table {
       display: grid;
-      grid-template-columns: repeat(6, 1fr);
-      gap: 10px;
-      margin-top: 20px;
+      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+      gap: 15px;
     }
     
     .color-item {
@@ -428,13 +342,101 @@
       font-size: 14px;
     }
     
+    .tools-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 20px;
+      margin-bottom: 30px;
+    }
+    
+    .tool-item {
+      background: rgba(30, 41, 59, 0.7);
+      border-radius: 12px;
+      padding: 20px;
+      transition: all 0.3s ease;
+      cursor: pointer;
+      border: 1px solid rgba(14, 165, 233, 0.2);
+      text-align: center;
+    }
+    
+    .tool-item:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 20px rgba(14, 165, 233, 0.2);
+      border-color: #0ea5e9;
+    }
+    
+    .tool-item.active {
+      background: rgba(14, 165, 233, 0.2);
+      border-color: #0ea5e9;
+    }
+    
+    .tool-icon-sm {
+      width: 60px;
+      height: 60px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 15px;
+      font-size: 24px;
+    }
+    
+    .command-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+    
+    .mobile-menu {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      background: rgba(15, 23, 42, 0.95);
+      backdrop-filter: blur(10px);
+      z-index: 40;
+      transform: translateY(-100%);
+      transition: transform 0.4s ease;
+    }
+    
+    .mobile-menu.active {
+      transform: translateY(0);
+    }
+    
+    .burger-line {
+      width: 24px;
+      height: 2px;
+      background-color: white;
+      margin: 4px 0;
+      transition: all 0.3s ease;
+    }
+    
     @media (max-width: 768px) {
-      .tabs {
-        flex-wrap: wrap;
-      }
       .color-table {
         grid-template-columns: repeat(3, 1fr);
       }
+      .tools-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+    
+    @media (max-width: 480px) {
+      .tools-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+    
+    .obfuscated-chars {
+      font-family: monospace;
+      letter-spacing: 1px;
+      animation: obfuscate 0.5s infinite;
+    }
+    
+    @keyframes obfuscate {
+      0% { opacity: 0.5; }
+      50% { opacity: 1; }
+      100% { opacity: 0.5; }
     }
   </style>
 </head>
@@ -452,8 +454,8 @@
         <a href="index.html" class="hover:text-primary transition-colors flex items-center">
           <i class="fas fa-home mr-2"></i> Главная
         </a> 
-        <a href="#" class="text-primary transition-colors flex items-center">
-          <i class="fas fa-tools mr-2"></i> Инструменты
+        <a href="notes.html" class="hover:text-primary transition-colors flex items-center">
+          <i class="fas fa-sticky-note mr-2"></i> Заметки
         </a>
         <a href="launcher.html" class="hover:text-primary transition-colors flex items-center">
           <i class="fas fa-rocket mr-2"></i> Лаунчер
@@ -465,10 +467,27 @@
       
       <div class="block lg:hidden">
         <button id="burgerBtn" class="text-white focus:outline-none z-50">
-          <div class="w-6 h-0.5 bg-white my-1"></div>
-          <div class="w-6 h-0.5 bg-white my-1"></div>
-          <div class="w-6 h-0.5 bg-white my-1"></div>
+          <div class="burger-line"></div>
+          <div class="burger-line"></div>
+          <div class="burger-line"></div>
         </button>
+      </div>
+    </div>
+    
+    <div id="mobileMenu" class="mobile-menu bg-gray-900 lg:hidden">
+      <div class="flex flex-col px-6 py-4">
+        <a href="index.html" class="py-3 hover:text-primary transition-colors flex items-center">
+          <i class="fas fa-home mr-3 w-5"></i> Главная
+        </a> 
+        <a href="notes.html" class="py-3 hover:text-primary transition-colors flex items-center">
+          <i class="fas fa-sticky-note mr-3 w-5"></i> Заметки
+        </a>
+        <a href="launcher.html" class="py-3 hover:text-primary transition-colors flex items-center">
+          <i class="fas fa-rocket mr-3 w-5"></i> Лаунчер
+        </a>
+        <a href="https://t.me/sun_community_chat" class="py-3 hover:text-primary transition-colors flex items-center">
+          <i class="fas fa-users mr-3 w-5"></i> Сообщество
+        </a>
       </div>
     </div>
   </header>
@@ -486,15 +505,70 @@
       <p class="text-gray-400 max-w-3xl mx-auto">Генераторы команд, калькуляторы и редакторы для создания уникального игрового опыта</p>
     </div>
 
-    <div class="tabs mb-8">
-      <div class="tab active" data-tab="title-generator">Генератор Title</div>
-      <div class="tab" data-tab="sign-generator">Генератор Табличек</div>
-      <div class="tab" data-tab="enchant-calculator">Калькулятор Зачарований</div>
-      <div class="tab" data-tab="tellraw-editor">Редактор Tellraw</div>
-      <div class="tab" data-tab="book-editor">Редактор Книг</div>
-      <div class="tab" data-tab="motd-generator">Генератор MOTD</div>
-      <div class="tab" data-tab="text-generator">Генератор Текста</div>
-      <div class="tab" data-tab="color-codes">Коды цветов</div>
+    <div class="tools-grid mb-8">
+      <div class="tool-item active" data-tab="title-generator">
+        <div class="tool-icon-sm bg-title">
+          <i class="fas fa-heading text-white"></i>
+        </div>
+        <h3 class="text-xl font-bold mb-2">Генератор Title</h3>
+        <p class="text-gray-400 text-sm">Создавайте красивые заголовки</p>
+      </div>
+      
+      <div class="tool-item" data-tab="sign-generator">
+        <div class="tool-icon-sm bg-sign">
+          <i class="fas fa-sign text-white"></i>
+        </div>
+        <h3 class="text-xl font-bold mb-2">Генератор Табличек</h3>
+        <p class="text-gray-400 text-sm">Создавайте таблички с текстом</p>
+      </div>
+      
+      <div class="tool-item" data-tab="enchant-calculator">
+        <div class="tool-icon-sm bg-enchant">
+          <i class="fas fa-hat-wizard text-white"></i>
+        </div>
+        <h3 class="text-xl font-bold mb-2">Калькулятор Зачарований</h3>
+        <p class="text-gray-400 text-sm">Рассчитайте стоимость зачарований</p>
+      </div>
+      
+      <div class="tool-item" data-tab="tellraw-editor">
+        <div class="tool-icon-sm bg-primary">
+          <i class="fas fa-terminal text-white"></i>
+        </div>
+        <h3 class="text-xl font-bold mb-2">Редактор Tellraw</h3>
+        <p class="text-gray-400 text-sm">Создавайте сложные сообщения</p>
+      </div>
+      
+      <div class="tool-item" data-tab="book-editor">
+        <div class="tool-icon-sm bg-book">
+          <i class="fas fa-book-open text-white"></i>
+        </div>
+        <h3 class="text-xl font-bold mb-2">Редактор Книг</h3>
+        <p class="text-gray-400 text-sm">Создавайте пользовательские книги</p>
+      </div>
+      
+      <div class="tool-item" data-tab="motd-generator">
+        <div class="tool-icon-sm bg-accent">
+          <i class="fas fa-server text-white"></i>
+        </div>
+        <h3 class="text-xl font-bold mb-2">Генератор MOTD</h3>
+        <p class="text-gray-400 text-sm">Настройте сообщение сервера</p>
+      </div>
+      
+      <div class="tool-item" data-tab="text-generator">
+        <div class="tool-icon-sm bg-textgen">
+          <i class="fas fa-font text-white"></i>
+        </div>
+        <h3 class="text-xl font-bold mb-2">Генератор Текста</h3>
+        <p class="text-gray-400 text-sm">Создавайте стилизованный текст</p>
+      </div>
+      
+      <div class="tool-item" data-tab="color-codes">
+        <div class="tool-icon-sm bg-textgen">
+          <i class="fas fa-palette text-white"></i>
+        </div>
+        <h3 class="text-xl font-bold mb-2">Коды цветов</h3>
+        <p class="text-gray-400 text-sm">Справочник кодов форматирования</p>
+      </div>
     </div>
 
     <!-- Title Generator -->
@@ -559,11 +633,13 @@
               </div>
             </div>
             
-            <h3 class="text-xl font-bold mb-4 text-white">Команда</h3>
-            <div class="relative bg-gray-800 rounded-lg p-6">
+            <div class="command-header">
+              <h3 class="text-xl font-bold text-white">Команда</h3>
               <div class="copy-btn" data-copy="title-command">
                 <i class="fas fa-copy"></i>
               </div>
+            </div>
+            <div class="relative bg-gray-800 rounded-lg p-6">
               <pre class="overflow-x-auto" id="title-command"># Сгенерированная команда появится здесь</pre>
             </div>
           </div>
@@ -595,24 +671,14 @@
             
             <div class="mb-6">
               <label class="block text-gray-300 mb-2">Вид таблички</label>
-              <div class="grid grid-cols-2 gap-3">
-                <div class="wood-option selected" data-wood="oak">
-                  <div class="wood-color bg-yellow-800"></div>
-                  <span>Дубовая</span>
-                </div>
-                <div class="wood-option" data-wood="spruce">
-                  <div class="wood-color bg-yellow-900"></div>
-                  <span>Еловая</span>
-                </div>
-                <div class="wood-option" data-wood="birch">
-                  <div class="wood-color bg-yellow-100"></div>
-                  <span>Берёзовая</span>
-                </div>
-                <div class="wood-option" data-wood="jungle">
-                  <div class="wood-color bg-yellow-700"></div>
-                  <span>Тропическая</span>
-                </div>
-              </div>
+              <select class="w-full form-input" id="sign-wood">
+                <option value="oak">Дубовая</option>
+                <option value="spruce">Еловая</option>
+                <option value="birch">Берёзовая</option>
+                <option value="jungle">Тропическая</option>
+                <option value="acacia">Акациевая</option>
+                <option value="dark_oak">Тёмный дуб</option>
+              </select>
             </div>
             
             <div class="mb-6">
@@ -635,11 +701,13 @@
               <div class="sign-line" id="sign-preview4">Строка 4</div>
             </div>
             
-            <h3 class="text-xl font-bold mb-4 text-white">Команда</h3>
-            <div class="relative bg-gray-800 rounded-lg p-6">
+            <div class="command-header">
+              <h3 class="text-xl font-bold text-white">Команда</h3>
               <div class="copy-btn" data-copy="sign-command">
                 <i class="fas fa-copy"></i>
               </div>
+            </div>
+            <div class="relative bg-gray-800 rounded-lg p-6">
               <pre class="overflow-x-auto" id="sign-command"># Сгенерированная команда появится здесь</pre>
             </div>
           </div>
@@ -657,98 +725,63 @@
           <h2 class="text-2xl font-bold text-white">Калькулятор Зачарований</h2>
         </div>
         
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <div class="grid grid-cols-1 gap-8">
           <div>
-            <div class="mb-6">
-              <label class="block text-gray-300 mb-2">Предмет для зачарования</label>
-              <select class="w-full form-input" id="enchant-item">
-                <option value="sword">Меч</option>
-                <option value="pickaxe">Кирка</option>
-                <option value="axe">Топор</option>
-                <option value="shovel">Лопата</option>
-                <option value="hoe">Мотыга</option>
-                <option value="helmet">Шлем</option>
-                <option value="chestplate">Нагрудник</option>
-                <option value="leggings">Поножи</option>
-                <option value="boots">Ботинки</option>
-                <option value="bow">Лук</option>
-                <option value="fishing_rod">Удочка</option>
-                <option value="book">Книга</option>
-              </select>
-            </div>
-            
-            <div class="mb-6">
-              <label class="block text-gray-300 mb-2">Версия Minecraft</label>
-              <select class="w-full form-input" id="enchant-version">
-                <option value="1.16">Minecraft 1.16</option>
-                <option value="1.15">Minecraft 1.15</option>
-                <option value="1.14">Minecraft 1.14</option>
-                <option value="1.13">Minecraft 1.13</option>
-                <option value="1.12">Minecraft 1.12</option>
-                <option value="1.11">Minecraft 1.11</option>
-                <option value="1.10">Minecraft 1.10</option>
-                <option value="1.9">Minecraft 1.9</option>
-                <option value="1.8">Minecraft 1.8</option>
-              </select>
-            </div>
-            
-            <div class="mb-6">
-              <label class="block text-gray-300 mb-2">Выберите зачарование</label>
-              <div class="enchant-grid" id="enchantments-container">
-              </div>
-            </div>
-            
-            <div class="grid grid-cols-2 gap-4 mb-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <label class="block text-gray-300 mb-2">Уровень</label>
-                <select class="w-full form-input" id="enchant-level">
-                  <option value="1">I</option>
-                  <option value="2">II</option>
-                  <option value="3">III</option>
-                  <option value="4">IV</option>
-                  <option value="5">V</option>
-                </select>
+                <div class="mb-6">
+                  <label class="block text-gray-300 mb-2">Предмет для зачарования</label>
+                  <select class="w-full form-input" id="enchant-item">
+                    <option value="sword">Меч</option>
+                    <option value="pickaxe">Кирка</option>
+                    <option value="axe">Топор</option>
+                    <option value="shovel">Лопата</option>
+                    <option value="hoe">Мотыга</option>
+                    <option value="helmet">Шлем</option>
+                    <option value="chestplate">Нагрудник</option>
+                    <option value="leggings">Поножи</option>
+                    <option value="boots">Ботинки</option>
+                    <option value="bow">Лук</option>
+                    <option value="fishing_rod">Удочка</option>
+                    <option value="book">Книга</option>
+                  </select>
+                </div>
+                
+                <div class="mb-6">
+                  <label class="block text-gray-300 mb-2">Зачарование</label>
+                  <select class="w-full form-input" id="enchant-select">
+                    <option value="sharpness">Острота</option>
+                    <option value="smite">Небесная кара</option>
+                    <option value="bane_of_arthropods">Казнь членистоногих</option>
+                    <option value="knockback">Отбрасывание</option>
+                  </select>
+                </div>
               </div>
+              
               <div>
-                <label class="block text-gray-300 mb-2">Опыт на использование</label>
-                <div class="w-full form-input bg-gray-800 flex items-center" id="enchant-cost">0</div>
-              </div>
-            </div>
-          </div>
-          
-          <div>
-            <h3 class="text-xl font-bold mb-4 text-white">Информация о зачаровании</h3>
-            <div class="bg-gray-800 rounded-lg p-6 mb-6">
-              <div class="flex items-center mb-4">
-                <div class="w-12 h-12 rounded-lg bg-enchant flex items-center justify-center mr-4">
-                  <i class="fas fa-star text-white"></i>
+                <div class="grid grid-cols-2 gap-4 mb-6">
+                  <div>
+                    <label class="block text-gray-300 mb-2">Уровень</label>
+                    <select class="w-full form-input" id="enchant-level">
+                      <option value="1">I</option>
+                      <option value="2">II</option>
+                      <option value="3">III</option>
+                      <option value="4">IV</option>
+                      <option value="5">V</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label class="block text-gray-300 mb-2">Опыт</label>
+                    <div class="w-full form-input bg-gray-800 flex items-center justify-center font-bold" id="enchant-cost">0</div>
+                  </div>
                 </div>
-                <div>
-                  <h4 class="text-xl font-bold" id="enchant-name">Зачарование</h4>
-                  <p class="text-gray-300" id="enchant-level-text">Уровень: I</p>
-                </div>
-              </div>
-              <div class="mb-4">
-                <p class="text-gray-300" id="enchant-description">Описание зачарования появится здесь</p>
-              </div>
-              <div class="flex justify-between items-center">
-                <div>
-                  <p class="text-gray-400 text-sm">Макс. уровень:</p>
-                  <p class="font-bold" id="enchant-max-level">V</p>
-                </div>
-                <div>
-                  <p class="text-gray-400 text-sm">Совместимость:</p>
-                  <p class="font-bold" id="enchant-compatibility">Мечи</p>
+                
+                <div class="bg-gray-800 rounded-lg p-4">
+                  <h3 class="text-lg font-bold mb-2">Итоговая стоимость</h3>
+                  <div class="text-center text-2xl font-bold text-enchant" id="total-cost">0</div>
+                  <p class="text-sm text-gray-400 mt-1">Опыта для зачарования</p>
                 </div>
               </div>
-            </div>
-            
-            <h3 class="text-xl font-bold mb-4 text-white">Команда</h3>
-            <div class="relative bg-gray-800 rounded-lg p-6">
-              <div class="copy-btn" data-copy="enchant-command">
-                <i class="fas fa-copy"></i>
-              </div>
-              <pre class="overflow-x-auto" id="enchant-command"># Сгенерированная команда появится здесь</pre>
             </div>
           </div>
         </div>
@@ -769,8 +802,8 @@
           <div>
             <div class="mb-6">
               <label class="block text-gray-300 mb-2">Содержание книги</label>
-              <textarea class="w-full form-input h-40" placeholder="Введите текст книги..." id="book-content">Книга с Minecraft Tools
-*здесь был Azerus Team*
+              <textarea class="w-full form-input h-40" placeholder="Введите текст книги..." id="book-content">Книга с инструментами
+*здесь был Cobalt Книги*
 
 (не более 15 строк на страницу, около 25 символов в строке)</textarea>
               <p class="text-sm text-gray-400 mt-1">Максимум 100 страниц, 256 символов на страницу</p>
@@ -783,32 +816,24 @@
               </div>
               <div>
                 <label class="block text-gray-300 mb-2">Автор книги</label>
-                <input type="text" class="w-full form-input" value="http://minecraft.tools/" id="book-author">
+                <input type="text" class="w-full form-input" value="Cobalt Книги" id="book-author">
               </div>
+            </div>
+            
+            <div class="mb-6">
+              <label class="block text-gray-300 mb-2">Тип копии</label>
+              <select class="w-full form-input" id="book-copy-type">
+                <option value="original">Оригинал</option>
+                <option value="copy">Копия</option>
+                <option value="copy_of_copy">Копия копии</option>
+                <option value="tattered">Оборванный</option>
+              </select>
             </div>
             
             <div class="mb-6">
               <label class="block text-gray-300 mb-2">Описание книги</label>
               <textarea class="w-full form-input" placeholder="Добавьте всплывающую подсказку" id="book-description"></textarea>
               <p class="text-sm text-gray-400 mt-1">Необязательно, будет отображаться как всплывающая подсказка</p>
-            </div>
-            
-            <div class="mb-6">
-              <label class="block text-gray-300 mb-2">Тип копии</label>
-              <div class="grid grid-cols-4 gap-2">
-                <div class="wood-option selected" data-copy="original">
-                  <span>Оригинал</span>
-                </div>
-                <div class="wood-option" data-copy="copy">
-                  <span>Копия</span>
-                </div>
-                <div class="wood-option" data-copy="copy-of-copy">
-                  <span>Копия копии</span>
-                </div>
-                <div class="wood-option" data-copy="tattered">
-                  <span>Оборванный</span>
-                </div>
-              </div>
             </div>
             
             <button class="btn-book px-6 py-3 rounded-lg font-medium text-white w-full" id="generate-book-btn">
@@ -821,12 +846,12 @@
             <div class="bg-gray-800 rounded-lg p-6 mb-6">
               <div class="flex justify-between items-center mb-4">
                 <h4 class="text-xl font-bold" id="book-title-preview">Книга</h4>
-                <span class="text-sm text-gray-400" id="book-author-preview">http://minecraft.tools/</span>
+                <span class="text-sm text-gray-400" id="book-author-preview">Cobalt Книги</span>
               </div>
               
               <div class="page-preview mb-4" id="book-content-preview">
-                Книга с Minecraft Tools<br>
-                *здесь был Azerus Team*<br><br>
+                Книга с инструментами<br>
+                *здесь был Cobalt Книги*<br><br>
                 (не более 15 строк на страницу, около 25 символов в строке)
               </div>
               
@@ -836,11 +861,13 @@
               </div>
             </div>
             
-            <h3 class="text-xl font-bold mb-4 text-white">Команда</h3>
-            <div class="relative bg-gray-800 rounded-lg p-6">
+            <div class="command-header">
+              <h3 class="text-xl font-bold text-white">Команда</h3>
               <div class="copy-btn" data-copy="book-command">
                 <i class="fas fa-copy"></i>
               </div>
+            </div>
+            <div class="relative bg-gray-800 rounded-lg p-6">
               <pre class="overflow-x-auto" id="book-command"># Сгенерированная команда появится здесь</pre>
             </div>
           </div>
@@ -862,7 +889,7 @@
           <div>
             <div class="mb-6">
               <label class="block text-gray-300 mb-2">Текст сообщения</label>
-              <textarea class="w-full form-input h-40" placeholder="Введите текст..." id="tellraw-text">Добро пожаловать на Minecraft Tools</textarea>
+              <textarea class="w-full form-input h-40" placeholder="Введите текст..." id="tellraw-text">Добро пожаловать на сервер!</textarea>
               <p class="text-sm text-gray-400 mt-1">Поддерживает JSON форматирование</p>
             </div>
             
@@ -873,7 +900,7 @@
             </div>
             
             <button class="btn-primary px-6 py-3 rounded-lg font-medium text-white w-full" id="generate-tellraw-btn">
-              <i class="fas fa-code mr-2"></i> Сгенерировать JSON
+              <i class="fas fa-code mr-2"></i> Сгенерировать команду
             </button>
           </div>
           
@@ -881,16 +908,18 @@
             <h3 class="text-xl font-bold mb-4 text-white">Предпросмотр</h3>
             <div class="bg-gray-800 rounded-lg p-6 mb-6">
               <div class="p-4 bg-gray-700 rounded" id="tellraw-preview">
-                Добро пожаловать на Minecraft Tools
+                Добро пожаловать на сервер!
               </div>
             </div>
             
-            <h3 class="text-xl font-bold mb-4 text-white">JSON Текст</h3>
-            <div class="relative bg-gray-800 rounded-lg p-6">
+            <div class="command-header">
+              <h3 class="text-xl font-bold text-white">Команда</h3>
               <div class="copy-btn" data-copy="tellraw-json">
                 <i class="fas fa-copy"></i>
               </div>
-              <pre class="overflow-x-auto" id="tellraw-json"># Сгенерированный JSON появится здесь</pre>
+            </div>
+            <div class="relative bg-gray-800 rounded-lg p-6">
+              <pre class="overflow-x-auto" id="tellraw-json"># Сгенерированная команда появится здесь</pre>
             </div>
           </div>
         </div>
@@ -911,7 +940,7 @@
           <div>
             <div class="mb-6">
               <label class="block text-gray-300 mb-2">Текст MOTD</label>
-              <textarea class="w-full form-input h-32" placeholder="Введите текст MOTD..." id="motd-text">Добро пожаловать на Minecraft Tools\nМакс. 2 строки</textarea>
+              <textarea class="w-full form-input h-32" placeholder="Введите текст MOTD..." id="motd-text">Добро пожаловать на сервер!\nМакс. 2 строки</textarea>
               <p class="text-sm text-gray-400 mt-1">Максимум 2 строки, используйте \n для новой строки</p>
             </div>
             
@@ -944,7 +973,7 @@
               <div class="p-4 bg-gray-900 rounded mb-4">
                 <div class="text-center font-bold text-lg mb-2">Сервер Minecraft</div>
                 <div class="text-center" id="motd-preview">
-                  Добро пожаловать на Minecraft Tools<br>
+                  Добро пожаловать на сервер!<br>
                   Макс. 2 строки
                 </div>
               </div>
@@ -953,11 +982,13 @@
               </div>
             </div>
             
-            <h3 class="text-xl font-bold mb-4 text-white">MOTD Код</h3>
-            <div class="relative bg-gray-800 rounded-lg p-6">
+            <div class="command-header">
+              <h3 class="text-xl font-bold text-white">MOTD Код</h3>
               <div class="copy-btn" data-copy="motd-code">
                 <i class="fas fa-copy"></i>
               </div>
+            </div>
+            <div class="relative bg-gray-800 rounded-lg p-6">
               <pre class="overflow-x-auto" id="motd-code"># Сгенерированный MOTD появится здесь</pre>
             </div>
           </div>
@@ -1011,7 +1042,7 @@
                 <div class="text-format-btn" data-format="o"><span class="italic">Курсив</span></div>
                 <div class="text-format-btn" data-format="n"><span class="underline">Подчерк.</span></div>
                 <div class="text-format-btn" data-format="m"><span class="line-through">Зачерк.</span></div>
-                <div class="text-format-btn" data-format="k"><span>Случайные</span></div>
+                <div class="text-format-btn" data-format="k"><span class="obfuscated-chars">Случайные</span></div>
                 <div class="text-format-btn" data-format="r">Сброс</div>
               </div>
             </div>
@@ -1029,11 +1060,13 @@
               </div>
             </div>
             
-            <h3 class="text-xl font-bold mb-4 text-white">Сгенерированный текст</h3>
-            <div class="relative bg-gray-800 rounded-lg p-6">
+            <div class="command-header">
+              <h3 class="text-xl font-bold text-white">Сгенерированный текст</h3>
               <div class="copy-btn" data-copy="styled-output">
                 <i class="fas fa-copy"></i>
               </div>
+            </div>
+            <div class="relative bg-gray-800 rounded-lg p-6">
               <pre class="overflow-x-auto" id="styled-output"># Сгенерированный текст появится здесь</pre>
             </div>
           </div>
@@ -1168,7 +1201,7 @@
             <div class="bg-gray-800 rounded-lg p-4">
               <div class="flex items-center mb-2">
                 <span class="font-bold mr-2">§k</span>
-                <span class="obfuscated">Случайные символы</span>
+                <span class="obfuscated-chars">^÷/<<<edg6es6u</span>
               </div>
               <p class="text-gray-400">Создает эффект случайных символов</p>
             </div>
@@ -1185,19 +1218,6 @@
     </section>
   </main>
 
-  <footer class="py-8 bg-gray-900 mt-12">
-    <div class="max-w-7xl mx-auto px-4 text-center">
-      <div class="mb-4">
-        <div class="w-16 h-16 rounded-full bg-primary flex items-center justify-center mx-auto mb-4">
-          <i class="fas fa-book text-white text-2xl"></i>
-        </div>
-        <h3 class="text-xl font-bold text-white">Cobalt Книги</h3>
-        <p class="text-gray-400">Инструменты для Minecraft</p>
-      </div>
-      <p class="text-gray-500 text-sm">© 2023 Cobalt Книги. Все права защищены. Minecraft™ является торговым знаком Mojang Synergies AB.</p>
-    </div>
-  </footer>
-
   <script>
     const enchantments = {
       sword: [
@@ -1206,8 +1226,7 @@
         { id: "bane_of_arthropods", name: "Казнь членистоногих", maxLevel: 5, description: "Увеличивает урон по членистоногим", costBase: 2, costPerLevel: 9 },
         { id: "knockback", name: "Отбрасывание", maxLevel: 2, description: "Отбрасывает врагов", costBase: 5, costPerLevel: 20 },
         { id: "fire_aspect", name: "Огненный аспект", maxLevel: 2, description: "Поджигает врагов", costBase: 10, costPerLevel: 20 },
-        { id: "looting", name: "Грабеж", maxLevel: 3, description: "Увеличивает добычу с мобов", costBase: 15, costPerLevel: 9 },
-        { id: "sweeping", name: "Разящий клинок", maxLevel: 3, description: "Увеличивает урон от разящего удара", costBase: 5, costPerLevel: 9 }
+        { id: "looting", name: "Грабеж", maxLevel: 3, description: "Увеличивает добычу с мобов", costBase: 15, costPerLevel: 9 }
       ],
       pickaxe: [
         { id: "efficiency", name: "Эффективность", maxLevel: 5, description: "Увеличивает скорость добычи", costBase: 1, costPerLevel: 10 },
@@ -1221,20 +1240,28 @@
         { id: "blast_protection", name: "Взрывоустойчивость", maxLevel: 4, description: "Уменьшает урон от взрывов", costBase: 4, costPerLevel: 8 },
         { id: "projectile_protection", name: "Защита от снарядов", maxLevel: 4, description: "Уменьшает урон от снарядов", costBase: 2, costPerLevel: 8 },
         { id: "respiration", name: "Подводное дыхание", maxLevel: 3, description: "Увеличивает время дыхания под водой", costBase: 10, costPerLevel: 10 },
-        { id: "aqua_affinity", name: "Притяжение воды", maxLevel: 1, description: "Позволяет быстрее копать под водой", costBase: 20, costPerLevel: 0 },
-        { id: "thorns", name: "Шипы", maxLevel: 3, description: "Наносит урон атакующим", costBase: 20, costPerLevel: 10 }
+        { id: "aqua_affinity", name: "Притяжение воды", maxLevel: 1, description: "Позволяет быстрее копать под водой", costBase: 20, costPerLevel: 0 }
       ]
     };
 
     document.addEventListener('DOMContentLoaded', function() {
-      const tabs = document.querySelectorAll('.tab');
+      // Мобильное меню
+      const burgerBtn = document.getElementById('burgerBtn');
+      const mobileMenu = document.getElementById('mobileMenu');
+      
+      burgerBtn.addEventListener('click', function() {
+        mobileMenu.classList.toggle('active');
+      });
+
+      // Карточки инструментов
+      const toolItems = document.querySelectorAll('.tool-item');
       const sections = document.querySelectorAll('.tool-section');
       
-      tabs.forEach(tab => {
-        tab.addEventListener('click', function() {
+      toolItems.forEach(item => {
+        item.addEventListener('click', function() {
           const tabId = this.getAttribute('data-tab');
           
-          tabs.forEach(t => t.classList.remove('active'));
+          toolItems.forEach(t => t.classList.remove('active'));
           this.classList.add('active');
           
           sections.forEach(section => {
@@ -1246,8 +1273,15 @@
         });
       });
       
-      loadEnchantments('sword');
+      // Инициализация калькулятора зачарований
+      document.getElementById('enchant-item').addEventListener('change', function() {
+        updateEnchantCost();
+      });
       
+      document.getElementById('enchant-select').addEventListener('change', updateEnchantCost);
+      document.getElementById('enchant-level').addEventListener('change', updateEnchantCost);
+      
+      // Обработчики кнопок генерации
       document.getElementById('generate-title-btn').addEventListener('click', generateTitleCommand);
       document.getElementById('generate-sign-btn').addEventListener('click', generateSignCommand);
       document.getElementById('generate-book-btn').addEventListener('click', generateBookCommand);
@@ -1255,24 +1289,7 @@
       document.getElementById('generate-motd-btn').addEventListener('click', generateMOTD);
       document.getElementById('generate-styled-btn').addEventListener('click', generateStyledText);
       
-      document.getElementById('enchant-item').addEventListener('change', function() {
-        loadEnchantments(this.value);
-      });
-      
-      document.getElementById('enchant-level').addEventListener('change', updateEnchantCost);
-      
-      document.querySelectorAll('.wood-option').forEach(option => {
-        option.addEventListener('click', function() {
-          document.querySelectorAll('.wood-option').forEach(opt => {
-            opt.classList.remove('selected');
-          });
-          this.classList.add('selected');
-          if (this.hasAttribute('data-copy')) {
-            document.getElementById('book-copy-preview').textContent = this.textContent;
-          }
-        });
-      });
-      
+      // Обработчики копирования
       document.querySelectorAll('.copy-btn').forEach(btn => {
         btn.addEventListener('click', function() {
           const targetId = this.getAttribute('data-copy');
@@ -1281,6 +1298,7 @@
         });
       });
       
+      // Обновление превью
       document.getElementById('title-text').addEventListener('input', updateTitlePreview);
       document.getElementById('subtitle-text').addEventListener('input', updateTitlePreview);
       document.getElementById('title-duration').addEventListener('input', updateTitlePreview);
@@ -1295,6 +1313,7 @@
       document.getElementById('book-title').addEventListener('input', updateBookPreview);
       document.getElementById('book-author').addEventListener('input', updateBookPreview);
       document.getElementById('book-content').addEventListener('input', updateBookPreview);
+      document.getElementById('book-copy-type').addEventListener('change', updateBookPreview);
       
       document.getElementById('tellraw-text').addEventListener('input', updateTellrawPreview);
       
@@ -1315,74 +1334,31 @@
         });
       });
       
+      // Инициализация превью
       updateTitlePreview();
       updateSignPreview();
       updateBookPreview();
       updateTellrawPreview();
       updateStyledPreview();
+      updateEnchantCost();
     });
     
-    function loadEnchantments(itemType) {
-      const container = document.getElementById('enchantments-container');
-      container.innerHTML = '';
+    function updateEnchantCost() {
+      const itemType = document.getElementById('enchant-item').value;
+      const enchantId = document.getElementById('enchant-select').value;
+      const level = parseInt(document.getElementById('enchant-level').value);
+      
+      let cost = 0;
       
       if (enchantments[itemType]) {
-        enchantments[itemType].forEach(enchant => {
-          const enchantElement = document.createElement('div');
-          enchantElement.className = 'enchant-item';
-          enchantElement.innerHTML = `
-            <div class="font-bold">${enchant.name}</div>
-            <div class="text-sm text-gray-400">Уровень: I-${enchant.maxLevel}</div>
-          `;
-          
-          enchantElement.addEventListener('click', function() {
-            document.querySelectorAll('.enchant-item').forEach(item => {
-              item.classList.remove('selected');
-            });
-            this.classList.add('selected');
-            document.getElementById('enchant-name').textContent = enchant.name;
-            document.getElementById('enchant-description').textContent = enchant.description;
-            document.getElementById('enchant-max-level').textContent = enchant.maxLevel;
-            document.getElementById('enchant-compatibility').textContent = 
-              itemType === 'sword' ? 'Мечи' : 
-              itemType === 'pickaxe' ? 'Кирки' : 
-              itemType === 'helmet' ? 'Шлемы' : 'Разное';
-            
-            const levelSelect = document.getElementById('enchant-level');
-            levelSelect.innerHTML = '';
-            for (let i = 1; i <= enchant.maxLevel; i++) {
-              const option = document.createElement('option');
-              option.value = i;
-              option.textContent = 'I'.repeat(i);
-              levelSelect.appendChild(option);
-            }
-            updateEnchantCost();
-          });
-          
-          container.appendChild(enchantElement);
-        });
-        
-        if (container.firstChild) {
-          container.firstChild.click();
+        const enchant = enchantments[itemType].find(e => e.id === enchantId);
+        if (enchant) {
+          cost = enchant.costBase + (level - 1) * enchant.costPerLevel;
         }
       }
-    }
-    
-    function updateEnchantCost() {
-      const selectedEnchantItem = document.querySelector('.enchant-item.selected');
-      if (!selectedEnchantItem) return;
       
-      const itemType = document.getElementById('enchant-item').value;
-      const enchantName = selectedEnchantItem.querySelector('.font-bold').textContent;
-      const enchant = enchantments[itemType].find(e => e.name === enchantName);
-      
-      if (enchant) {
-        const level = parseInt(document.getElementById('enchant-level').value);
-        const cost = enchant.costBase + (level - 1) * enchant.costPerLevel;
-        document.getElementById('enchant-cost').textContent = cost;
-        document.getElementById('enchant-level-text').textContent = `Уровень: ${'I'.repeat(level)}`;
-        generateEnchantCommand(enchant, level);
-      }
+      document.getElementById('enchant-cost').textContent = cost;
+      document.getElementById('total-cost').textContent = cost;
     }
     
     function generateTitleCommand() {
@@ -1412,9 +1388,7 @@
       const line3 = document.getElementById('sign-line3').value || "";
       const line4 = document.getElementById('sign-line4').value || "";
       const signName = document.getElementById('sign-name').value || "Табличка";
-      
-      const selectedWood = document.querySelector('.wood-option.selected[data-wood]');
-      const woodType = selectedWood ? selectedWood.getAttribute('data-wood') : "oak";
+      const woodType = document.getElementById('sign-wood').value || "oak";
       
       const command = `/give @p ${woodType}_sign{BlockEntityTag:{Text1:'{"text":"${line1}"}',Text2:'{"text":"${line2}"}',Text3:'{"text":"${line3}"}',Text4:'{"text":"${line4}"}'},display:{Name:'{"text":"${signName}"}'}}`;
       
@@ -1426,13 +1400,11 @@
       const author = document.getElementById('book-author').value || "Автор";
       const content = document.getElementById('book-content').value || "Содержание";
       const description = document.getElementById('book-description').value || "";
-      
-      const selectedCopy = document.querySelector('.wood-option.selected[data-copy]');
-      const copyType = selectedCopy ? selectedCopy.getAttribute('data-copy') : "original";
+      const copyType = document.getElementById('book-copy-type').value || "original";
       const generation = 
         copyType === "original" ? 0 :
         copyType === "copy" ? 1 :
-        copyType === "copy-of-copy" ? 2 : 3;
+        copyType === "copy_of_copy" ? 2 : 3;
       
       const pages = [JSON.stringify({text: content.substring(0, 200)})];
       
@@ -1455,12 +1427,7 @@
       const text = document.getElementById('tellraw-text').value || "Сообщение";
       const selector = document.getElementById('tellraw-selector').value || "@a";
       
-      const json = {
-        text: text,
-        color: "white"
-      };
-      
-      const command = `/tellraw ${selector} ${JSON.stringify(json, null, 2)}`;
+      const command = `/tellraw ${selector} {"text":"${text}"}`;
       document.getElementById('tellraw-json').textContent = command;
     }
     
@@ -1488,14 +1455,6 @@
       formattedText += text;
       
       document.getElementById('styled-output').textContent = formattedText;
-    }
-    
-    function generateEnchantCommand(enchant, level) {
-      const item = document.getElementById('enchant-item').value;
-      const version = document.getElementById('enchant-version').value;
-      
-      const command = `/give @p ${item}{Enchantments:[{id:"${enchant.id}",lvl:${level}}]}`;
-      document.getElementById('enchant-command').textContent = command;
     }
     
     function copyToClipboard(text) {
@@ -1545,6 +1504,8 @@
         document.getElementById('book-author').value || "Автор";
       document.getElementById('book-content-preview').textContent = 
         document.getElementById('book-content').value || "Содержание";
+      document.getElementById('book-copy-preview').textContent = 
+        document.getElementById('book-copy-type').options[document.getElementById('book-copy-type').selectedIndex].text;
     }
     
     function updateTellrawPreview() {
