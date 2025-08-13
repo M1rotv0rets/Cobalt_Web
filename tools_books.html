@@ -1,0 +1,1594 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Cobalt Книги</title>
+  <link rel="icon" href="Images/icon.png">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: '#3b82f6',
+            dark: '#0f172a',
+            accent: '#8b5cf6',
+            minecraft: '#3CB043',
+            title: '#f59e0b',
+            sign: '#f97316',
+            enchant: '#ec4899',
+            book: '#10b981',
+            textgen: '#0ea5e9'
+          },
+          animation: {
+            'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite'
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap');
+    
+    body {
+      font-family: 'Montserrat', sans-serif;
+      scroll-behavior: smooth;
+      background: linear-gradient(135deg, #0f172a, #1e293b);
+      color: #f1f5f9;
+      min-height: 100vh;
+    }
+    
+    .sticky-header {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      transition: all 0.4s ease;
+      backdrop-filter: blur(10px);
+      background: rgba(15, 23, 42, 0.85);
+    }
+    
+    .scrolled {
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+    }
+    
+    .tool-card {
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      background: linear-gradient(145deg, #1e293b, #0f172a);
+      border: 1px solid rgba(14, 165, 233, 0.2);
+      border-radius: 12px;
+      overflow: hidden;
+      position: relative;
+    }
+    
+    .tool-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 10px 25px -5px rgba(14, 165, 233, 0.3);
+    }
+    
+    .btn-primary {
+      background: linear-gradient(135deg, #0ea5e9, #0284c7);
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(2, 132, 199, 0.3);
+    }
+    
+    .btn-primary:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 6px 20px rgba(2, 132, 199, 0.5);
+    }
+    
+    .btn-title {
+      background: linear-gradient(135deg, #f59e0b, #d97706);
+      box-shadow: 0 4px 15px rgba(245, 158, 11, 0.3);
+    }
+    
+    .btn-sign {
+      background: linear-gradient(135deg, #f97316, #ea580c);
+      box-shadow: 0 4px 15px rgba(249, 115, 22, 0.3);
+    }
+    
+    .btn-enchant {
+      background: linear-gradient(135deg, #ec4899, #db2777);
+      box-shadow: 0 4px 15px rgba(236, 72, 153, 0.3);
+    }
+    
+    .btn-book {
+      background: linear-gradient(135deg, #10b981, #059669);
+      box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+    }
+    
+    .tool-form {
+      background: rgba(30, 41, 59, 0.7);
+      border-radius: 12px;
+      backdrop-filter: blur(10px);
+      padding: 2rem;
+      border: 1px solid rgba(14, 165, 233, 0.2);
+    }
+    
+    .form-input {
+      background: rgba(15, 23, 42, 0.6);
+      border: 1px solid rgba(14, 165, 233, 0.3);
+      color: white;
+      padding: 0.75rem 1rem;
+      border-radius: 8px;
+      transition: all 0.3s ease;
+    }
+    
+    .form-input:focus {
+      outline: none;
+      border-color: #0ea5e9;
+      box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.3);
+    }
+    
+    .tool-section {
+      padding: 2rem 1rem;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+    
+    .tool-icon {
+      width: 50px;
+      height: 50px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 12px;
+      margin-right: 15px;
+    }
+    
+    .enchant-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+      gap: 15px;
+    }
+    
+    .enchant-item {
+      padding: 15px;
+      border-radius: 8px;
+      background: rgba(30, 41, 59, 0.6);
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    
+    .enchant-item:hover {
+      background: rgba(236, 72, 153, 0.2);
+      transform: translateY(-3px);
+    }
+    
+    .enchant-item.selected {
+      background: rgba(236, 72, 153, 0.3);
+      border: 1px solid #ec4899;
+    }
+    
+    .page-preview {
+      min-height: 200px;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 8px;
+      padding: 20px;
+      font-family: 'Courier New', monospace;
+      line-height: 1.5;
+      font-size: 14px;
+    }
+    
+    .sign-preview {
+      background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200"><rect x="20" y="20" width="160" height="160" fill="%23d4b483" stroke="%238b5cf6" stroke-width="2"/></svg>') no-repeat center;
+      background-size: contain;
+      min-height: 200px;
+      padding: 30px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    
+    .sign-line {
+      background: rgba(255, 255, 255, 0.1);
+      height: 25px;
+      display: flex;
+      align-items: center;
+      padding: 0 10px;
+      border-radius: 4px;
+    }
+    
+    .color-preview {
+      width: 30px;
+      height: 30px;
+      border-radius: 4px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 10px;
+      font-weight: bold;
+    }
+    
+    .tooltip {
+      position: relative;
+      display: inline-block;
+    }
+    
+    .tooltip .tooltiptext {
+      visibility: hidden;
+      width: 120px;
+      background-color: #1e293b;
+      color: #fff;
+      text-align: center;
+      border-radius: 6px;
+      padding: 5px 0;
+      position: absolute;
+      z-index: 1;
+      bottom: 125%;
+      left: 50%;
+      margin-left: -60px;
+      opacity: 0;
+      transition: opacity 0.3s;
+      font-size: 0.8rem;
+      border: 1px solid #0ea5e9;
+    }
+    
+    .tooltip:hover .tooltiptext {
+      visibility: visible;
+      opacity: 1;
+    }
+    
+    .obfuscated-text {
+      font-family: 'Courier New', monospace;
+      letter-spacing: 2px;
+    }
+    
+    .wood-option {
+      display: flex;
+      align-items: center;
+      padding: 8px 12px;
+      border-radius: 8px;
+      background: rgba(30, 41, 59, 0.6);
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    
+    .wood-option:hover {
+      background: rgba(249, 115, 22, 0.2);
+    }
+    
+    .wood-option.selected {
+      background: rgba(249, 115, 22, 0.3);
+      border: 1px solid #f97316;
+    }
+    
+    .wood-color {
+      width: 20px;
+      height: 20px;
+      border-radius: 4px;
+      margin-right: 10px;
+    }
+    
+    .copy-btn {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(14, 165, 233, 0.2);
+      color: #0ea5e9;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      z-index: 10;
+    }
+    
+    .copy-btn:hover {
+      background: rgba(14, 165, 233, 0.3);
+      transform: scale(1.1);
+    }
+    
+    .notification {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: rgba(30, 41, 59, 0.95);
+      color: white;
+      padding: 1rem 2rem;
+      border-radius: 8px;
+      border-left: 4px solid #0ea5e9;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+      transform: translateX(120%);
+      transition: transform 0.4s ease;
+      z-index: 1000;
+      max-width: 350px;
+    }
+    
+    .notification.show {
+      transform: translateX(0);
+    }
+    
+    .notification-title {
+      display: flex;
+      align-items: center;
+      font-weight: bold;
+      margin-bottom: 0.5rem;
+      color: #0ea5e9;
+    }
+    
+    .tabs {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+      overflow-x: auto;
+      padding-bottom: 10px;
+    }
+    
+    .tab {
+      padding: 10px 20px;
+      border-radius: 30px;
+      background: rgba(30, 41, 59, 0.6);
+      cursor: pointer;
+      transition: all 0.3s ease;
+      white-space: nowrap;
+    }
+    
+    .tab:hover {
+      background: rgba(59, 130, 246, 0.2);
+    }
+    
+    .tab.active {
+      background: #3b82f6;
+      color: white;
+    }
+    
+    .text-format-btn {
+      padding: 8px 12px;
+      border-radius: 6px;
+      background: rgba(30, 41, 59, 0.6);
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+    }
+    
+    .text-format-btn:hover {
+      background: rgba(14, 165, 233, 0.2);
+    }
+    
+    .text-format-btn.active {
+      background: rgba(14, 165, 233, 0.3);
+      border: 1px solid #0ea5e9;
+    }
+    
+    .color-btn {
+      width: 30px;
+      height: 30px;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      font-size: 12px;
+    }
+    
+    .color-btn:hover {
+      transform: scale(1.1);
+    }
+    
+    .color-btn.active {
+      box-shadow: 0 0 0 2px white;
+      transform: scale(1.1);
+    }
+    
+    .text-preview {
+      min-height: 100px;
+      background: rgba(0, 0, 0, 0.3);
+      border-radius: 8px;
+      padding: 15px;
+      margin-top: 10px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    .obfuscated {
+      font-family: monospace;
+      letter-spacing: 1px;
+      animation: obfuscate 0.5s infinite;
+    }
+    
+    @keyframes obfuscate {
+      0% { opacity: 0.5; }
+      50% { opacity: 1; }
+      100% { opacity: 0.5; }
+    }
+    
+    .color-table {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 10px;
+      margin-top: 20px;
+    }
+    
+    .color-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 10px;
+      border-radius: 8px;
+      background: rgba(30, 41, 59, 0.6);
+    }
+    
+    .color-box {
+      width: 100%;
+      height: 30px;
+      border-radius: 4px;
+      margin-bottom: 5px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      font-size: 14px;
+    }
+    
+    @media (max-width: 768px) {
+      .tabs {
+        flex-wrap: wrap;
+      }
+      .color-table {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+  </style>
+</head>
+<body class="bg-dark text-gray-200">
+  <header class="sticky-header">
+    <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+      <div class="flex items-center">
+        <div class="w-10 h-10 rounded-full bg-primary flex items-center justify-center mr-3">
+          <i class="fas fa-book text-white"></i>
+        </div>
+        <h1 class="text-2xl font-bold text-white">Cobalt Книги</h1>
+      </div>
+      
+      <div class="hidden lg:flex space-x-8">
+        <a href="index.html" class="hover:text-primary transition-colors flex items-center">
+          <i class="fas fa-home mr-2"></i> Главная
+        </a> 
+        <a href="#" class="text-primary transition-colors flex items-center">
+          <i class="fas fa-tools mr-2"></i> Инструменты
+        </a>
+        <a href="launcher.html" class="hover:text-primary transition-colors flex items-center">
+          <i class="fas fa-rocket mr-2"></i> Лаунчер
+        </a>
+        <a href="https://t.me/sun_community_chat" class="hover:text-primary transition-colors flex items-center">
+          <i class="fas fa-users mr-2"></i> Сообщество
+        </a>
+      </div>
+      
+      <div class="block lg:hidden">
+        <button id="burgerBtn" class="text-white focus:outline-none z-50">
+          <div class="w-6 h-0.5 bg-white my-1"></div>
+          <div class="w-6 h-0.5 bg-white my-1"></div>
+          <div class="w-6 h-0.5 bg-white my-1"></div>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <div id="notification" class="notification">
+    <div class="notification-title">
+      <i class="fas fa-check-circle mr-2"></i> Успешно!
+    </div>
+    <div id="notificationContent">Команда скопирована в буфер обмена</div>
+  </div>
+
+  <main class="max-w-7xl mx-auto px-4 py-8">
+    <div class="text-center mb-12">
+      <h1 class="text-4xl font-bold mb-4 text-white">Инструменты для Minecraft</h1>
+      <p class="text-gray-400 max-w-3xl mx-auto">Генераторы команд, калькуляторы и редакторы для создания уникального игрового опыта</p>
+    </div>
+
+    <div class="tabs mb-8">
+      <div class="tab active" data-tab="title-generator">Генератор Title</div>
+      <div class="tab" data-tab="sign-generator">Генератор Табличек</div>
+      <div class="tab" data-tab="enchant-calculator">Калькулятор Зачарований</div>
+      <div class="tab" data-tab="tellraw-editor">Редактор Tellraw</div>
+      <div class="tab" data-tab="book-editor">Редактор Книг</div>
+      <div class="tab" data-tab="motd-generator">Генератор MOTD</div>
+      <div class="tab" data-tab="text-generator">Генератор Текста</div>
+      <div class="tab" data-tab="color-codes">Коды цветов</div>
+    </div>
+
+    <!-- Title Generator -->
+    <section id="title-generator" class="tool-section">
+      <div class="tool-card p-6">
+        <div class="flex items-center mb-6">
+          <div class="tool-icon bg-title">
+            <i class="fas fa-heading text-white text-xl"></i>
+          </div>
+          <h2 class="text-2xl font-bold text-white">Генератор Title</h2>
+        </div>
+        
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          <div>
+            <div class="mb-6">
+              <label class="block text-gray-300 mb-2">Заголовок (TITLE)</label>
+              <input type="text" class="w-full form-input" placeholder="Введите заголовок" id="title-text">
+            </div>
+            
+            <div class="mb-6">
+              <label class="block text-gray-300 mb-2">Подзаголовок (SUBTITLE)</label>
+              <input type="text" class="w-full form-input" placeholder="Введите подзаголовок (необязательно)" id="subtitle-text">
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+              <div>
+                <label class="block text-gray-300 mb-2">Длительность (сек)</label>
+                <input type="number" class="w-full form-input" value="5" id="title-duration">
+              </div>
+              <div>
+                <label class="block text-gray-300 mb-2">Появление (сек)</label>
+                <input type="number" class="w-full form-input" value="1" id="title-fade-in">
+              </div>
+              <div>
+                <label class="block text-gray-300 mb-2">Исчезновение (сек)</label>
+                <input type="number" class="w-full form-input" value="1" id="title-fade-out">
+              </div>
+            </div>
+            
+            <div class="mb-6">
+              <label class="block text-gray-300 mb-2">Селектор</label>
+              <input type="text" class="w-full form-input" value="@a" id="title-selector">
+              <p class="text-sm text-gray-400 mt-1">Кто увидит этот title? (например: @a, @p, @r)</p>
+            </div>
+            
+            <button class="btn-title px-6 py-3 rounded-lg font-medium text-white w-full" id="generate-title-btn">
+              <i class="fas fa-code mr-2"></i> Создать команду
+            </button>
+          </div>
+          
+          <div>
+            <h3 class="text-xl font-bold mb-4 text-white">Предпросмотр</h3>
+            <div class="bg-gray-800 rounded-lg p-6 mb-6">
+              <div class="text-center mb-4">
+                <div class="text-2xl font-bold text-title mb-2" id="title-preview">Ваш Title</div>
+                <div class="text-lg text-gray-300" id="subtitle-preview">Ваш Subtitle</div>
+              </div>
+              <div class="text-sm text-gray-400">
+                Длительность: <span id="duration-preview">5</span> сек | 
+                Появление: <span id="fadein-preview">1</span> сек | 
+                Исчезновение: <span id="fadeout-preview">1</span> сек
+              </div>
+            </div>
+            
+            <h3 class="text-xl font-bold mb-4 text-white">Команда</h3>
+            <div class="relative bg-gray-800 rounded-lg p-6">
+              <div class="copy-btn" data-copy="title-command">
+                <i class="fas fa-copy"></i>
+              </div>
+              <pre class="overflow-x-auto" id="title-command"># Сгенерированная команда появится здесь</pre>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Sign Generator -->
+    <section id="sign-generator" class="tool-section" style="display: none;">
+      <div class="tool-card p-6">
+        <div class="flex items-center mb-6">
+          <div class="tool-icon bg-sign">
+            <i class="fas fa-sign text-white text-xl"></i>
+          </div>
+          <h2 class="text-2xl font-bold text-white">Генератор Табличек</h2>
+        </div>
+        
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          <div>
+            <div class="mb-6">
+              <label class="block text-gray-300 mb-2">Текст таблички</label>
+              <div class="space-y-3">
+                <input type="text" class="w-full form-input" placeholder="Строка 1" id="sign-line1">
+                <input type="text" class="w-full form-input" placeholder="Строка 2" id="sign-line2">
+                <input type="text" class="w-full form-input" placeholder="Строка 3" id="sign-line3">
+                <input type="text" class="w-full form-input" placeholder="Строка 4" id="sign-line4">
+              </div>
+            </div>
+            
+            <div class="mb-6">
+              <label class="block text-gray-300 mb-2">Вид таблички</label>
+              <div class="grid grid-cols-2 gap-3">
+                <div class="wood-option selected" data-wood="oak">
+                  <div class="wood-color bg-yellow-800"></div>
+                  <span>Дубовая</span>
+                </div>
+                <div class="wood-option" data-wood="spruce">
+                  <div class="wood-color bg-yellow-900"></div>
+                  <span>Еловая</span>
+                </div>
+                <div class="wood-option" data-wood="birch">
+                  <div class="wood-color bg-yellow-100"></div>
+                  <span>Берёзовая</span>
+                </div>
+                <div class="wood-option" data-wood="jungle">
+                  <div class="wood-color bg-yellow-700"></div>
+                  <span>Тропическая</span>
+                </div>
+              </div>
+            </div>
+            
+            <div class="mb-6">
+              <label class="block text-gray-300 mb-2">Название таблички</label>
+              <input type="text" class="w-full form-input" placeholder="Пользовательская табличка" id="sign-name">
+              <p class="text-sm text-gray-400 mt-1">Необязательно. Можно использовать цветной текст</p>
+            </div>
+            
+            <button class="btn-sign px-6 py-3 rounded-lg font-medium text-white w-full" id="generate-sign-btn">
+              <i class="fas fa-code mr-2"></i> Создать команду
+            </button>
+          </div>
+          
+          <div>
+            <h3 class="text-xl font-bold mb-4 text-white">Предпросмотр</h3>
+            <div class="sign-preview mb-6">
+              <div class="sign-line" id="sign-preview1">Строка 1</div>
+              <div class="sign-line" id="sign-preview2">Строка 2</div>
+              <div class="sign-line" id="sign-preview3">Строка 3</div>
+              <div class="sign-line" id="sign-preview4">Строка 4</div>
+            </div>
+            
+            <h3 class="text-xl font-bold mb-4 text-white">Команда</h3>
+            <div class="relative bg-gray-800 rounded-lg p-6">
+              <div class="copy-btn" data-copy="sign-command">
+                <i class="fas fa-copy"></i>
+              </div>
+              <pre class="overflow-x-auto" id="sign-command"># Сгенерированная команда появится здесь</pre>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Enchant Calculator -->
+    <section id="enchant-calculator" class="tool-section" style="display: none;">
+      <div class="tool-card p-6">
+        <div class="flex items-center mb-6">
+          <div class="tool-icon bg-enchant">
+            <i class="fas fa-hat-wizard text-white text-xl"></i>
+          </div>
+          <h2 class="text-2xl font-bold text-white">Калькулятор Зачарований</h2>
+        </div>
+        
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          <div>
+            <div class="mb-6">
+              <label class="block text-gray-300 mb-2">Предмет для зачарования</label>
+              <select class="w-full form-input" id="enchant-item">
+                <option value="sword">Меч</option>
+                <option value="pickaxe">Кирка</option>
+                <option value="axe">Топор</option>
+                <option value="shovel">Лопата</option>
+                <option value="hoe">Мотыга</option>
+                <option value="helmet">Шлем</option>
+                <option value="chestplate">Нагрудник</option>
+                <option value="leggings">Поножи</option>
+                <option value="boots">Ботинки</option>
+                <option value="bow">Лук</option>
+                <option value="fishing_rod">Удочка</option>
+                <option value="book">Книга</option>
+              </select>
+            </div>
+            
+            <div class="mb-6">
+              <label class="block text-gray-300 mb-2">Версия Minecraft</label>
+              <select class="w-full form-input" id="enchant-version">
+                <option value="1.16">Minecraft 1.16</option>
+                <option value="1.15">Minecraft 1.15</option>
+                <option value="1.14">Minecraft 1.14</option>
+                <option value="1.13">Minecraft 1.13</option>
+                <option value="1.12">Minecraft 1.12</option>
+                <option value="1.11">Minecraft 1.11</option>
+                <option value="1.10">Minecraft 1.10</option>
+                <option value="1.9">Minecraft 1.9</option>
+                <option value="1.8">Minecraft 1.8</option>
+              </select>
+            </div>
+            
+            <div class="mb-6">
+              <label class="block text-gray-300 mb-2">Выберите зачарование</label>
+              <div class="enchant-grid" id="enchantments-container">
+              </div>
+            </div>
+            
+            <div class="grid grid-cols-2 gap-4 mb-6">
+              <div>
+                <label class="block text-gray-300 mb-2">Уровень</label>
+                <select class="w-full form-input" id="enchant-level">
+                  <option value="1">I</option>
+                  <option value="2">II</option>
+                  <option value="3">III</option>
+                  <option value="4">IV</option>
+                  <option value="5">V</option>
+                </select>
+              </div>
+              <div>
+                <label class="block text-gray-300 mb-2">Опыт на использование</label>
+                <div class="w-full form-input bg-gray-800 flex items-center" id="enchant-cost">0</div>
+              </div>
+            </div>
+          </div>
+          
+          <div>
+            <h3 class="text-xl font-bold mb-4 text-white">Информация о зачаровании</h3>
+            <div class="bg-gray-800 rounded-lg p-6 mb-6">
+              <div class="flex items-center mb-4">
+                <div class="w-12 h-12 rounded-lg bg-enchant flex items-center justify-center mr-4">
+                  <i class="fas fa-star text-white"></i>
+                </div>
+                <div>
+                  <h4 class="text-xl font-bold" id="enchant-name">Зачарование</h4>
+                  <p class="text-gray-300" id="enchant-level-text">Уровень: I</p>
+                </div>
+              </div>
+              <div class="mb-4">
+                <p class="text-gray-300" id="enchant-description">Описание зачарования появится здесь</p>
+              </div>
+              <div class="flex justify-between items-center">
+                <div>
+                  <p class="text-gray-400 text-sm">Макс. уровень:</p>
+                  <p class="font-bold" id="enchant-max-level">V</p>
+                </div>
+                <div>
+                  <p class="text-gray-400 text-sm">Совместимость:</p>
+                  <p class="font-bold" id="enchant-compatibility">Мечи</p>
+                </div>
+              </div>
+            </div>
+            
+            <h3 class="text-xl font-bold mb-4 text-white">Команда</h3>
+            <div class="relative bg-gray-800 rounded-lg p-6">
+              <div class="copy-btn" data-copy="enchant-command">
+                <i class="fas fa-copy"></i>
+              </div>
+              <pre class="overflow-x-auto" id="enchant-command"># Сгенерированная команда появится здесь</pre>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Book Editor -->
+    <section id="book-editor" class="tool-section" style="display: none;">
+      <div class="tool-card p-6">
+        <div class="flex items-center mb-6">
+          <div class="tool-icon bg-book">
+            <i class="fas fa-book-open text-white text-xl"></i>
+          </div>
+          <h2 class="text-2xl font-bold text-white">Редактор Книг</h2>
+        </div>
+        
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          <div>
+            <div class="mb-6">
+              <label class="block text-gray-300 mb-2">Содержание книги</label>
+              <textarea class="w-full form-input h-40" placeholder="Введите текст книги..." id="book-content">Книга с Minecraft Tools
+*здесь был Azerus Team*
+
+(не более 15 строк на страницу, около 25 символов в строке)</textarea>
+              <p class="text-sm text-gray-400 mt-1">Максимум 100 страниц, 256 символов на страницу</p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+              <div>
+                <label class="block text-gray-300 mb-2">Название книги</label>
+                <input type="text" class="w-full form-input" value="Книга" id="book-title">
+              </div>
+              <div>
+                <label class="block text-gray-300 mb-2">Автор книги</label>
+                <input type="text" class="w-full form-input" value="http://minecraft.tools/" id="book-author">
+              </div>
+            </div>
+            
+            <div class="mb-6">
+              <label class="block text-gray-300 mb-2">Описание книги</label>
+              <textarea class="w-full form-input" placeholder="Добавьте всплывающую подсказку" id="book-description"></textarea>
+              <p class="text-sm text-gray-400 mt-1">Необязательно, будет отображаться как всплывающая подсказка</p>
+            </div>
+            
+            <div class="mb-6">
+              <label class="block text-gray-300 mb-2">Тип копии</label>
+              <div class="grid grid-cols-4 gap-2">
+                <div class="wood-option selected" data-copy="original">
+                  <span>Оригинал</span>
+                </div>
+                <div class="wood-option" data-copy="copy">
+                  <span>Копия</span>
+                </div>
+                <div class="wood-option" data-copy="copy-of-copy">
+                  <span>Копия копии</span>
+                </div>
+                <div class="wood-option" data-copy="tattered">
+                  <span>Оборванный</span>
+                </div>
+              </div>
+            </div>
+            
+            <button class="btn-book px-6 py-3 rounded-lg font-medium text-white w-full" id="generate-book-btn">
+              <i class="fas fa-code mr-2"></i> Создать команду
+            </button>
+          </div>
+          
+          <div>
+            <h3 class="text-xl font-bold mb-4 text-white">Предпросмотр</h3>
+            <div class="bg-gray-800 rounded-lg p-6 mb-6">
+              <div class="flex justify-between items-center mb-4">
+                <h4 class="text-xl font-bold" id="book-title-preview">Книга</h4>
+                <span class="text-sm text-gray-400" id="book-author-preview">http://minecraft.tools/</span>
+              </div>
+              
+              <div class="page-preview mb-4" id="book-content-preview">
+                Книга с Minecraft Tools<br>
+                *здесь был Azerus Team*<br><br>
+                (не более 15 строк на страницу, около 25 символов в строке)
+              </div>
+              
+              <div class="flex justify-between items-center text-sm text-gray-400">
+                <div>Тип: <span id="book-copy-preview">Оригинал</span></div>
+                <div>Страница: <span id="book-page-preview">1</span> из <span id="book-total-pages">1</span></div>
+              </div>
+            </div>
+            
+            <h3 class="text-xl font-bold mb-4 text-white">Команда</h3>
+            <div class="relative bg-gray-800 rounded-lg p-6">
+              <div class="copy-btn" data-copy="book-command">
+                <i class="fas fa-copy"></i>
+              </div>
+              <pre class="overflow-x-auto" id="book-command"># Сгенерированная команда появится здесь</pre>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Tellraw Editor -->
+    <section id="tellraw-editor" class="tool-section" style="display: none;">
+      <div class="tool-card p-6">
+        <div class="flex items-center mb-6">
+          <div class="tool-icon bg-primary">
+            <i class="fas fa-terminal text-white text-xl"></i>
+          </div>
+          <h2 class="text-2xl font-bold text-white">Редактор Tellraw</h2>
+        </div>
+        
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          <div>
+            <div class="mb-6">
+              <label class="block text-gray-300 mb-2">Текст сообщения</label>
+              <textarea class="w-full form-input h-40" placeholder="Введите текст..." id="tellraw-text">Добро пожаловать на Minecraft Tools</textarea>
+              <p class="text-sm text-gray-400 mt-1">Поддерживает JSON форматирование</p>
+            </div>
+            
+            <div class="mb-6">
+              <label class="block text-gray-300 mb-2">Селектор</label>
+              <input type="text" class="w-full form-input" value="@a" id="tellraw-selector">
+              <p class="text-sm text-gray-400 mt-1">Кто получит сообщение? (например: @a, @p)</p>
+            </div>
+            
+            <button class="btn-primary px-6 py-3 rounded-lg font-medium text-white w-full" id="generate-tellraw-btn">
+              <i class="fas fa-code mr-2"></i> Сгенерировать JSON
+            </button>
+          </div>
+          
+          <div>
+            <h3 class="text-xl font-bold mb-4 text-white">Предпросмотр</h3>
+            <div class="bg-gray-800 rounded-lg p-6 mb-6">
+              <div class="p-4 bg-gray-700 rounded" id="tellraw-preview">
+                Добро пожаловать на Minecraft Tools
+              </div>
+            </div>
+            
+            <h3 class="text-xl font-bold mb-4 text-white">JSON Текст</h3>
+            <div class="relative bg-gray-800 rounded-lg p-6">
+              <div class="copy-btn" data-copy="tellraw-json">
+                <i class="fas fa-copy"></i>
+              </div>
+              <pre class="overflow-x-auto" id="tellraw-json"># Сгенерированный JSON появится здесь</pre>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- MOTD Generator -->
+    <section id="motd-generator" class="tool-section" style="display: none;">
+      <div class="tool-card p-6">
+        <div class="flex items-center mb-6">
+          <div class="tool-icon bg-accent">
+            <i class="fas fa-server text-white text-xl"></i>
+          </div>
+          <h2 class="text-2xl font-bold text-white">Генератор MOTD</h2>
+        </div>
+        
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          <div>
+            <div class="mb-6">
+              <label class="block text-gray-300 mb-2">Текст MOTD</label>
+              <textarea class="w-full form-input h-32" placeholder="Введите текст MOTD..." id="motd-text">Добро пожаловать на Minecraft Tools\nМакс. 2 строки</textarea>
+              <p class="text-sm text-gray-400 mt-1">Максимум 2 строки, используйте \n для новой строки</p>
+            </div>
+            
+            <div class="mb-6">
+              <label class="block text-gray-300 mb-2">Цветовая схема</label>
+              <div class="grid grid-cols-6 gap-2">
+                <div class="color-preview bg-[#AA0000] text-white" data-color="dark_red">§4</div>
+                <div class="color-preview bg-[#FF5555] text-black" data-color="red">§c</div>
+                <div class="color-preview bg-[#FFAA00] text-black" data-color="gold">§6</div>
+                <div class="color-preview bg-[#FFFF55] text-black" data-color="yellow">§e</div>
+                <div class="color-preview bg-[#00AA00] text-white" data-color="dark_green">§2</div>
+                <div class="color-preview bg-[#55FF55] text-black" data-color="green">§a</div>
+                <div class="color-preview bg-[#55FFFF] text-black" data-color="aqua">§b</div>
+                <div class="color-preview bg-[#00AAAA] text-white" data-color="dark_aqua">§3</div>
+                <div class="color-preview bg-[#0000AA] text-white" data-color="dark_blue">§1</div>
+                <div class="color-preview bg-[#5555FF] text-white" data-color="blue">§9</div>
+                <div class="color-preview bg-[#FF55FF] text-black" data-color="light_purple">§d</div>
+                <div class="color-preview bg-[#AA00AA] text-white" data-color="dark_purple">§5</div>
+              </div>
+            </div>
+            
+            <button class="btn-primary px-6 py-3 rounded-lg font-medium text-white w-full" id="generate-motd-btn">
+              <i class="fas fa-code mr-2"></i> Создать MOTD
+            </button>
+          </div>
+          
+          <div>
+            <h3 class="text-xl font-bold mb-4 text-white">Предпросмотр MOTD</h3>
+            <div class="bg-gray-800 rounded-lg p-6 mb-6">
+              <div class="p-4 bg-gray-900 rounded mb-4">
+                <div class="text-center font-bold text-lg mb-2">Сервер Minecraft</div>
+                <div class="text-center" id="motd-preview">
+                  Добро пожаловать на Minecraft Tools<br>
+                  Макс. 2 строки
+                </div>
+              </div>
+              <div class="text-sm text-gray-400">
+                Скопируйте и вставьте в файл <strong>server.properties</strong>, после "MOTD="
+              </div>
+            </div>
+            
+            <h3 class="text-xl font-bold mb-4 text-white">MOTD Код</h3>
+            <div class="relative bg-gray-800 rounded-lg p-6">
+              <div class="copy-btn" data-copy="motd-code">
+                <i class="fas fa-copy"></i>
+              </div>
+              <pre class="overflow-x-auto" id="motd-code"># Сгенерированный MOTD появится здесь</pre>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Text Generator -->
+    <section id="text-generator" class="tool-section" style="display: none;">
+      <div class="tool-card p-6">
+        <div class="flex items-center mb-6">
+          <div class="tool-icon bg-textgen">
+            <i class="fas fa-font text-white text-xl"></i>
+          </div>
+          <h2 class="text-2xl font-bold text-white">Генератор Стилизованного Текста</h2>
+        </div>
+        
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          <div>
+            <div class="mb-6">
+              <label class="block text-gray-300 mb-2">Введите текст</label>
+              <textarea class="w-full form-input h-32" placeholder="Введите текст для стилизации..." id="styled-text">Привет, мир!</textarea>
+            </div>
+            
+            <div class="mb-6">
+              <label class="block text-gray-300 mb-2">Выберите цвет</label>
+              <div class="grid grid-cols-8 gap-2 mb-3">
+                <div class="color-btn bg-[#000000] text-white" data-color="0">§0</div>
+                <div class="color-btn bg-[#0000AA] text-white" data-color="1">§1</div>
+                <div class="color-btn bg-[#00AA00] text-white" data-color="2">§2</div>
+                <div class="color-btn bg-[#00AAAA] text-white" data-color="3">§3</div>
+                <div class="color-btn bg-[#AA0000] text-white" data-color="4">§4</div>
+                <div class="color-btn bg-[#AA00AA] text-white" data-color="5">§5</div>
+                <div class="color-btn bg-[#FFAA00] text-black" data-color="6">§6</div>
+                <div class="color-btn bg-[#AAAAAA] text-black" data-color="7">§7</div>
+                <div class="color-btn bg-[#555555] text-white" data-color="8">§8</div>
+                <div class="color-btn bg-[#5555FF] text-white" data-color="9">§9</div>
+                <div class="color-btn bg-[#55FF55] text-black" data-color="a">§a</div>
+                <div class="color-btn bg-[#55FFFF] text-black" data-color="b">§b</div>
+                <div class="color-btn bg-[#FF5555] text-black" data-color="c">§c</div>
+                <div class="color-btn bg-[#FF55FF] text-black" data-color="d">§d</div>
+                <div class="color-btn bg-[#FFFF55] text-black" data-color="e">§e</div>
+                <div class="color-btn bg-[#FFFFFF] text-black" data-color="f">§f</div>
+              </div>
+            </div>
+            
+            <div class="mb-6">
+              <label class="block text-gray-300 mb-2">Форматирование</label>
+              <div class="grid grid-cols-3 gap-3">
+                <div class="text-format-btn" data-format="l"><span class="font-bold">Жирный</span></div>
+                <div class="text-format-btn" data-format="o"><span class="italic">Курсив</span></div>
+                <div class="text-format-btn" data-format="n"><span class="underline">Подчерк.</span></div>
+                <div class="text-format-btn" data-format="m"><span class="line-through">Зачерк.</span></div>
+                <div class="text-format-btn" data-format="k"><span>Случайные</span></div>
+                <div class="text-format-btn" data-format="r">Сброс</div>
+              </div>
+            </div>
+            
+            <button class="btn-primary px-6 py-3 rounded-lg font-medium text-white w-full" id="generate-styled-btn">
+              <i class="fas fa-code mr-2"></i> Сгенерировать текст
+            </button>
+          </div>
+          
+          <div>
+            <h3 class="text-xl font-bold mb-4 text-white">Предпросмотр</h3>
+            <div class="bg-gray-800 rounded-lg p-6 mb-6">
+              <div class="p-4 bg-gray-700 rounded" id="styled-preview">
+                Привет, мир!
+              </div>
+            </div>
+            
+            <h3 class="text-xl font-bold mb-4 text-white">Сгенерированный текст</h3>
+            <div class="relative bg-gray-800 rounded-lg p-6">
+              <div class="copy-btn" data-copy="styled-output">
+                <i class="fas fa-copy"></i>
+              </div>
+              <pre class="overflow-x-auto" id="styled-output"># Сгенерированный текст появится здесь</pre>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Color Codes -->
+    <section id="color-codes" class="tool-section" style="display: none;">
+      <div class="tool-card p-6">
+        <div class="flex items-center mb-6">
+          <div class="tool-icon bg-textgen">
+            <i class="fas fa-palette text-white text-xl"></i>
+          </div>
+          <h2 class="text-2xl font-bold text-white">Коды цветов Minecraft</h2>
+        </div>
+        
+        <div class="color-table">
+          <div class="color-item">
+            <div class="color-box bg-[#000000] text-white">§0</div>
+            <div>black</div>
+            <div class="text-sm text-gray-400">Черный</div>
+          </div>
+          <div class="color-item">
+            <div class="color-box bg-[#0000AA] text-white">§1</div>
+            <div>dark_blue</div>
+            <div class="text-sm text-gray-400">Темно-синий</div>
+          </div>
+          <div class="color-item">
+            <div class="color-box bg-[#00AA00] text-white">§2</div>
+            <div>dark_green</div>
+            <div class="text-sm text-gray-400">Темно-зеленый</div>
+          </div>
+          <div class="color-item">
+            <div class="color-box bg-[#00AAAA] text-white">§3</div>
+            <div>dark_aqua</div>
+            <div class="text-sm text-gray-400">Темно-бирюзовый</div>
+          </div>
+          <div class="color-item">
+            <div class="color-box bg-[#AA0000] text-white">§4</div>
+            <div>dark_red</div>
+            <div class="text-sm text-gray-400">Темно-красный</div>
+          </div>
+          <div class="color-item">
+            <div class="color-box bg-[#AA00AA] text-white">§5</div>
+            <div>dark_purple</div>
+            <div class="text-sm text-gray-400">Темно-фиолетовый</div>
+          </div>
+          <div class="color-item">
+            <div class="color-box bg-[#FFAA00] text-black">§6</div>
+            <div>gold</div>
+            <div class="text-sm text-gray-400">Золотой</div>
+          </div>
+          <div class="color-item">
+            <div class="color-box bg-[#AAAAAA] text-black">§7</div>
+            <div>gray</div>
+            <div class="text-sm text-gray-400">Серый</div>
+          </div>
+          <div class="color-item">
+            <div class="color-box bg-[#555555] text-white">§8</div>
+            <div>dark_gray</div>
+            <div class="text-sm text-gray-400">Темно-серый</div>
+          </div>
+          <div class="color-item">
+            <div class="color-box bg-[#5555FF] text-white">§9</div>
+            <div>blue</div>
+            <div class="text-sm text-gray-400">Синий</div>
+          </div>
+          <div class="color-item">
+            <div class="color-box bg-[#55FF55] text-black">§a</div>
+            <div>green</div>
+            <div class="text-sm text-gray-400">Зеленый</div>
+          </div>
+          <div class="color-item">
+            <div class="color-box bg-[#55FFFF] text-black">§b</div>
+            <div>aqua</div>
+            <div class="text-sm text-gray-400">Бирюзовый</div>
+          </div>
+          <div class="color-item">
+            <div class="color-box bg-[#FF5555] text-black">§c</div>
+            <div>red</div>
+            <div class="text-sm text-gray-400">Красный</div>
+          </div>
+          <div class="color-item">
+            <div class="color-box bg-[#FF55FF] text-black">§d</div>
+            <div>light_purple</div>
+            <div class="text-sm text-gray-400">Фиолетовый</div>
+          </div>
+          <div class="color-item">
+            <div class="color-box bg-[#FFFF55] text-black">§e</div>
+            <div>yellow</div>
+            <div class="text-sm text-gray-400">Желтый</div>
+          </div>
+          <div class="color-item">
+            <div class="color-box bg-[#FFFFFF] text-black">§f</div>
+            <div>white</div>
+            <div class="text-sm text-gray-400">Белый</div>
+          </div>
+        </div>
+        
+        <div class="mt-8">
+          <h3 class="text-xl font-bold mb-4 text-white">Коды форматирования</h3>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="bg-gray-800 rounded-lg p-4">
+              <div class="flex items-center mb-2">
+                <span class="font-bold mr-2">§l</span>
+                <span class="font-bold">Жирный текст</span>
+              </div>
+              <p class="text-gray-400">Делает текст жирным</p>
+            </div>
+            <div class="bg-gray-800 rounded-lg p-4">
+              <div class="flex items-center mb-2">
+                <span class="font-bold mr-2">§o</span>
+                <span class="italic">Курсивный текст</span>
+              </div>
+              <p class="text-gray-400">Делает текст курсивным</p>
+            </div>
+            <div class="bg-gray-800 rounded-lg p-4">
+              <div class="flex items-center mb-2">
+                <span class="font-bold mr-2">§n</span>
+                <span class="underline">Подчеркнутый текст</span>
+              </div>
+              <p class="text-gray-400">Подчеркивает текст</p>
+            </div>
+            <div class="bg-gray-800 rounded-lg p-4">
+              <div class="flex items-center mb-2">
+                <span class="font-bold mr-2">§m</span>
+                <span class="line-through">Зачеркнутый текст</span>
+              </div>
+              <p class="text-gray-400">Зачеркивает текст</p>
+            </div>
+            <div class="bg-gray-800 rounded-lg p-4">
+              <div class="flex items-center mb-2">
+                <span class="font-bold mr-2">§k</span>
+                <span class="obfuscated">Случайные символы</span>
+              </div>
+              <p class="text-gray-400">Создает эффект случайных символов</p>
+            </div>
+            <div class="bg-gray-800 rounded-lg p-4">
+              <div class="flex items-center mb-2">
+                <span class="font-bold mr-2">§r</span>
+                <span>Сброс форматирования</span>
+              </div>
+              <p class="text-gray-400">Сбрасывает все форматирование</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="py-8 bg-gray-900 mt-12">
+    <div class="max-w-7xl mx-auto px-4 text-center">
+      <div class="mb-4">
+        <div class="w-16 h-16 rounded-full bg-primary flex items-center justify-center mx-auto mb-4">
+          <i class="fas fa-book text-white text-2xl"></i>
+        </div>
+        <h3 class="text-xl font-bold text-white">Cobalt Книги</h3>
+        <p class="text-gray-400">Инструменты для Minecraft</p>
+      </div>
+      <p class="text-gray-500 text-sm">© 2023 Cobalt Книги. Все права защищены. Minecraft™ является торговым знаком Mojang Synergies AB.</p>
+    </div>
+  </footer>
+
+  <script>
+    const enchantments = {
+      sword: [
+        { id: "sharpness", name: "Острота", maxLevel: 5, description: "Увеличивает урон", costBase: 1, costPerLevel: 11 },
+        { id: "smite", name: "Небесная кара", maxLevel: 5, description: "Увеличивает урон по нежити", costBase: 2, costPerLevel: 9 },
+        { id: "bane_of_arthropods", name: "Казнь членистоногих", maxLevel: 5, description: "Увеличивает урон по членистоногим", costBase: 2, costPerLevel: 9 },
+        { id: "knockback", name: "Отбрасывание", maxLevel: 2, description: "Отбрасывает врагов", costBase: 5, costPerLevel: 20 },
+        { id: "fire_aspect", name: "Огненный аспект", maxLevel: 2, description: "Поджигает врагов", costBase: 10, costPerLevel: 20 },
+        { id: "looting", name: "Грабеж", maxLevel: 3, description: "Увеличивает добычу с мобов", costBase: 15, costPerLevel: 9 },
+        { id: "sweeping", name: "Разящий клинок", maxLevel: 3, description: "Увеличивает урон от разящего удара", costBase: 5, costPerLevel: 9 }
+      ],
+      pickaxe: [
+        { id: "efficiency", name: "Эффективность", maxLevel: 5, description: "Увеличивает скорость добычи", costBase: 1, costPerLevel: 10 },
+        { id: "silk_touch", name: "Шелковое касание", maxLevel: 1, description: "Добывает блоки в их исходном виде", costBase: 15, costPerLevel: 0 },
+        { id: "fortune", name: "Удача", maxLevel: 3, description: "Увеличивает количество добычи", costBase: 15, costPerLevel: 9 },
+        { id: "unbreaking", name: "Прочность", maxLevel: 3, description: "Уменьшает износ инструмента", costBase: 5, costPerLevel: 8 }
+      ],
+      helmet: [
+        { id: "protection", name: "Защита", maxLevel: 4, description: "Уменьшает получаемый урон", costBase: 1, costPerLevel: 11 },
+        { id: "fire_protection", name: "Огнеупорность", maxLevel: 4, description: "Уменьшает урон от огня", costBase: 2, costPerLevel: 8 },
+        { id: "blast_protection", name: "Взрывоустойчивость", maxLevel: 4, description: "Уменьшает урон от взрывов", costBase: 4, costPerLevel: 8 },
+        { id: "projectile_protection", name: "Защита от снарядов", maxLevel: 4, description: "Уменьшает урон от снарядов", costBase: 2, costPerLevel: 8 },
+        { id: "respiration", name: "Подводное дыхание", maxLevel: 3, description: "Увеличивает время дыхания под водой", costBase: 10, costPerLevel: 10 },
+        { id: "aqua_affinity", name: "Притяжение воды", maxLevel: 1, description: "Позволяет быстрее копать под водой", costBase: 20, costPerLevel: 0 },
+        { id: "thorns", name: "Шипы", maxLevel: 3, description: "Наносит урон атакующим", costBase: 20, costPerLevel: 10 }
+      ]
+    };
+
+    document.addEventListener('DOMContentLoaded', function() {
+      const tabs = document.querySelectorAll('.tab');
+      const sections = document.querySelectorAll('.tool-section');
+      
+      tabs.forEach(tab => {
+        tab.addEventListener('click', function() {
+          const tabId = this.getAttribute('data-tab');
+          
+          tabs.forEach(t => t.classList.remove('active'));
+          this.classList.add('active');
+          
+          sections.forEach(section => {
+            section.style.display = 'none';
+            if (section.id === tabId) {
+              section.style.display = 'block';
+            }
+          });
+        });
+      });
+      
+      loadEnchantments('sword');
+      
+      document.getElementById('generate-title-btn').addEventListener('click', generateTitleCommand);
+      document.getElementById('generate-sign-btn').addEventListener('click', generateSignCommand);
+      document.getElementById('generate-book-btn').addEventListener('click', generateBookCommand);
+      document.getElementById('generate-tellraw-btn').addEventListener('click', generateTellraw);
+      document.getElementById('generate-motd-btn').addEventListener('click', generateMOTD);
+      document.getElementById('generate-styled-btn').addEventListener('click', generateStyledText);
+      
+      document.getElementById('enchant-item').addEventListener('change', function() {
+        loadEnchantments(this.value);
+      });
+      
+      document.getElementById('enchant-level').addEventListener('change', updateEnchantCost);
+      
+      document.querySelectorAll('.wood-option').forEach(option => {
+        option.addEventListener('click', function() {
+          document.querySelectorAll('.wood-option').forEach(opt => {
+            opt.classList.remove('selected');
+          });
+          this.classList.add('selected');
+          if (this.hasAttribute('data-copy')) {
+            document.getElementById('book-copy-preview').textContent = this.textContent;
+          }
+        });
+      });
+      
+      document.querySelectorAll('.copy-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+          const targetId = this.getAttribute('data-copy');
+          const text = document.getElementById(targetId).textContent;
+          copyToClipboard(text);
+        });
+      });
+      
+      document.getElementById('title-text').addEventListener('input', updateTitlePreview);
+      document.getElementById('subtitle-text').addEventListener('input', updateTitlePreview);
+      document.getElementById('title-duration').addEventListener('input', updateTitlePreview);
+      document.getElementById('title-fade-in').addEventListener('input', updateTitlePreview);
+      document.getElementById('title-fade-out').addEventListener('input', updateTitlePreview);
+      
+      document.getElementById('sign-line1').addEventListener('input', updateSignPreview);
+      document.getElementById('sign-line2').addEventListener('input', updateSignPreview);
+      document.getElementById('sign-line3').addEventListener('input', updateSignPreview);
+      document.getElementById('sign-line4').addEventListener('input', updateSignPreview);
+      
+      document.getElementById('book-title').addEventListener('input', updateBookPreview);
+      document.getElementById('book-author').addEventListener('input', updateBookPreview);
+      document.getElementById('book-content').addEventListener('input', updateBookPreview);
+      
+      document.getElementById('tellraw-text').addEventListener('input', updateTellrawPreview);
+      
+      document.getElementById('styled-text').addEventListener('input', updateStyledPreview);
+      
+      document.querySelectorAll('.color-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+          document.querySelectorAll('.color-btn').forEach(b => b.classList.remove('active'));
+          this.classList.add('active');
+          updateStyledPreview();
+        });
+      });
+      
+      document.querySelectorAll('.text-format-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+          this.classList.toggle('active');
+          updateStyledPreview();
+        });
+      });
+      
+      updateTitlePreview();
+      updateSignPreview();
+      updateBookPreview();
+      updateTellrawPreview();
+      updateStyledPreview();
+    });
+    
+    function loadEnchantments(itemType) {
+      const container = document.getElementById('enchantments-container');
+      container.innerHTML = '';
+      
+      if (enchantments[itemType]) {
+        enchantments[itemType].forEach(enchant => {
+          const enchantElement = document.createElement('div');
+          enchantElement.className = 'enchant-item';
+          enchantElement.innerHTML = `
+            <div class="font-bold">${enchant.name}</div>
+            <div class="text-sm text-gray-400">Уровень: I-${enchant.maxLevel}</div>
+          `;
+          
+          enchantElement.addEventListener('click', function() {
+            document.querySelectorAll('.enchant-item').forEach(item => {
+              item.classList.remove('selected');
+            });
+            this.classList.add('selected');
+            document.getElementById('enchant-name').textContent = enchant.name;
+            document.getElementById('enchant-description').textContent = enchant.description;
+            document.getElementById('enchant-max-level').textContent = enchant.maxLevel;
+            document.getElementById('enchant-compatibility').textContent = 
+              itemType === 'sword' ? 'Мечи' : 
+              itemType === 'pickaxe' ? 'Кирки' : 
+              itemType === 'helmet' ? 'Шлемы' : 'Разное';
+            
+            const levelSelect = document.getElementById('enchant-level');
+            levelSelect.innerHTML = '';
+            for (let i = 1; i <= enchant.maxLevel; i++) {
+              const option = document.createElement('option');
+              option.value = i;
+              option.textContent = 'I'.repeat(i);
+              levelSelect.appendChild(option);
+            }
+            updateEnchantCost();
+          });
+          
+          container.appendChild(enchantElement);
+        });
+        
+        if (container.firstChild) {
+          container.firstChild.click();
+        }
+      }
+    }
+    
+    function updateEnchantCost() {
+      const selectedEnchantItem = document.querySelector('.enchant-item.selected');
+      if (!selectedEnchantItem) return;
+      
+      const itemType = document.getElementById('enchant-item').value;
+      const enchantName = selectedEnchantItem.querySelector('.font-bold').textContent;
+      const enchant = enchantments[itemType].find(e => e.name === enchantName);
+      
+      if (enchant) {
+        const level = parseInt(document.getElementById('enchant-level').value);
+        const cost = enchant.costBase + (level - 1) * enchant.costPerLevel;
+        document.getElementById('enchant-cost').textContent = cost;
+        document.getElementById('enchant-level-text').textContent = `Уровень: ${'I'.repeat(level)}`;
+        generateEnchantCommand(enchant, level);
+      }
+    }
+    
+    function generateTitleCommand() {
+      const title = document.getElementById('title-text').value || " ";
+      const subtitle = document.getElementById('subtitle-text').value || " ";
+      const duration = parseInt(document.getElementById('title-duration').value) || 5;
+      const fadeIn = parseInt(document.getElementById('title-fade-in').value) || 1;
+      const fadeOut = parseInt(document.getElementById('title-fade-out').value) || 1;
+      const selector = document.getElementById('title-selector').value || "@a";
+      
+      const durationTicks = duration * 20;
+      const fadeInTicks = fadeIn * 20;
+      const fadeOutTicks = fadeOut * 20;
+      
+      const command = `
+/title ${selector} times ${fadeInTicks} ${durationTicks} ${fadeOutTicks}
+/title ${selector} title {"text":"${title}"}
+/title ${selector} subtitle {"text":"${subtitle}"}
+      `.trim();
+      
+      document.getElementById('title-command').textContent = command;
+    }
+    
+    function generateSignCommand() {
+      const line1 = document.getElementById('sign-line1').value || "";
+      const line2 = document.getElementById('sign-line2').value || "";
+      const line3 = document.getElementById('sign-line3').value || "";
+      const line4 = document.getElementById('sign-line4').value || "";
+      const signName = document.getElementById('sign-name').value || "Табличка";
+      
+      const selectedWood = document.querySelector('.wood-option.selected[data-wood]');
+      const woodType = selectedWood ? selectedWood.getAttribute('data-wood') : "oak";
+      
+      const command = `/give @p ${woodType}_sign{BlockEntityTag:{Text1:'{"text":"${line1}"}',Text2:'{"text":"${line2}"}',Text3:'{"text":"${line3}"}',Text4:'{"text":"${line4}"}'},display:{Name:'{"text":"${signName}"}'}}`;
+      
+      document.getElementById('sign-command').textContent = command;
+    }
+    
+    function generateBookCommand() {
+      const title = document.getElementById('book-title').value || "Книга";
+      const author = document.getElementById('book-author').value || "Автор";
+      const content = document.getElementById('book-content').value || "Содержание";
+      const description = document.getElementById('book-description').value || "";
+      
+      const selectedCopy = document.querySelector('.wood-option.selected[data-copy]');
+      const copyType = selectedCopy ? selectedCopy.getAttribute('data-copy') : "original";
+      const generation = 
+        copyType === "original" ? 0 :
+        copyType === "copy" ? 1 :
+        copyType === "copy-of-copy" ? 2 : 3;
+      
+      const pages = [JSON.stringify({text: content.substring(0, 200)})];
+      
+      let command = `/give @p written_book{`;
+      command += `title:"${title}",`;
+      command += `author:"${author}",`;
+      command += `pages:[${pages.join(',')}],`;
+      command += `generation:${generation}`;
+      
+      if (description) {
+        command += `,display:{Lore:['"${description}"']}`;
+      }
+      
+      command += `}`;
+      
+      document.getElementById('book-command').textContent = command;
+    }
+    
+    function generateTellraw() {
+      const text = document.getElementById('tellraw-text').value || "Сообщение";
+      const selector = document.getElementById('tellraw-selector').value || "@a";
+      
+      const json = {
+        text: text,
+        color: "white"
+      };
+      
+      const command = `/tellraw ${selector} ${JSON.stringify(json, null, 2)}`;
+      document.getElementById('tellraw-json').textContent = command;
+    }
+    
+    function generateMOTD() {
+      const text = document.getElementById('motd-text').value || "Добро пожаловать";
+      const formattedMOTD = text.replace(/\n/g, "\\n");
+      document.getElementById('motd-code').textContent = formattedMOTD;
+    }
+    
+    function generateStyledText() {
+      let text = document.getElementById('styled-text').value;
+      if (!text) return;
+      
+      const selectedColor = document.querySelector('.color-btn.active');
+      const colorCode = selectedColor ? selectedColor.getAttribute('data-color') : null;
+      
+      const formats = [];
+      document.querySelectorAll('.text-format-btn.active').forEach(btn => {
+        formats.push(btn.getAttribute('data-format'));
+      });
+      
+      let formattedText = "";
+      if (colorCode) formattedText += `§${colorCode}`;
+      formats.forEach(format => formattedText += `§${format}`);
+      formattedText += text;
+      
+      document.getElementById('styled-output').textContent = formattedText;
+    }
+    
+    function generateEnchantCommand(enchant, level) {
+      const item = document.getElementById('enchant-item').value;
+      const version = document.getElementById('enchant-version').value;
+      
+      const command = `/give @p ${item}{Enchantments:[{id:"${enchant.id}",lvl:${level}}]}`;
+      document.getElementById('enchant-command').textContent = command;
+    }
+    
+    function copyToClipboard(text) {
+      navigator.clipboard.writeText(text).then(() => {
+        showNotification("Команда скопирована в буфер обмена");
+      });
+    }
+    
+    function showNotification(message) {
+      document.getElementById('notificationContent').textContent = message;
+      const notification = document.getElementById('notification');
+      notification.classList.add('show');
+      
+      setTimeout(() => {
+        notification.classList.remove('show');
+      }, 3000);
+    }
+    
+    function updateTitlePreview() {
+      document.getElementById('title-preview').textContent = 
+        document.getElementById('title-text').value || "Ваш Title";
+      document.getElementById('subtitle-preview').textContent = 
+        document.getElementById('subtitle-text').value || "Ваш Subtitle";
+      document.getElementById('duration-preview').textContent = 
+        document.getElementById('title-duration').value || "5";
+      document.getElementById('fadein-preview').textContent = 
+        document.getElementById('title-fade-in').value || "1";
+      document.getElementById('fadeout-preview').textContent = 
+        document.getElementById('title-fade-out').value || "1";
+    }
+    
+    function updateSignPreview() {
+      document.getElementById('sign-preview1').textContent = 
+        document.getElementById('sign-line1').value || "Строка 1";
+      document.getElementById('sign-preview2').textContent = 
+        document.getElementById('sign-line2').value || "Строка 2";
+      document.getElementById('sign-preview3').textContent = 
+        document.getElementById('sign-line3').value || "Строка 3";
+      document.getElementById('sign-preview4').textContent = 
+        document.getElementById('sign-line4').value || "Строка 4";
+    }
+    
+    function updateBookPreview() {
+      document.getElementById('book-title-preview').textContent = 
+        document.getElementById('book-title').value || "Книга";
+      document.getElementById('book-author-preview').textContent = 
+        document.getElementById('book-author').value || "Автор";
+      document.getElementById('book-content-preview').textContent = 
+        document.getElementById('book-content').value || "Содержание";
+    }
+    
+    function updateTellrawPreview() {
+      document.getElementById('tellraw-preview').textContent = 
+        document.getElementById('tellraw-text').value || "Сообщение";
+    }
+    
+    function updateStyledPreview() {
+      let text = document.getElementById('styled-text').value || "Привет, мир!";
+      
+      const selectedColor = document.querySelector('.color-btn.active');
+      const colorCode = selectedColor ? selectedColor.getAttribute('data-color') : null;
+      
+      const formats = [];
+      document.querySelectorAll('.text-format-btn.active').forEach(btn => {
+        formats.push(btn.getAttribute('data-format'));
+      });
+      
+      let preview = document.getElementById('styled-preview');
+      preview.innerHTML = text;
+      
+      if (colorCode) {
+        const colors = {
+          '0': '#000000', '1': '#0000AA', '2': '#00AA00', '3': '#00AAAA',
+          '4': '#AA0000', '5': '#AA00AA', '6': '#FFAA00', '7': '#AAAAAA',
+          '8': '#555555', '9': '#5555FF', 'a': '#55FF55', 'b': '#55FFFF',
+          'c': '#FF5555', 'd': '#FF55FF', 'e': '#FFFF55', 'f': '#FFFFFF'
+        };
+        preview.style.color = colors[colorCode] || 'white';
+      } else {
+        preview.style.color = 'white';
+      }
+      
+      if (formats.includes('l')) preview.style.fontWeight = 'bold';
+      if (formats.includes('o')) preview.style.fontStyle = 'italic';
+      if (formats.includes('n')) preview.style.textDecoration = 'underline';
+      if (formats.includes('m')) preview.style.textDecoration = 'line-through';
+      
+      if (formats.includes('k')) {
+        preview.classList.add('obfuscated');
+      } else {
+        preview.classList.remove('obfuscated');
+      }
+    }
+  </script>
+</body>
+</html>
