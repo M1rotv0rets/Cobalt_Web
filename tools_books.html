@@ -148,7 +148,7 @@
     }
     
     .sign-preview {
-      background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200"><rect x="20" y="20" width="160" height="160" fill="%23d4b483" stroke="%238b5cf6" stroke-width="2"/></svg>') no-repeat center;
+      background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200"><rect x="20" y="20" width="160" height="160" fill="%23d4b483" stroke="%238b5cf6" stroke-width="2" rx="4"/></svg>') no-repeat center;
       background-size: contain;
       min-height: 200px;
       padding: 30px 20px;
@@ -195,16 +195,8 @@
       opacity: 1;
     }
     
-    .obfuscated-text {
-      font-family: 'Courier New', monospace;
-      letter-spacing: 2px;
-      animation: obfuscate 0.5s infinite;
-    }
-    
     .copy-btn {
-      position: absolute;
-      top: 15px;
-      right: 15px;
+      position: relative;
       width: 36px;
       height: 36px;
       border-radius: 50%;
@@ -216,6 +208,7 @@
       cursor: pointer;
       transition: all 0.3s ease;
       z-index: 10;
+      margin-left: auto;
     }
     
     .copy-btn:hover {
@@ -275,7 +268,7 @@
     .color-btn {
       width: 30px;
       height: 30px;
-      border-radius: 4px;
+      border-radius: 50%;
       cursor: pointer;
       transition: all 0.2s ease;
       display: flex;
@@ -412,21 +405,6 @@
       transition: all 0.3s ease;
     }
     
-    @media (max-width: 768px) {
-      .color-table {
-        grid-template-columns: repeat(3, 1fr);
-      }
-      .tools-grid {
-        grid-template-columns: repeat(2, 1fr);
-      }
-    }
-    
-    @media (max-width: 480px) {
-      .tools-grid {
-        grid-template-columns: 1fr;
-      }
-    }
-    
     .obfuscated-chars {
       font-family: monospace;
       letter-spacing: 1px;
@@ -437,6 +415,56 @@
       0% { opacity: 0.5; }
       50% { opacity: 1; }
       100% { opacity: 0.5; }
+    }
+    
+    .motd-format-btns {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 10px;
+    }
+    
+    .obfuscating-text {
+      animation: obfuscate 0.5s infinite;
+    }
+    
+    @media (max-width: 768px) {
+      .color-table {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .tools-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .command-header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      .copy-btn {
+        margin-top: 10px;
+        margin-left: 0;
+      }
+    }
+    
+    @media (max-width: 480px) {
+      .tools-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+    
+    .cost-display {
+      background: rgba(30, 41, 59, 0.7);
+      border-radius: 8px;
+      padding: 15px;
+      text-align: center;
+      margin-top: 20px;
+      border: 1px solid #ec4899;
+    }
+    
+    .cost-value {
+      font-size: 24px;
+      font-weight: bold;
+      color: #ec4899;
+      margin-top: 5px;
     }
   </style>
 </head>
@@ -500,66 +528,61 @@
   </div>
 
   <main class="max-w-7xl mx-auto px-4 py-8">
-    <div class="text-center mb-12">
-      <h1 class="text-4xl font-bold mb-4 text-white">Инструменты для Minecraft</h1>
-      <p class="text-gray-400 max-w-3xl mx-auto">Генераторы команд, калькуляторы и редакторы для создания уникального игрового опыта</p>
-    </div>
-
     <div class="tools-grid mb-8">
       <div class="tool-item active" data-tab="title-generator">
         <div class="tool-icon-sm bg-title">
           <i class="fas fa-heading text-white"></i>
         </div>
-        <h3 class="text-xl font-bold mb-2">Генератор Title</h3>
-        <p class="text-gray-400 text-sm">Создавайте красивые заголовки</p>
+        <h3 class="text-xl font-bold mb-2">Title</h3>
+        <p class="text-gray-400 text-sm">Заголовки</p>
       </div>
       
       <div class="tool-item" data-tab="sign-generator">
         <div class="tool-icon-sm bg-sign">
           <i class="fas fa-sign text-white"></i>
         </div>
-        <h3 class="text-xl font-bold mb-2">Генератор Табличек</h3>
-        <p class="text-gray-400 text-sm">Создавайте таблички с текстом</p>
+        <h3 class="text-xl font-bold mb-2">Таблички</h3>
+        <p class="text-gray-400 text-sm">Текстовые таблички</p>
       </div>
       
       <div class="tool-item" data-tab="enchant-calculator">
         <div class="tool-icon-sm bg-enchant">
           <i class="fas fa-hat-wizard text-white"></i>
         </div>
-        <h3 class="text-xl font-bold mb-2">Калькулятор Зачарований</h3>
-        <p class="text-gray-400 text-sm">Рассчитайте стоимость зачарований</p>
+        <h3 class="text-xl font-bold mb-2">Зачарования</h3>
+        <p class="text-gray-400 text-sm">Расчёт опыта</p>
       </div>
       
       <div class="tool-item" data-tab="tellraw-editor">
         <div class="tool-icon-sm bg-primary">
           <i class="fas fa-terminal text-white"></i>
         </div>
-        <h3 class="text-xl font-bold mb-2">Редактор Tellraw</h3>
-        <p class="text-gray-400 text-sm">Создавайте сложные сообщения</p>
+        <h3 class="text-xl font-bold mb-2">Tellraw</h3>
+        <p class="text-gray-400 text-sm">Сообщения</p>
       </div>
       
       <div class="tool-item" data-tab="book-editor">
         <div class="tool-icon-sm bg-book">
           <i class="fas fa-book-open text-white"></i>
         </div>
-        <h3 class="text-xl font-bold mb-2">Редактор Книг</h3>
-        <p class="text-gray-400 text-sm">Создавайте пользовательские книги</p>
+        <h3 class="text-xl font-bold mb-2">Книги</h3>
+        <p class="text-gray-400 text-sm">Редактор книг</p>
       </div>
       
       <div class="tool-item" data-tab="motd-generator">
         <div class="tool-icon-sm bg-accent">
           <i class="fas fa-server text-white"></i>
         </div>
-        <h3 class="text-xl font-bold mb-2">Генератор MOTD</h3>
-        <p class="text-gray-400 text-sm">Настройте сообщение сервера</p>
+        <h3 class="text-xl font-bold mb-2">MOTD</h3>
+        <p class="text-gray-400 text-sm">Сообщение сервера</p>
       </div>
       
       <div class="tool-item" data-tab="text-generator">
         <div class="tool-icon-sm bg-textgen">
           <i class="fas fa-font text-white"></i>
         </div>
-        <h3 class="text-xl font-bold mb-2">Генератор Текста</h3>
-        <p class="text-gray-400 text-sm">Создавайте стилизованный текст</p>
+        <h3 class="text-xl font-bold mb-2">Стиль текста</h3>
+        <p class="text-gray-400 text-sm">Форматирование</p>
       </div>
       
       <div class="tool-item" data-tab="color-codes">
@@ -567,7 +590,7 @@
           <i class="fas fa-palette text-white"></i>
         </div>
         <h3 class="text-xl font-bold mb-2">Коды цветов</h3>
-        <p class="text-gray-400 text-sm">Справочник кодов форматирования</p>
+        <p class="text-gray-400 text-sm">Справочник</p>
       </div>
     </div>
 
@@ -678,6 +701,16 @@
                 <option value="jungle">Тропическая</option>
                 <option value="acacia">Акациевая</option>
                 <option value="dark_oak">Тёмный дуб</option>
+                <option value="crimson">Багровая</option>
+                <option value="warped">Искажённая</option>
+                <option value="mangrove">Мангровая</option>
+                <option value="bamboo">Бамбуковая</option>
+                <option value="cherry">Вишнёвая</option>
+                <option value="cherry_blossom">Вишневый цвет</option>
+                <option value="azalea">Азалия</option>
+                <option value="blossom">Цветущая</option>
+                <option value="nether_brick">Незер кирпичная</option>
+                <option value="end_stone">Энд каменная</option>
               </select>
             </div>
             
@@ -744,6 +777,13 @@
                     <option value="bow">Лук</option>
                     <option value="fishing_rod">Удочка</option>
                     <option value="book">Книга</option>
+                    <option value="elytra">Элитры</option>
+                    <option value="trident">Трезубец</option>
+                    <option value="crossbow">Арбалет</option>
+                    <option value="shield">Щит</option>
+                    <option value="shears">Ножницы</option>
+                    <option value="flint_and_steel">Огниво</option>
+                    <option value="carrot_on_a_stick">Удочка с морковью</option>
                   </select>
                 </div>
                 
@@ -754,6 +794,14 @@
                     <option value="smite">Небесная кара</option>
                     <option value="bane_of_arthropods">Казнь членистоногих</option>
                     <option value="knockback">Отбрасывание</option>
+                    <option value="fire_aspect">Огненный аспект</option>
+                    <option value="looting">Грабеж</option>
+                    <option value="efficiency">Эффективность</option>
+                    <option value="silk_touch">Шелковое касание</option>
+                    <option value="fortune">Удача</option>
+                    <option value="protection">Защита</option>
+                    <option value="fire_protection">Огнеупорность</option>
+                    <option value="blast_protection">Взрывоустойчивость</option>
                   </select>
                 </div>
               </div>
@@ -774,12 +822,6 @@
                     <label class="block text-gray-300 mb-2">Опыт</label>
                     <div class="w-full form-input bg-gray-800 flex items-center justify-center font-bold" id="enchant-cost">0</div>
                   </div>
-                </div>
-                
-                <div class="bg-gray-800 rounded-lg p-4">
-                  <h3 class="text-lg font-bold mb-2">Итоговая стоимость</h3>
-                  <div class="text-center text-2xl font-bold text-enchant" id="total-cost">0</div>
-                  <p class="text-sm text-gray-400 mt-1">Опыта для зачарования</p>
                 </div>
               </div>
             </div>
@@ -905,13 +947,6 @@
           </div>
           
           <div>
-            <h3 class="text-xl font-bold mb-4 text-white">Предпросмотр</h3>
-            <div class="bg-gray-800 rounded-lg p-6 mb-6">
-              <div class="p-4 bg-gray-700 rounded" id="tellraw-preview">
-                Добро пожаловать на сервер!
-              </div>
-            </div>
-            
             <div class="command-header">
               <h3 class="text-xl font-bold text-white">Команда</h3>
               <div class="copy-btn" data-copy="tellraw-json">
@@ -947,18 +982,42 @@
             <div class="mb-6">
               <label class="block text-gray-300 mb-2">Цветовая схема</label>
               <div class="grid grid-cols-6 gap-2">
-                <div class="color-preview bg-[#AA0000] text-white" data-color="dark_red">§4</div>
-                <div class="color-preview bg-[#FF5555] text-black" data-color="red">§c</div>
-                <div class="color-preview bg-[#FFAA00] text-black" data-color="gold">§6</div>
-                <div class="color-preview bg-[#FFFF55] text-black" data-color="yellow">§e</div>
-                <div class="color-preview bg-[#00AA00] text-white" data-color="dark_green">§2</div>
-                <div class="color-preview bg-[#55FF55] text-black" data-color="green">§a</div>
-                <div class="color-preview bg-[#55FFFF] text-black" data-color="aqua">§b</div>
-                <div class="color-preview bg-[#00AAAA] text-white" data-color="dark_aqua">§3</div>
-                <div class="color-preview bg-[#0000AA] text-white" data-color="dark_blue">§1</div>
-                <div class="color-preview bg-[#5555FF] text-white" data-color="blue">§9</div>
-                <div class="color-preview bg-[#FF55FF] text-black" data-color="light_purple">§d</div>
-                <div class="color-preview bg-[#AA00AA] text-white" data-color="dark_purple">§5</div>
+                <div class="color-btn bg-[#AA0000] text-white rounded" data-color="dark_red" data-code="§4">§4</div>
+                <div class="color-btn bg-[#FF5555] text-black rounded" data-color="red" data-code="§c">§c</div>
+                <div class="color-btn bg-[#FFAA00] text-black rounded" data-color="gold" data-code="§6">§6</div>
+                <div class="color-btn bg-[#FFFF55] text-black rounded" data-color="yellow" data-code="§e">§e</div>
+                <div class="color-btn bg-[#00AA00] text-white rounded" data-color="dark_green" data-code="§2">§2</div>
+                <div class="color-btn bg-[#55FF55] text-black rounded" data-color="green" data-code="§a">§a</div>
+                <div class="color-btn bg-[#55FFFF] text-black rounded" data-color="aqua" data-code="§b">§b</div>
+                <div class="color-btn bg-[#00AAAA] text-white rounded" data-color="dark_aqua" data-code="§3">§3</div>
+                <div class="color-btn bg-[#0000AA] text-white rounded" data-color="dark_blue" data-code="§1">§1</div>
+                <div class="color-btn bg-[#5555FF] text-white rounded" data-color="blue" data-code="§9">§9</div>
+                <div class="color-btn bg-[#FF55FF] text-black rounded" data-color="light_purple" data-code="§d">§d</div>
+                <div class="color-btn bg-[#AA00AA] text-white rounded" data-color="dark_purple" data-code="§5">§5</div>
+              </div>
+            </div>
+            
+            <div class="mb-6">
+              <label class="block text-gray-300 mb-2">Форматирование</label>
+              <div class="motd-format-btns">
+                <div class="text-format-btn" data-format="l" data-code="§l">
+                  <span class="font-bold">Жирный</span>
+                </div>
+                <div class="text-format-btn" data-format="o" data-code="§o">
+                  <span class="italic">Курсив</span>
+                </div>
+                <div class="text-format-btn" data-format="n" data-code="§n">
+                  <span class="underline">Подчерк.</span>
+                </div>
+                <div class="text-format-btn" data-format="m" data-code="§m">
+                  <span class="line-through">Зачерк.</span>
+                </div>
+                <div class="text-format-btn" data-format="k" data-code="§k">
+                  <span class="obfuscated-chars">§k</span>
+                </div>
+                <div class="text-format-btn" data-format="r" data-code="§r">
+                  Сброс
+                </div>
               </div>
             </div>
             
@@ -1003,7 +1062,7 @@
           <div class="tool-icon bg-textgen">
             <i class="fas fa-font text-white text-xl"></i>
           </div>
-          <h2 class="text-2xl font-bold text-white">Генератор Стилизованного Текста</h2>
+          <h2 class="text-2xl font-bold text-white">Стиль текста</h2>
         </div>
         
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
@@ -1042,7 +1101,7 @@
                 <div class="text-format-btn" data-format="o"><span class="italic">Курсив</span></div>
                 <div class="text-format-btn" data-format="n"><span class="underline">Подчерк.</span></div>
                 <div class="text-format-btn" data-format="m"><span class="line-through">Зачерк.</span></div>
-                <div class="text-format-btn" data-format="k"><span class="obfuscated-chars">Случайные</span></div>
+                <div class="text-format-btn" data-format="k"><span class="obfuscating-text">§k</span></div>
                 <div class="text-format-btn" data-format="r">Сброс</div>
               </div>
             </div>
@@ -1201,7 +1260,7 @@
             <div class="bg-gray-800 rounded-lg p-4">
               <div class="flex items-center mb-2">
                 <span class="font-bold mr-2">§k</span>
-                <span class="obfuscated-chars">^÷/<<<edg6es6u</span>
+                <span class="obfuscating-text">§k</span>
               </div>
               <p class="text-gray-400">Создает эффект случайных символов</p>
             </div>
@@ -1315,7 +1374,9 @@
       document.getElementById('book-content').addEventListener('input', updateBookPreview);
       document.getElementById('book-copy-type').addEventListener('change', updateBookPreview);
       
-      document.getElementById('tellraw-text').addEventListener('input', updateTellrawPreview);
+      document.getElementById('motd-text').addEventListener('input', function() {
+        document.getElementById('motd-preview').innerHTML = this.value.replace(/\n/g, "<br>");
+      });
       
       document.getElementById('styled-text').addEventListener('input', updateStyledPreview);
       
@@ -1334,11 +1395,29 @@
         });
       });
       
+      // Обработчики для MOTD
+      document.querySelectorAll('#motd-generator .color-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+          const colorCode = this.getAttribute('data-code');
+          const textarea = document.getElementById('motd-text');
+          textarea.value += colorCode;
+          document.getElementById('motd-preview').innerHTML = textarea.value.replace(/\n/g, "<br>");
+        });
+      });
+      
+      document.querySelectorAll('#motd-generator .text-format-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+          const formatCode = this.getAttribute('data-code');
+          const textarea = document.getElementById('motd-text');
+          textarea.value += formatCode;
+          document.getElementById('motd-preview').innerHTML = textarea.value.replace(/\n/g, "<br>");
+        });
+      });
+      
       // Инициализация превью
       updateTitlePreview();
       updateSignPreview();
       updateBookPreview();
-      updateTellrawPreview();
       updateStyledPreview();
       updateEnchantCost();
     });
@@ -1358,7 +1437,6 @@
       }
       
       document.getElementById('enchant-cost').textContent = cost;
-      document.getElementById('total-cost').textContent = cost;
     }
     
     function generateTitleCommand() {
@@ -1508,11 +1586,6 @@
         document.getElementById('book-copy-type').options[document.getElementById('book-copy-type').selectedIndex].text;
     }
     
-    function updateTellrawPreview() {
-      document.getElementById('tellraw-preview').textContent = 
-        document.getElementById('tellraw-text').value || "Сообщение";
-    }
-    
     function updateStyledPreview() {
       let text = document.getElementById('styled-text').value || "Привет, мир!";
       
@@ -1545,9 +1618,9 @@
       if (formats.includes('m')) preview.style.textDecoration = 'line-through';
       
       if (formats.includes('k')) {
-        preview.classList.add('obfuscated');
+        preview.classList.add('obfuscating-text');
       } else {
-        preview.classList.remove('obfuscated');
+        preview.classList.remove('obfuscating-text');
       }
     }
   </script>
