@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Cobalt Заметки</title>
-  <link rel="icon" href="icon.png">
+  <link rel="icon" href="Images/icon.png">
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <script>
@@ -327,15 +327,9 @@
     
     .custom-icon-grid {
       display: grid;
-      grid-template-columns: repeat(8, 1fr);
+      grid-template-columns: repeat(6, 1fr);
       gap: 0.5rem;
       margin: 1rem 0;
-    }
-    
-    @media (max-width: 768px) {
-      .custom-icon-grid {
-        grid-template-columns: repeat(6, 1fr);
-      }
     }
     
     @media (max-width: 480px) {
@@ -348,13 +342,18 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 0.5rem;
+      padding: 0.75rem;
       border-radius: 8px;
       background: #0f172a;
       cursor: pointer;
       transition: all 0.2s ease;
-      height: 50px;
-      width: 50px;
+      width: 60px;
+      height: 60px;
+      aspect-ratio: 1/1;
+    }
+    
+    .custom-icon-item i {
+      font-size: 1.5rem;
     }
     
     .custom-icon-item:hover {
@@ -365,10 +364,6 @@
     .custom-icon-item.selected {
       background: rgba(14, 165, 233, 0.3);
       border: 1px solid #0ea5e9;
-    }
-    
-    .custom-icon-item i {
-      font-size: 1.5rem;
     }
     
     .reminder-box {
@@ -443,6 +438,9 @@
         <a href="notes.html" class="hover:text-primary transition-colors flex items-center">
           <i class="fas fa-sticky-note mr-2"></i> Заметки
         </a>
+        <a href="launcher.html" class="hover:text-primary transition-colors flex items-center">
+          <i class="fas fa-rocket mr-2"></i> Лаунчер
+        </a>
         <a href="https://t.me/sun_community_chat" class="hover:text-primary transition-colors flex items-center">
           <i class="fas fa-users mr-2"></i> Сообщество
         </a>
@@ -464,6 +462,9 @@
         </a> 
         <a href="notes.html" class="py-3 hover:text-primary transition-colors flex items-center">
           <i class="fas fa-sticky-note mr-3 w-5"></i> Заметки
+        </a>
+        <a href="launcher.html" class="py-3 hover:text-primary transition-colors flex items-center">
+          <i class="fas fa-rocket mr-3 w-5"></i> Лаунчер
         </a>
         <a href="https://t.me/sun_community_chat" class="py-3 hover:text-primary transition-colors flex items-center">
           <i class="fas fa-users mr-3 w-5"></i> Сообщество
@@ -734,44 +735,48 @@
     let notes = [];
     
     const minecraftIcons = [
-      {icon: 'fas fa-seedling', name: 'Пашня'},
-      {icon: 'fas fa-cow', name: 'Корова'},
-      {icon: 'fas fa-tree', name: 'Дерево'},
-      {icon: 'fas fa-fire', name: 'Огонь'},
-      {icon: 'fas fa-gem', name: 'Алмаз'},
-      {icon: 'fas fa-mountain', name: 'Гора'},
-      {icon: 'fas fa-water', name: 'Вода'},
-      {icon: 'fas fa-skull', name: 'Скелет'},
-      {icon: 'fas fa-trophy', name: 'Трофей'},
-      {icon: 'fas fa-book', name: 'Книга'},
-      {icon: 'fas fa-map', name: 'Карта'},
-      {icon: 'fas fa-compass', name: 'Компас'},
-      {icon: 'fas fa-torii-gate', name: 'Портал'},
-      {icon: 'fas fa-dragon', name: 'Дракон'},
-      {icon: 'fas fa-moon', name: 'Луна'},
-      {icon: 'fas fa-sun', name: 'Солнце'},
-      {icon: 'fas fa-star', name: 'Звезда'},
-      {icon: 'fas fa-bolt', name: 'Молния'},
-      {icon: 'fas fa-coins', name: 'Монеты'},
-      {icon: 'fas fa-house', name: 'Дом'},
-      {icon: 'fas fa-cube', name: 'Блок'},
-      {icon: 'fas fa-dungeon', name: 'Подземелье'},
-      {icon: 'fas fa-cloud', name: 'Облако'},
-      {icon: 'fas fa-snowflake', name: 'Снег'},
-      {icon: 'fas fa-ghost', name: 'Призрак'},
-      {icon: 'fas fa-wheat-alt', name: 'Поле'},
-      {icon: 'fas fa-feather', name: 'Перо'},
-      {icon: 'fas fa-shield', name: 'Щит'}
+      'fas fa-seedling',
+      'fas fa-cow',
+      'fas fa-tree',
+      'fas fa-fire',
+      'fas fa-gem',
+      'fas fa-mountain',
+      'fas fa-water',
+      'fas fa-skull',
+      'fas fa-trophy',
+      'fas fa-book',
+      'fas fa-map',
+      'fas fa-compass',
+      'fas fa-torii-gate',
+      'fas fa-dragon',
+      'fas fa-moon',
+      'fas fa-sun',
+      'fas fa-star',
+      'fas fa-bolt',
+      'fas fa-coins',
+      'fas fa-house',
+      'fas fa-cube',
+      'fas fa-dungeon',
+      'fas fa-cloud',
+      'fas fa-snowflake',
+      'fas fa-ghost',
+      'fas fa-wheat-alt',
+      'fas fa-feather',
+      'fas fa-shield'
     ];
     
     function initIcons() {
       customIconGrid.innerHTML = '';
       
-      minecraftIcons.forEach(iconData => {
+      minecraftIcons.forEach(iconClass => {
         const iconItem = document.createElement('div');
         iconItem.className = 'custom-icon-item';
-        iconItem.setAttribute('data-icon', iconData.icon);
-        iconItem.innerHTML = `<i class="${iconData.icon} minecraft-icon"></i>`;
+        iconItem.setAttribute('data-icon', iconClass);
+        
+        const iconElement = document.createElement('i');
+        iconElement.className = `${iconClass} minecraft-icon`;
+        
+        iconItem.appendChild(iconElement);
         
         iconItem.addEventListener('click', function() {
           const selected = this.getAttribute('data-icon');
@@ -914,7 +919,7 @@
       txtContent += `Экспортировано: ${new Date().toLocaleString('ru-RU')}\n`;
       txtContent += `Всего заметок: ${notes.length}\n\n`;
       
-      notes.forEach((note, index) {
+      notes.forEach((note, index) => {
         txtContent += `Заметка #${index + 1}\n`;
         txtContent += `--------------------------------\n`;
         txtContent += `Содержимое: ${note.text}\n`;
@@ -1020,7 +1025,6 @@
         }
         
         noteElement.innerHTML = `
-          
           <div class="flex justify-between items-start">
             <div class="flex-1">
               <div class="flex items-center">
