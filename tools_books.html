@@ -435,36 +435,12 @@
       .tools-grid {
         grid-template-columns: repeat(2, 1fr);
       }
-      .command-header {
-        flex-direction: column;
-        align-items: flex-start;
-      }
-      .copy-btn {
-        margin-top: 10px;
-        margin-left: 0;
-      }
     }
     
     @media (max-width: 480px) {
       .tools-grid {
         grid-template-columns: 1fr;
       }
-    }
-    
-    .cost-display {
-      background: rgba(30, 41, 59, 0.7);
-      border-radius: 8px;
-      padding: 15px;
-      text-align: center;
-      margin-top: 20px;
-      border: 1px solid #ec4899;
-    }
-    
-    .cost-value {
-      font-size: 24px;
-      font-weight: bold;
-      color: #ec4899;
-      margin-top: 5px;
     }
   </style>
 </head>
@@ -545,14 +521,6 @@
         <p class="text-gray-400 text-sm">Текстовые таблички</p>
       </div>
       
-      <div class="tool-item" data-tab="enchant-calculator">
-        <div class="tool-icon-sm bg-enchant">
-          <i class="fas fa-hat-wizard text-white"></i>
-        </div>
-        <h3 class="text-xl font-bold mb-2">Зачарования</h3>
-        <p class="text-gray-400 text-sm">Расчёт опыта</p>
-      </div>
-      
       <div class="tool-item" data-tab="tellraw-editor">
         <div class="tool-icon-sm bg-primary">
           <i class="fas fa-terminal text-white"></i>
@@ -613,7 +581,7 @@
             
             <div class="mb-6">
               <label class="block text-gray-300 mb-2">Подзаголовок (SUBTITLE)</label>
-              <input type="text" class="w-full form-input" placeholder="Введите подзаголовок (необязательно)" id="subtitle-text">
+              <input type="text" class="w-full form-input" placeholder="Введите подзаголовок" id="subtitle-text">
             </div>
             
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
@@ -634,7 +602,6 @@
             <div class="mb-6">
               <label class="block text-gray-300 mb-2">Селектор</label>
               <input type="text" class="w-full form-input" value="@a" id="title-selector">
-              <p class="text-sm text-gray-400 mt-1">Кто увидит этот title? (например: @a, @p, @r)</p>
             </div>
             
             <button class="btn-title px-6 py-3 rounded-lg font-medium text-white w-full" id="generate-title-btn">
@@ -663,7 +630,7 @@
               </div>
             </div>
             <div class="relative bg-gray-800 rounded-lg p-6">
-              <pre class="overflow-x-auto" id="title-command"># Сгенерированная команда появится здесь</pre>
+              <pre class="overflow-x-auto" id="title-command"></pre>
             </div>
           </div>
         </div>
@@ -705,19 +672,12 @@
                 <option value="warped">Искажённая</option>
                 <option value="mangrove">Мангровая</option>
                 <option value="bamboo">Бамбуковая</option>
-                <option value="cherry">Вишнёвая</option>
-                <option value="cherry_blossom">Вишневый цвет</option>
-                <option value="azalea">Азалия</option>
-                <option value="blossom">Цветущая</option>
-                <option value="nether_brick">Незер кирпичная</option>
-                <option value="end_stone">Энд каменная</option>
               </select>
             </div>
             
             <div class="mb-6">
               <label class="block text-gray-300 mb-2">Название таблички</label>
               <input type="text" class="w-full form-input" placeholder="Пользовательская табличка" id="sign-name">
-              <p class="text-sm text-gray-400 mt-1">Необязательно. Можно использовать цветной текст</p>
             </div>
             
             <button class="btn-sign px-6 py-3 rounded-lg font-medium text-white w-full" id="generate-sign-btn">
@@ -741,89 +701,7 @@
               </div>
             </div>
             <div class="relative bg-gray-800 rounded-lg p-6">
-              <pre class="overflow-x-auto" id="sign-command"># Сгенерированная команда появится здесь</pre>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Enchant Calculator -->
-    <section id="enchant-calculator" class="tool-section" style="display: none;">
-      <div class="tool-card p-6">
-        <div class="flex items-center mb-6">
-          <div class="tool-icon bg-enchant">
-            <i class="fas fa-hat-wizard text-white text-xl"></i>
-          </div>
-          <h2 class="text-2xl font-bold text-white">Калькулятор Зачарований</h2>
-        </div>
-        
-        <div class="grid grid-cols-1 gap-8">
-          <div>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div>
-                <div class="mb-6">
-                  <label class="block text-gray-300 mb-2">Предмет для зачарования</label>
-                  <select class="w-full form-input" id="enchant-item">
-                    <option value="sword">Меч</option>
-                    <option value="pickaxe">Кирка</option>
-                    <option value="axe">Топор</option>
-                    <option value="shovel">Лопата</option>
-                    <option value="hoe">Мотыга</option>
-                    <option value="helmet">Шлем</option>
-                    <option value="chestplate">Нагрудник</option>
-                    <option value="leggings">Поножи</option>
-                    <option value="boots">Ботинки</option>
-                    <option value="bow">Лук</option>
-                    <option value="fishing_rod">Удочка</option>
-                    <option value="book">Книга</option>
-                    <option value="elytra">Элитры</option>
-                    <option value="trident">Трезубец</option>
-                    <option value="crossbow">Арбалет</option>
-                    <option value="shield">Щит</option>
-                    <option value="shears">Ножницы</option>
-                    <option value="flint_and_steel">Огниво</option>
-                    <option value="carrot_on_a_stick">Удочка с морковью</option>
-                  </select>
-                </div>
-                
-                <div class="mb-6">
-                  <label class="block text-gray-300 mb-2">Зачарование</label>
-                  <select class="w-full form-input" id="enchant-select">
-                    <option value="sharpness">Острота</option>
-                    <option value="smite">Небесная кара</option>
-                    <option value="bane_of_arthropods">Казнь членистоногих</option>
-                    <option value="knockback">Отбрасывание</option>
-                    <option value="fire_aspect">Огненный аспект</option>
-                    <option value="looting">Грабеж</option>
-                    <option value="efficiency">Эффективность</option>
-                    <option value="silk_touch">Шелковое касание</option>
-                    <option value="fortune">Удача</option>
-                    <option value="protection">Защита</option>
-                    <option value="fire_protection">Огнеупорность</option>
-                    <option value="blast_protection">Взрывоустойчивость</option>
-                  </select>
-                </div>
-              </div>
-              
-              <div>
-                <div class="grid grid-cols-2 gap-4 mb-6">
-                  <div>
-                    <label class="block text-gray-300 mb-2">Уровень</label>
-                    <select class="w-full form-input" id="enchant-level">
-                      <option value="1">I</option>
-                      <option value="2">II</option>
-                      <option value="3">III</option>
-                      <option value="4">IV</option>
-                      <option value="5">V</option>
-                    </select>
-                  </div>
-                  <div>
-                    <label class="block text-gray-300 mb-2">Опыт</label>
-                    <div class="w-full form-input bg-gray-800 flex items-center justify-center font-bold" id="enchant-cost">0</div>
-                  </div>
-                </div>
-              </div>
+              <pre class="overflow-x-auto" id="sign-command"></pre>
             </div>
           </div>
         </div>
@@ -845,10 +723,7 @@
             <div class="mb-6">
               <label class="block text-gray-300 mb-2">Содержание книги</label>
               <textarea class="w-full form-input h-40" placeholder="Введите текст книги..." id="book-content">Книга с инструментами
-*здесь был Cobalt Книги*
-
-(не более 15 строк на страницу, около 25 символов в строке)</textarea>
-              <p class="text-sm text-gray-400 mt-1">Максимум 100 страниц, 256 символов на страницу</p>
+*здесь был Cobalt Книги*</textarea>
             </div>
             
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
@@ -875,7 +750,6 @@
             <div class="mb-6">
               <label class="block text-gray-300 mb-2">Описание книги</label>
               <textarea class="w-full form-input" placeholder="Добавьте всплывающую подсказку" id="book-description"></textarea>
-              <p class="text-sm text-gray-400 mt-1">Необязательно, будет отображаться как всплывающая подсказка</p>
             </div>
             
             <button class="btn-book px-6 py-3 rounded-lg font-medium text-white w-full" id="generate-book-btn">
@@ -893,8 +767,7 @@
               
               <div class="page-preview mb-4" id="book-content-preview">
                 Книга с инструментами<br>
-                *здесь был Cobalt Книги*<br><br>
-                (не более 15 строк на страницу, около 25 символов в строке)
+                *здесь был Cobalt Книги*
               </div>
               
               <div class="flex justify-between items-center text-sm text-gray-400">
@@ -910,7 +783,7 @@
               </div>
             </div>
             <div class="relative bg-gray-800 rounded-lg p-6">
-              <pre class="overflow-x-auto" id="book-command"># Сгенерированная команда появится здесь</pre>
+              <pre class="overflow-x-auto" id="book-command"></pre>
             </div>
           </div>
         </div>
@@ -932,13 +805,11 @@
             <div class="mb-6">
               <label class="block text-gray-300 mb-2">Текст сообщения</label>
               <textarea class="w-full form-input h-40" placeholder="Введите текст..." id="tellraw-text">Добро пожаловать на сервер!</textarea>
-              <p class="text-sm text-gray-400 mt-1">Поддерживает JSON форматирование</p>
             </div>
             
             <div class="mb-6">
               <label class="block text-gray-300 mb-2">Селектор</label>
               <input type="text" class="w-full form-input" value="@a" id="tellraw-selector">
-              <p class="text-sm text-gray-400 mt-1">Кто получит сообщение? (например: @a, @p)</p>
             </div>
             
             <button class="btn-primary px-6 py-3 rounded-lg font-medium text-white w-full" id="generate-tellraw-btn">
@@ -954,7 +825,7 @@
               </div>
             </div>
             <div class="relative bg-gray-800 rounded-lg p-6">
-              <pre class="overflow-x-auto" id="tellraw-json"># Сгенерированная команда появится здесь</pre>
+              <pre class="overflow-x-auto" id="tellraw-json"></pre>
             </div>
           </div>
         </div>
@@ -976,7 +847,6 @@
             <div class="mb-6">
               <label class="block text-gray-300 mb-2">Текст MOTD</label>
               <textarea class="w-full form-input h-32" placeholder="Введите текст MOTD..." id="motd-text">Добро пожаловать на сервер!\nМакс. 2 строки</textarea>
-              <p class="text-sm text-gray-400 mt-1">Максимум 2 строки, используйте \n для новой строки</p>
             </div>
             
             <div class="mb-6">
@@ -1036,9 +906,6 @@
                   Макс. 2 строки
                 </div>
               </div>
-              <div class="text-sm text-gray-400">
-                Скопируйте и вставьте в файл <strong>server.properties</strong>, после "MOTD="
-              </div>
             </div>
             
             <div class="command-header">
@@ -1048,7 +915,7 @@
               </div>
             </div>
             <div class="relative bg-gray-800 rounded-lg p-6">
-              <pre class="overflow-x-auto" id="motd-code"># Сгенерированный MOTD появится здесь</pre>
+              <pre class="overflow-x-auto" id="motd-code"></pre>
             </div>
           </div>
         </div>
@@ -1126,7 +993,7 @@
               </div>
             </div>
             <div class="relative bg-gray-800 rounded-lg p-6">
-              <pre class="overflow-x-auto" id="styled-output"># Сгенерированный текст появится здесь</pre>
+              <pre class="overflow-x-auto" id="styled-output"></pre>
             </div>
           </div>
         </div>
@@ -1140,7 +1007,7 @@
           <div class="tool-icon bg-textgen">
             <i class="fas fa-palette text-white text-xl"></i>
           </div>
-          <h2 class="text-2xl font-bold text-white">Коды цветов Minecraft</h2>
+          <h2 class="text-2xl font-bold text-white">Коды цветов</h2>
         </div>
         
         <div class="color-table">
@@ -1234,42 +1101,36 @@
                 <span class="font-bold mr-2">§l</span>
                 <span class="font-bold">Жирный текст</span>
               </div>
-              <p class="text-gray-400">Делает текст жирным</p>
             </div>
             <div class="bg-gray-800 rounded-lg p-4">
               <div class="flex items-center mb-2">
                 <span class="font-bold mr-2">§o</span>
                 <span class="italic">Курсивный текст</span>
               </div>
-              <p class="text-gray-400">Делает текст курсивным</p>
             </div>
             <div class="bg-gray-800 rounded-lg p-4">
               <div class="flex items-center mb-2">
                 <span class="font-bold mr-2">§n</span>
                 <span class="underline">Подчеркнутый текст</span>
               </div>
-              <p class="text-gray-400">Подчеркивает текст</p>
             </div>
             <div class="bg-gray-800 rounded-lg p-4">
               <div class="flex items-center mb-2">
                 <span class="font-bold mr-2">§m</span>
                 <span class="line-through">Зачеркнутый текст</span>
               </div>
-              <p class="text-gray-400">Зачеркивает текст</p>
             </div>
             <div class="bg-gray-800 rounded-lg p-4">
               <div class="flex items-center mb-2">
                 <span class="font-bold mr-2">§k</span>
                 <span class="obfuscating-text">§k</span>
               </div>
-              <p class="text-gray-400">Создает эффект случайных символов</p>
             </div>
             <div class="bg-gray-800 rounded-lg p-4">
               <div class="flex items-center mb-2">
                 <span class="font-bold mr-2">§r</span>
                 <span>Сброс форматирования</span>
               </div>
-              <p class="text-gray-400">Сбрасывает все форматирование</p>
             </div>
           </div>
         </div>
@@ -1278,33 +1139,7 @@
   </main>
 
   <script>
-    const enchantments = {
-      sword: [
-        { id: "sharpness", name: "Острота", maxLevel: 5, description: "Увеличивает урон", costBase: 1, costPerLevel: 11 },
-        { id: "smite", name: "Небесная кара", maxLevel: 5, description: "Увеличивает урон по нежити", costBase: 2, costPerLevel: 9 },
-        { id: "bane_of_arthropods", name: "Казнь членистоногих", maxLevel: 5, description: "Увеличивает урон по членистоногим", costBase: 2, costPerLevel: 9 },
-        { id: "knockback", name: "Отбрасывание", maxLevel: 2, description: "Отбрасывает врагов", costBase: 5, costPerLevel: 20 },
-        { id: "fire_aspect", name: "Огненный аспект", maxLevel: 2, description: "Поджигает врагов", costBase: 10, costPerLevel: 20 },
-        { id: "looting", name: "Грабеж", maxLevel: 3, description: "Увеличивает добычу с мобов", costBase: 15, costPerLevel: 9 }
-      ],
-      pickaxe: [
-        { id: "efficiency", name: "Эффективность", maxLevel: 5, description: "Увеличивает скорость добычи", costBase: 1, costPerLevel: 10 },
-        { id: "silk_touch", name: "Шелковое касание", maxLevel: 1, description: "Добывает блоки в их исходном виде", costBase: 15, costPerLevel: 0 },
-        { id: "fortune", name: "Удача", maxLevel: 3, description: "Увеличивает количество добычи", costBase: 15, costPerLevel: 9 },
-        { id: "unbreaking", name: "Прочность", maxLevel: 3, description: "Уменьшает износ инструмента", costBase: 5, costPerLevel: 8 }
-      ],
-      helmet: [
-        { id: "protection", name: "Защита", maxLevel: 4, description: "Уменьшает получаемый урон", costBase: 1, costPerLevel: 11 },
-        { id: "fire_protection", name: "Огнеупорность", maxLevel: 4, description: "Уменьшает урон от огня", costBase: 2, costPerLevel: 8 },
-        { id: "blast_protection", name: "Взрывоустойчивость", maxLevel: 4, description: "Уменьшает урон от взрывов", costBase: 4, costPerLevel: 8 },
-        { id: "projectile_protection", name: "Защита от снарядов", maxLevel: 4, description: "Уменьшает урон от снарядов", costBase: 2, costPerLevel: 8 },
-        { id: "respiration", name: "Подводное дыхание", maxLevel: 3, description: "Увеличивает время дыхания под водой", costBase: 10, costPerLevel: 10 },
-        { id: "aqua_affinity", name: "Притяжение воды", maxLevel: 1, description: "Позволяет быстрее копать под водой", costBase: 20, costPerLevel: 0 }
-      ]
-    };
-
     document.addEventListener('DOMContentLoaded', function() {
-      // Мобильное меню
       const burgerBtn = document.getElementById('burgerBtn');
       const mobileMenu = document.getElementById('mobileMenu');
       
@@ -1312,7 +1147,6 @@
         mobileMenu.classList.toggle('active');
       });
 
-      // Карточки инструментов
       const toolItems = document.querySelectorAll('.tool-item');
       const sections = document.querySelectorAll('.tool-section');
       
@@ -1332,15 +1166,6 @@
         });
       });
       
-      // Инициализация калькулятора зачарований
-      document.getElementById('enchant-item').addEventListener('change', function() {
-        updateEnchantCost();
-      });
-      
-      document.getElementById('enchant-select').addEventListener('change', updateEnchantCost);
-      document.getElementById('enchant-level').addEventListener('change', updateEnchantCost);
-      
-      // Обработчики кнопок генерации
       document.getElementById('generate-title-btn').addEventListener('click', generateTitleCommand);
       document.getElementById('generate-sign-btn').addEventListener('click', generateSignCommand);
       document.getElementById('generate-book-btn').addEventListener('click', generateBookCommand);
@@ -1348,7 +1173,6 @@
       document.getElementById('generate-motd-btn').addEventListener('click', generateMOTD);
       document.getElementById('generate-styled-btn').addEventListener('click', generateStyledText);
       
-      // Обработчики копирования
       document.querySelectorAll('.copy-btn').forEach(btn => {
         btn.addEventListener('click', function() {
           const targetId = this.getAttribute('data-copy');
@@ -1357,7 +1181,6 @@
         });
       });
       
-      // Обновление превью
       document.getElementById('title-text').addEventListener('input', updateTitlePreview);
       document.getElementById('subtitle-text').addEventListener('input', updateTitlePreview);
       document.getElementById('title-duration').addEventListener('input', updateTitlePreview);
@@ -1395,7 +1218,6 @@
         });
       });
       
-      // Обработчики для MOTD
       document.querySelectorAll('#motd-generator .color-btn').forEach(btn => {
         btn.addEventListener('click', function() {
           const colorCode = this.getAttribute('data-code');
@@ -1414,30 +1236,11 @@
         });
       });
       
-      // Инициализация превью
       updateTitlePreview();
       updateSignPreview();
       updateBookPreview();
       updateStyledPreview();
-      updateEnchantCost();
     });
-    
-    function updateEnchantCost() {
-      const itemType = document.getElementById('enchant-item').value;
-      const enchantId = document.getElementById('enchant-select').value;
-      const level = parseInt(document.getElementById('enchant-level').value);
-      
-      let cost = 0;
-      
-      if (enchantments[itemType]) {
-        const enchant = enchantments[itemType].find(e => e.id === enchantId);
-        if (enchant) {
-          cost = enchant.costBase + (level - 1) * enchant.costPerLevel;
-        }
-      }
-      
-      document.getElementById('enchant-cost').textContent = cost;
-    }
     
     function generateTitleCommand() {
       const title = document.getElementById('title-text').value || " ";
