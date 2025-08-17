@@ -295,16 +295,12 @@
       border: 1px solid rgba(255, 255, 255, 0.1);
     }
     
-    .obfuscated {
+    .obfuscated-example {
       font-family: monospace;
       letter-spacing: 1px;
-      animation: obfuscate 0.5s infinite;
-    }
-    
-    @keyframes obfuscate {
-      0% { opacity: 0.5; }
-      50% { opacity: 1; }
-      100% { opacity: 0.5; }
+      background: rgba(0,0,0,0.2);
+      padding: 2px 5px;
+      border-radius: 4px;
     }
     
     .color-table {
@@ -404,32 +400,11 @@
       transition: all 0.3s ease;
     }
     
-    .obfuscated-chars {
-      font-family: monospace;
-      letter-spacing: 1px;
-      animation: obfuscate 0.5s infinite;
-    }
-    
-    @keyframes obfuscate {
-      0% { opacity: 0.5; }
-      50% { opacity: 1; }
-      100% { opacity: 0.5; }
-    }
-    
     .motd-format-btns {
       display: flex;
       gap: 10px;
       flex-wrap: wrap;
       margin-top: 10px;
-    }
-    
-    .obfuscating-text {
-      animation: obfuscate 0.5s infinite;
-    }
-    
-    .obfuscated-header {
-      font-family: monospace;
-      letter-spacing: 1px;
     }
     
     @media (max-width: 768px) {
@@ -439,26 +414,39 @@
       .tools-grid {
         grid-template-columns: repeat(2, 1fr);
       }
+      .nav-links {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 15px;
+        justify-content: center;
+      }
     }
     
     @media (max-width: 480px) {
       .tools-grid {
         grid-template-columns: 1fr;
       }
+      .nav-links {
+        flex-direction: column;
+        gap: 10px;
+      }
+      .nav-links a {
+        padding: 8px 0;
+      }
     }
   </style>
 </head>
 <body class="bg-dark text-gray-200">
   <header class="sticky-header">
-    <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+    <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center flex-wrap">
       <div class="flex items-center">
         <div class="w-10 h-10 rounded-full bg-primary flex items-center justify-center mr-3">
           <i class="fas fa-book text-white"></i>
         </div>
-        <h1 class="text-2xl font-bold text-white obfuscated-header" id="header-text">Cobalt Книги</h1>
+        <h1 class="text-2xl font-bold text-white">Cobalt Книги</h1>
       </div>
       
-      <div class="hidden lg:flex space-x-8">
+      <div class="flex space-x-8 nav-links">
         <a href="index.html" class="hover:text-primary transition-colors flex items-center">
           <i class="fas fa-home mr-2"></i> Главная
         </a> 
@@ -470,31 +458,6 @@
         </a>
         <a href="https://t.me/sun_community_chat" class="hover:text-primary transition-colors flex items-center">
           <i class="fas fa-users mr-2"></i> Сообщество
-        </a>
-      </div>
-      
-      <div class="block lg:hidden">
-        <button id="burgerBtn" class="text-white focus:outline-none z-50">
-          <div class="burger-line"></div>
-          <div class="burger-line"></div>
-          <div class="burger-line"></div>
-        </button>
-      </div>
-    </div>
-    
-    <div id="mobileMenu" class="mobile-menu bg-gray-900 lg:hidden">
-      <div class="flex flex-col px-6 py-4">
-        <a href="index.html" class="py-3 hover:text-primary transition-colors flex items-center">
-          <i class="fas fa-home mr-3 w-5"></i> Главная
-        </a> 
-        <a href="notes.html" class="py-3 hover:text-primary transition-colors flex items-center">
-          <i class="fas fa-sticky-note mr-3 w-5"></i> Заметки
-        </a>
-        <a href="launcher.html" class="py-3 hover:text-primary transition-colors flex items-center">
-          <i class="fas fa-rocket mr-3 w-5"></i> Лаунчер
-        </a>
-        <a href="https://t.me/sun_community_chat" class="py-3 hover:text-primary transition-colors flex items-center">
-          <i class="fas fa-users mr-3 w-5"></i> Сообщество
         </a>
       </div>
     </div>
@@ -845,7 +808,7 @@
           <div>
             <div class="mb-6">
               <label class="block text-gray-300 mb-2">Текст MOTD</label>
-              <textarea class="w-full form-input h-32" placeholder="Введите текст MOTD..." id="motd-text">Добро пожаловать на сервер!\nМакс. 2 строки</textarea>
+              <textarea class="w-full form-input h-32" placeholder="Введите текст MOTD..." id="motd-text">Добро пожаловать на сервер!\nПример: <span class="obfuscated-example">@6gg5tt@346</span></textarea>
             </div>
             
             <div class="mb-6">
@@ -882,7 +845,7 @@
                   <span class="line-through">Зачерк.</span>
                 </div>
                 <div class="text-format-btn" data-format="k" data-code="§k">
-                  <span class="obfuscated-chars">§k</span>
+                  <span class="obfuscated-example">§k</span>
                 </div>
                 <div class="text-format-btn" data-format="r" data-code="§r">
                   Сброс
@@ -902,7 +865,7 @@
                 <div class="text-center font-bold text-lg mb-2">Сервер Minecraft</div>
                 <div class="text-center" id="motd-preview">
                   Добро пожаловать на сервер!<br>
-                  Макс. 2 строки
+                  Пример: <span class="obfuscated-example">@6gg5tt@346</span>
                 </div>
               </div>
             </div>
@@ -934,7 +897,7 @@
           <div>
             <div class="mb-6">
               <label class="block text-gray-300 mb-2">Введите текст</label>
-              <textarea class="w-full form-input h-32" placeholder="Введите текст для стилизации..." id="styled-text">Привет, мир!</textarea>
+              <textarea class="w-full form-input h-32" placeholder="Введите текст для стилизации..." id="styled-text">Пример: <span class="obfuscated-example">@6gg5tt@346</span></textarea>
             </div>
             
             <div class="mb-6">
@@ -966,7 +929,7 @@
                 <div class="text-format-btn" data-format="o"><span class="italic">Курсив</span></div>
                 <div class="text-format-btn" data-format="n"><span class="underline">Подчерк.</span></div>
                 <div class="text-format-btn" data-format="m"><span class="line-through">Зачерк.</span></div>
-                <div class="text-format-btn" data-format="k"><span class="obfuscating-text">§k</span></div>
+                <div class="text-format-btn" data-format="k"><span class="obfuscated-example">§k</span></div>
                 <div class="text-format-btn" data-format="r">Сброс</div>
               </div>
             </div>
@@ -980,7 +943,7 @@
             <h3 class="text-xl font-bold mb-4 text-white">Предпросмотр</h3>
             <div class="bg-gray-800 rounded-lg p-6 mb-6">
               <div class="p-4 bg-gray-700 rounded" id="styled-preview">
-                Привет, мир!
+                Пример: <span class="obfuscated-example">@6gg5tt@346</span>
               </div>
             </div>
             
@@ -1120,7 +1083,7 @@
             <div class="bg-gray-800 rounded-lg p-4">
               <div class="flex items-center mb-2">
                 <span class="font-bold mr-2">§k</span>
-                <span class="obfuscated-chars">§k</span>
+                <span class="obfuscated-example">@6gg5tt@346</span>
               </div>
             </div>
             <div class="bg-gray-800 rounded-lg p-4">
@@ -1137,37 +1100,6 @@
 
   <script>
     document.addEventListener('DOMContentLoaded', function() {
-      const headerText = document.getElementById('header-text');
-      const originalText = "Cobalt Книги";
-      const chars = "!\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~";
-      
-      function generateObfuscatedText() {
-        let result = '';
-        for (let i = 0; i < originalText.length; i++) {
-          if (originalText[i] === ' ') {
-            result += ' ';
-          } else {
-            const randomIndex = Math.floor(Math.random() * chars.length);
-            result += chars[randomIndex];
-          }
-        }
-        return result;
-      }
-      
-      function updateHeaderText() {
-        headerText.textContent = generateObfuscatedText();
-      }
-      
-      updateHeaderText();
-      setInterval(updateHeaderText, 100);
-      
-      const burgerBtn = document.getElementById('burgerBtn');
-      const mobileMenu = document.getElementById('mobileMenu');
-      
-      burgerBtn.addEventListener('click', function() {
-        mobileMenu.classList.toggle('active');
-      });
-
       const toolItems = document.querySelectorAll('.tool-item');
       const sections = document.querySelectorAll('.tool-section');
       
@@ -1224,15 +1156,15 @@
       
       document.getElementById('styled-text').addEventListener('input', updateStyledPreview);
       
-      document.querySelectorAll('.color-btn').forEach(btn => {
+      document.querySelectorAll('#text-generator .color-btn').forEach(btn => {
         btn.addEventListener('click', function() {
-          document.querySelectorAll('.color-btn').forEach(b => b.classList.remove('active'));
+          document.querySelectorAll('#text-generator .color-btn').forEach(b => b.classList.remove('active'));
           this.classList.add('active');
           updateStyledPreview();
         });
       });
       
-      document.querySelectorAll('.text-format-btn').forEach(btn => {
+      document.querySelectorAll('#text-generator .text-format-btn').forEach(btn => {
         btn.addEventListener('click', function() {
           this.classList.toggle('active');
           updateStyledPreview();
@@ -1343,11 +1275,11 @@
       let text = document.getElementById('styled-text').value;
       if (!text) return;
       
-      const selectedColor = document.querySelector('.color-btn.active');
+      const selectedColor = document.querySelector('#text-generator .color-btn.active');
       const colorCode = selectedColor ? selectedColor.getAttribute('data-color') : null;
       
       const formats = [];
-      document.querySelectorAll('.text-format-btn.active').forEach(btn => {
+      document.querySelectorAll('#text-generator .text-format-btn.active').forEach(btn => {
         formats.push(btn.getAttribute('data-format'));
       });
       
@@ -1413,11 +1345,11 @@
     function updateStyledPreview() {
       let text = document.getElementById('styled-text').value || "Привет, мир!";
       
-      const selectedColor = document.querySelector('.color-btn.active');
+      const selectedColor = document.querySelector('#text-generator .color-btn.active');
       const colorCode = selectedColor ? selectedColor.getAttribute('data-color') : null;
       
       const formats = [];
-      document.querySelectorAll('.text-format-btn.active').forEach(btn => {
+      document.querySelectorAll('#text-generator .text-format-btn.active').forEach(btn => {
         formats.push(btn.getAttribute('data-format'));
       });
       
@@ -1442,9 +1374,9 @@
       if (formats.includes('m')) preview.style.textDecoration = 'line-through';
       
       if (formats.includes('k')) {
-        preview.classList.add('obfuscating-text');
+        preview.classList.add('obfuscated-example');
       } else {
-        preview.classList.remove('obfuscating-text');
+        preview.classList.remove('obfuscated-example');
       }
     }
   </script>
