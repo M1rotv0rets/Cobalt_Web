@@ -407,6 +407,11 @@
       margin-top: 10px;
     }
     
+    .command-placeholder {
+      color: #94a3b8;
+      font-style: italic;
+    }
+    
     @media (max-width: 768px) {
       .color-table {
         grid-template-columns: repeat(2, 1fr);
@@ -415,10 +420,22 @@
         grid-template-columns: repeat(2, 1fr);
       }
       .nav-links {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 15px;
-        justify-content: center;
+        display: none;
+      }
+      .mobile-menu {
+        display: block;
+      }
+      .burger-btn {
+        display: block;
+      }
+    }
+    
+    @media (min-width: 769px) {
+      .mobile-menu {
+        display: none !important;
+      }
+      .burger-btn {
+        display: none;
       }
     }
     
@@ -430,15 +447,12 @@
         flex-direction: column;
         gap: 10px;
       }
-      .nav-links a {
-        padding: 8px 0;
-      }
     }
   </style>
 </head>
 <body class="bg-dark text-gray-200">
   <header class="sticky-header">
-    <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center flex-wrap">
+    <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
       <div class="flex items-center">
         <div class="w-10 h-10 rounded-full bg-primary flex items-center justify-center mr-3">
           <i class="fas fa-book text-white"></i>
@@ -446,7 +460,7 @@
         <h1 class="text-2xl font-bold text-white">Cobalt Книги</h1>
       </div>
       
-      <div class="flex space-x-8 nav-links">
+      <div class="nav-links hidden lg:flex space-x-8">
         <a href="index.html" class="hover:text-primary transition-colors flex items-center">
           <i class="fas fa-home mr-2"></i> Главная
         </a> 
@@ -458,6 +472,29 @@
         </a>
         <a href="https://t.me/sun_community_chat" class="hover:text-primary transition-colors flex items-center">
           <i class="fas fa-users mr-2"></i> Сообщество
+        </a>
+      </div>
+      
+      <button id="burgerBtn" class="burger-btn lg:hidden text-white focus:outline-none z-50">
+        <div class="burger-line"></div>
+        <div class="burger-line"></div>
+        <div class="burger-line"></div>
+      </button>
+    </div>
+    
+    <div id="mobileMenu" class="mobile-menu lg:hidden">
+      <div class="flex flex-col px-6 py-4">
+        <a href="index.html" class="py-3 hover:text-primary transition-colors flex items-center">
+          <i class="fas fa-home mr-3 w-5"></i> Главная
+        </a> 
+        <a href="notes.html" class="py-3 hover:text-primary transition-colors flex items-center">
+          <i class="fas fa-sticky-note mr-3 w-5"></i> Заметки
+        </a>
+        <a href="launcher.html" class="py-3 hover:text-primary transition-colors flex items-center">
+          <i class="fas fa-rocket mr-3 w-5"></i> Лаунчер
+        </a>
+        <a href="https://t.me/sun_community_chat" class="py-3 hover:text-primary transition-colors flex items-center">
+          <i class="fas fa-users mr-3 w-5"></i> Сообщество
         </a>
       </div>
     </div>
@@ -596,7 +633,7 @@
               </div>
             </div>
             <div class="relative bg-gray-800 rounded-lg p-6">
-              <pre class="overflow-x-auto" id="title-command"></pre>
+              <pre class="overflow-x-auto command-placeholder" id="title-command">Здесь появится ваша команда</pre>
             </div>
           </div>
         </div>
@@ -666,7 +703,7 @@
               </div>
             </div>
             <div class="relative bg-gray-800 rounded-lg p-6">
-              <pre class="overflow-x-auto" id="sign-command"></pre>
+              <pre class="overflow-x-auto command-placeholder" id="sign-command">Здесь появится ваша команда</pre>
             </div>
           </div>
         </div>
@@ -747,7 +784,7 @@
               </div>
             </div>
             <div class="relative bg-gray-800 rounded-lg p-6">
-              <pre class="overflow-x-auto" id="book-command"></pre>
+              <pre class="overflow-x-auto command-placeholder" id="book-command">Здесь появится ваша команда</pre>
             </div>
           </div>
         </div>
@@ -788,7 +825,7 @@
               </div>
             </div>
             <div class="relative bg-gray-800 rounded-lg p-6">
-              <pre class="overflow-x-auto" id="tellraw-json"></pre>
+              <pre class="overflow-x-auto command-placeholder" id="tellraw-json">Здесь появится ваша команда</pre>
             </div>
           </div>
         </div>
@@ -877,7 +914,7 @@
               </div>
             </div>
             <div class="relative bg-gray-800 rounded-lg p-6">
-              <pre class="overflow-x-auto" id="motd-code"></pre>
+              <pre class="overflow-x-auto command-placeholder" id="motd-code">Здесь появится ваш код</pre>
             </div>
           </div>
         </div>
@@ -954,7 +991,7 @@
               </div>
             </div>
             <div class="relative bg-gray-800 rounded-lg p-6">
-              <pre class="overflow-x-auto" id="styled-output"></pre>
+              <pre class="overflow-x-auto command-placeholder" id="styled-output">Здесь появится ваш текст</pre>
             </div>
           </div>
         </div>
@@ -1100,6 +1137,37 @@
 
   <script>
     document.addEventListener('DOMContentLoaded', function() {
+      const chars = "0123456789abcdefghijklmnopqrstuvwxyz@#$%&*";
+      const exampleElements = document.querySelectorAll('.obfuscated-example');
+      
+      function obfuscateText(element) {
+        const originalText = element.dataset.original || element.textContent;
+        element.dataset.original = originalText;
+        
+        let newText = '';
+        for (let i = 0; i < originalText.length; i++) {
+          const randomIndex = Math.floor(Math.random() * chars.length);
+          newText += chars[randomIndex];
+        }
+        element.textContent = newText;
+      }
+      
+      function animateObfuscatedText() {
+        exampleElements.forEach(element => {
+          obfuscateText(element);
+        });
+      }
+      
+      setInterval(animateObfuscatedText, 100);
+      
+      const burgerBtn = document.getElementById('burgerBtn');
+      const mobileMenu = document.getElementById('mobileMenu');
+      
+      burgerBtn.addEventListener('click', function() {
+        mobileMenu.classList.toggle('active');
+        burgerBtn.classList.toggle('active');
+      });
+
       const toolItems = document.querySelectorAll('.tool-item');
       const sections = document.querySelectorAll('.tool-section');
       
@@ -1129,7 +1197,10 @@
       document.querySelectorAll('.copy-btn').forEach(btn => {
         btn.addEventListener('click', function() {
           const targetId = this.getAttribute('data-copy');
-          const text = document.getElementById(targetId).textContent;
+          const textElement = document.getElementById(targetId);
+          if (textElement.classList.contains('command-placeholder')) return;
+          
+          const text = textElement.textContent;
           copyToClipboard(text);
         });
       });
@@ -1213,7 +1284,9 @@
 /title ${selector} subtitle {"text":"${subtitle}"}
       `.trim();
       
-      document.getElementById('title-command').textContent = command;
+      const element = document.getElementById('title-command');
+      element.textContent = command;
+      element.classList.remove('command-placeholder');
     }
     
     function generateSignCommand() {
@@ -1226,7 +1299,9 @@
       
       const command = `/give @p ${woodType}_sign{BlockEntityTag:{Text1:'{"text":"${line1}"}',Text2:'{"text":"${line2}"}',Text3:'{"text":"${line3}"}',Text4:'{"text":"${line4}"}'},display:{Name:'{"text":"${signName}"}'}}`;
       
-      document.getElementById('sign-command').textContent = command;
+      const element = document.getElementById('sign-command');
+      element.textContent = command;
+      element.classList.remove('command-placeholder');
     }
     
     function generateBookCommand() {
@@ -1254,7 +1329,9 @@
       
       command += `}`;
       
-      document.getElementById('book-command').textContent = command;
+      const element = document.getElementById('book-command');
+      element.textContent = command;
+      element.classList.remove('command-placeholder');
     }
     
     function generateTellraw() {
@@ -1262,13 +1339,17 @@
       const selector = document.getElementById('tellraw-selector').value || "@a";
       
       const command = `/tellraw ${selector} {"text":"${text}"}`;
-      document.getElementById('tellraw-json').textContent = command;
+      const element = document.getElementById('tellraw-json');
+      element.textContent = command;
+      element.classList.remove('command-placeholder');
     }
     
     function generateMOTD() {
       const text = document.getElementById('motd-text').value || "Добро пожаловать";
       const formattedMOTD = text.replace(/\n/g, "\\n");
-      document.getElementById('motd-code').textContent = formattedMOTD;
+      const element = document.getElementById('motd-code');
+      element.textContent = formattedMOTD;
+      element.classList.remove('command-placeholder');
     }
     
     function generateStyledText() {
@@ -1288,7 +1369,9 @@
       formats.forEach(format => formattedText += `§${format}`);
       formattedText += text;
       
-      document.getElementById('styled-output').textContent = formattedText;
+      const element = document.getElementById('styled-output');
+      element.textContent = formattedText;
+      element.classList.remove('command-placeholder');
     }
     
     function copyToClipboard(text) {
@@ -1372,12 +1455,6 @@
       if (formats.includes('o')) preview.style.fontStyle = 'italic';
       if (formats.includes('n')) preview.style.textDecoration = 'underline';
       if (formats.includes('m')) preview.style.textDecoration = 'line-through';
-      
-      if (formats.includes('k')) {
-        preview.classList.add('obfuscated-example');
-      } else {
-        preview.classList.remove('obfuscated-example');
-      }
     }
   </script>
 </body>
