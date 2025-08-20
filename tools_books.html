@@ -298,9 +298,7 @@
     .obfuscated-example {
       font-family: monospace;
       letter-spacing: 1px;
-      background: rgba(0,0,0,0.2);
       padding: 2px 5px;
-      border-radius: 4px;
     }
     
     .color-table {
@@ -386,10 +384,12 @@
       z-index: 40;
       transform: translateY(-100%);
       transition: transform 0.4s ease;
+      display: none;
     }
     
     .mobile-menu.active {
       transform: translateY(0);
+      display: block;
     }
     
     .burger-line {
@@ -412,6 +412,10 @@
       font-style: italic;
     }
     
+    .preview-section {
+      display: none;
+    }
+    
     @media (max-width: 769px) {
       .color-table {
         grid-template-columns: repeat(2, 1fr);
@@ -428,6 +432,12 @@
       .burger-btn {
         display: block;
       }
+      .header-container {
+        padding: 0.5rem 1rem;
+      }
+      .header-title {
+        font-size: 1.2rem;
+      }
     }
     
     @media (max-width: 480px) {
@@ -438,21 +448,42 @@
         flex-direction: column;
         gap: 10px;
       }
+      .header-container {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 0.5rem;
+      }
+      .header-title {
+        margin-bottom: 0.5rem;
+      }
+    }
+
+    .burger-btn {
+      display: none;
+    }
+
+    @media (max-width: 768px) {
+      .burger-btn {
+        display: block;
+        z-index: 100;
+      }
+      .nav-links {
+        display: none;
+      }
     }
   </style>
 </head>
 <body class="bg-dark text-gray-200">
-  <!-- Новый header из заметок -->
   <header class="sticky-header">
-    <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+    <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center header-container">
       <div class="flex items-center">
         <div class="w-10 h-10 rounded-full bg-primary flex items-center justify-center mr-3">
           <i class="fas fa-sticky-note text-white"></i>
         </div>
-        <h1 class="text-2xl font-bold text-white">Cobalt Заметки</h1>
+        <h1 class="text-2xl font-bold text-white header-title">Cobalt Заметки</h1>
       </div>
       
-      <div class="hidden lg:flex space-x-8">
+      <div class="flex space-x-8 nav-links">
         <a href="index.html" class="hover:text-primary transition-colors flex items-center">
           <i class="fas fa-home mr-2"></i> Главная
         </a> 
@@ -464,7 +495,7 @@
         </a>
       </div>
       
-      <div class="block lg:hidden">
+      <div class="burger-btn">
         <button id="burgerBtn" class="text-white focus:outline-none z-50">
           <div class="burger-line"></div>
           <div class="burger-line"></div>
@@ -473,7 +504,7 @@
       </div>
     </div>
     
-    <div id="mobileMenu" class="mobile-menu bg-gray-900 lg:hidden">
+    <div id="mobileMenu" class="mobile-menu bg-gray-900">
       <div class="flex flex-col px-6 py-4">
         <a href="index.html" class="py-3 hover:text-primary transition-colors flex items-center">
           <i class="fas fa-home mr-3 w-5"></i> Главная
@@ -600,7 +631,7 @@
             </button>
           </div>
           
-          <div>
+          <div class="preview-section">
             <h3 class="text-xl font-bold mb-4 text-white">Предпросмотр</h3>
             <div class="bg-gray-800 rounded-lg p-6 mb-6">
               <div class="text-center mb-4">
@@ -675,7 +706,7 @@
             </button>
           </div>
           
-          <div>
+          <div class="preview-section">
             <h3 class="text-xl font-bold mb-4 text-white">Предпросмотр</h3>
             <div class="sign-preview mb-6">
               <div class="sign-line" id="sign-preview1">Строка 1</div>
@@ -711,8 +742,7 @@
           <div>
             <div class="mb-6">
               <label class="block text-gray-300 mb-2">Содержание книги</label>
-              <textarea class="w-full form-input h-40" placeholder="Введите текст книги..." id="book-content">Книга с инструментами
-*здесь был Cobalt Книги*</textarea>
+              <textarea class="w-full form-input h-40" placeholder="Введите текст книги..." id="book-content">Книга с инструментами</textarea>
             </div>
             
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
@@ -746,7 +776,7 @@
             </button>
           </div>
           
-          <div>
+          <div class="preview-section">
             <h3 class="text-xl font-bold mb-4 text-white">Предпросмотр</h3>
             <div class="bg-gray-800 rounded-lg p-6 mb-6">
               <div class="flex justify-between items-center mb-4">
@@ -755,8 +785,7 @@
               </div>
               
               <div class="page-preview mb-4" id="book-content-preview">
-                Книга с инструментами<br>
-                *здесь был Cobalt Книги*
+                Книга с инструментами
               </div>
               
               <div class="flex justify-between items-center text-sm text-gray-400">
@@ -805,7 +834,7 @@
             </button>
           </div>
           
-          <div>
+          <div class="preview-section">
             <div class="command-header">
               <h3 class="text-xl font-bold text-white">Команда</h3>
               <div class="copy-btn" data-copy="tellraw-json">
@@ -833,7 +862,7 @@
           <div>
             <div class="mb-6">
               <label class="block text-gray-300 mb-2">Текст MOTD</label>
-              <textarea class="w-full form-input h-32" placeholder="Введите текст MOTD..." id="motd-text">Добро пожаловать на сервер!\nПример: <span class="obfuscated-example">@6gg5tt@346</span></textarea>
+              <textarea class="w-full form-input h-32" placeholder="Введите текст MOTD..." id="motd-text">Добро пожаловать на сервер!</textarea>
             </div>
             
             <div class="mb-6">
@@ -870,7 +899,7 @@
                   <span class="line-through">Зачерк.</span>
                 </div>
                 <div class="text-format-btn" data-format="k" data-code="§k">
-                  <span class="obfuscated-example">§k</span>
+                  <span>§k</span>
                 </div>
                 <div class="text-format-btn" data-format="r" data-code="§r">
                   Сброс
@@ -883,14 +912,13 @@
             </button>
           </div>
           
-          <div>
+          <div class="preview-section">
             <h3 class="text-xl font-bold mb-4 text-white">Предпросмотр MOTD</h3>
             <div class="bg-gray-800 rounded-lg p-6 mb-6">
               <div class="p-4 bg-gray-900 rounded mb-4">
                 <div class="text-center font-bold text-lg mb-2">Сервер Minecraft</div>
                 <div class="text-center" id="motd-preview">
-                  Добро пожаловать на сервер!<br>
-                  Пример: <span class="obfuscated-example">@6gg5tt@346</span>
+                  Добро пожаловать на сервер!
                 </div>
               </div>
             </div>
@@ -922,7 +950,7 @@
           <div>
             <div class="mb-6">
               <label class="block text-gray-300 mb-2">Введите текст</label>
-              <textarea class="w-full form-input h-32" placeholder="Введите текст для стилизации..." id="styled-text">Пример: <span class="obfuscated-example">@6gg5tt@346</span></textarea>
+              <textarea class="w-full form-input h-32" placeholder="Введите текст для стилизации..." id="styled-text">Пример текста</textarea>
             </div>
             
             <div class="mb-6">
@@ -954,7 +982,7 @@
                 <div class="text-format-btn" data-format="o"><span class="italic">Курсив</span></div>
                 <div class="text-format-btn" data-format="n"><span class="underline">Подчерк.</span></div>
                 <div class="text-format-btn" data-format="m"><span class="line-through">Зачерк.</span></div>
-                <div class="text-format-btn" data-format="k"><span class="obfuscated-example">§k</span></div>
+                <div class="text-format-btn" data-format="k"><span>§k</span></div>
                 <div class="text-format-btn" data-format="r">Сброс</div>
               </div>
             </div>
@@ -964,11 +992,11 @@
             </button>
           </div>
           
-          <div>
+          <div class="preview-section">
             <h3 class="text-xl font-bold mb-4 text-white">Предпросмотр</h3>
             <div class="bg-gray-800 rounded-lg p-6 mb-6">
               <div class="p-4 bg-gray-700 rounded" id="styled-preview">
-                Пример: <span class="obfuscated-example">@6gg5tt@346</span>
+                Пример текста
               </div>
             </div>
             
@@ -1108,7 +1136,7 @@
             <div class="bg-gray-800 rounded-lg p-4">
               <div class="flex items-center mb-2">
                 <span class="font-bold mr-2">§k</span>
-                <span class="obfuscated-example">@6gg5tt@346</span>
+                <span>Случайные символы</span>
               </div>
             </div>
             <div class="bg-gray-800 rounded-lg p-4">
@@ -1125,29 +1153,6 @@
 
   <script>
     document.addEventListener('DOMContentLoaded', function() {
-      const chars = "0123456789abcdefghijklmnopqrstuvwxyz@#$%&*";
-      const exampleElements = document.querySelectorAll('.obfuscated-example');
-      
-      function obfuscateText(element) {
-        const originalText = element.dataset.original || element.textContent;
-        element.dataset.original = originalText;
-        
-        let newText = '';
-        for (let i = 0; i < originalText.length; i++) {
-          const randomIndex = Math.floor(Math.random() * chars.length);
-          newText += chars[randomIndex];
-        }
-        element.textContent = newText;
-      }
-      
-      function animateObfuscatedText() {
-        exampleElements.forEach(element => {
-          obfuscateText(element);
-        });
-      }
-      
-      setInterval(animateObfuscatedText, 100);
-      
       const burgerBtn = document.getElementById('burgerBtn');
       const mobileMenu = document.getElementById('mobileMenu');
       
