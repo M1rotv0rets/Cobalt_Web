@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Cobalt Web - Заметки</title>
+  <title>Cobalt Web</title>
   <link rel="icon" href="Images/icon.png">
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -458,7 +458,6 @@
     
     let notes = [];
     
-    // Инициализация даты и времени
     function initDateTime() {
       const now = new Date();
       const year = now.getFullYear();
@@ -471,19 +470,16 @@
       reminderTime.value = `${hours}:${minutes}`;
     }
     
-    // Проверка поддержки уведомлений
     function checkNotificationSupport() {
       return "Notification" in window;
     }
     
-    // Запрос разрешения на уведомления
     function requestNotificationPermission() {
       if (checkNotificationSupport()) {
         Notification.requestPermission();
       }
     }
     
-    // Показать уведомление
     function showNotification(title, body) {
       if (checkNotificationSupport() && Notification.permission === "granted") {
         new Notification(title, { body });
@@ -497,13 +493,11 @@
       }
     }
     
-    // Сохранение заметок в localStorage
     function saveNotes() {
       localStorage.setItem('notes', JSON.stringify(notes));
       updateNotesCounter();
     }
     
-    // Загрузка заметок из localStorage
     function loadNotes() {
       const savedNotes = localStorage.getItem('notes');
       if (savedNotes) {
@@ -518,13 +512,11 @@
       updateNotesCounter();
     }
     
-    // Обновление счетчика заметок
     function updateNotesCounter() {
       notesCounter.textContent = notes.length;
       emptyState.style.display = notes.length ? 'none' : 'block';
     }
     
-    // Проверка напоминаний
     function checkReminders() {
       const now = new Date();
       
@@ -542,7 +534,6 @@
       });
     }
     
-    // Форматирование даты с учетом часового пояса
     function formatDate(dateString, timezone) {
       try {
         const date = new Date(dateString);
@@ -559,7 +550,6 @@
       }
     }
     
-    // Получение дня недели
     function getDayOfWeek(dateString, timezone) {
       try {
         const days = ['Воскресенье', 'Понедельник', 'Вторник', 'Среда', 'Четверг', 'Пятница', 'Суббота'];
@@ -571,7 +561,6 @@
       }
     }
     
-    // Анимация появления заметки
     function animateNote(element) {
       element.style.opacity = '0';
       element.style.transform = 'translateY(20px)';
@@ -583,7 +572,6 @@
       }, 10);
     }
     
-    // Копирование в буфер обмена
     function copyToClipboard(text) {
       navigator.clipboard.writeText(text).then(() => {
         showNotification("Cobalt Заметки", "Заметка скопирована в буфер обмена");
@@ -592,7 +580,6 @@
       });
     }
     
-    // Экспорт заметок в TXT
     function exportNotesToTxt() {
       if (notes.length === 0) {
         showNotification("Cobalt Заметки", "Нет заметок для экспорта");
@@ -632,7 +619,6 @@
       showNotification("Cobalt Заметки", `Экспортировано ${notes.length} заметок в TXT`);
     }
     
-    // Отображение заметок
     function renderNotes() {
       notesContainer.innerHTML = '';
       
@@ -643,7 +629,6 @@
       
       emptyState.style.display = 'none';
       
-      // Сортировка заметок: сначала с напоминаниями, затем по дате создания
       const sortedNotes = [...notes].sort((a, b) => {
         if (a.reminder && !b.reminder) return -1;
         if (!a.reminder && b.reminder) return 1;
@@ -748,7 +733,6 @@
         animateNote(noteElement);
       });
       
-      // Добавление обработчиков событий для кнопок удаления и копирования
       document.querySelectorAll('.delete-btn').forEach(btn => {
         btn.addEventListener('click', function() {
           const id = this.getAttribute('data-id');
@@ -764,7 +748,6 @@
       });
     }
     
-    // Добавление новой заметки
     function addNote(isReminder = false) {
       const text = noteText.value.trim();
       
@@ -806,7 +789,6 @@
       saveNotes();
       renderNotes();
       
-      // Сброс полей формы
       noteText.value = '';
       noteLocation.value = '';
       noteNote.value = '';
@@ -819,7 +801,6 @@
       }
     }
     
-    // Удаление заметки
     function deleteNote(id) {
       if (confirm('Вы уверены, что хотите удалить эту заметку?')) {
         notes = notes.filter(note => note.id != id);
@@ -829,7 +810,6 @@
       }
     }
     
-    // Копирование заметки
     function copyNote(id) {
       const note = notes.find(note => note.id == id);
       if (!note) return;
@@ -844,21 +824,17 @@
       copyToClipboard(textToCopy);
     }
     
-    // Инициализация при загрузке страницы
     document.addEventListener('DOMContentLoaded', function() {
       initDateTime();
       loadNotes();
       
-      // Добавление обработчиков событий
       addNoteBtn.addEventListener('click', () => addNote(false));
       addReminderBtn.addEventListener('click', () => addNote(true));
       exportAllBtn.addEventListener('click', exportNotesToTxt);
       
-      // Проверка напоминаний каждые 30 секунд
       setInterval(checkReminders, 30000);
       checkReminders();
       
-      // Обработчик для скролла заголовка
       window.addEventListener('scroll', function() {
         const header = document.querySelector('header');
         if (window.scrollY > 10) {
