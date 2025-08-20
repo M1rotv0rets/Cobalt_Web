@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Cobalt Web</title>
+  <title>Cobalt Web - Заметки</title>
   <link rel="icon" href="Images/icon.png">
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -440,15 +440,7 @@
   </section>
 
   <script>
-    window.addEventListener('scroll', function() {
-      const header = document.querySelector('header');
-      if (window.scrollY > 10) {
-        header.classList.add('scrolled');
-      } else {
-        header.classList.remove('scrolled');
-      }
-    });
-    
+    // Основные переменные
     const notesContainer = document.getElementById('notesContainer');
     const notesCounter = document.getElementById('notesCounter');
     const emptyState = document.getElementById('emptyState');
@@ -466,6 +458,7 @@
     
     let notes = [];
     
+    // Инициализация даты и времени
     function initDateTime() {
       const now = new Date();
       const year = now.getFullYear();
@@ -478,19 +471,19 @@
       reminderTime.value = `${hours}:${minutes}`;
     }
     
+    // Проверка поддержки уведомлений
     function checkNotificationSupport() {
-      if (!("Notification" in window)) {
-        return false;
-      }
-      return true;
+      return "Notification" in window;
     }
     
+    // Запрос разрешения на уведомления
     function requestNotificationPermission() {
       if (checkNotificationSupport()) {
         Notification.requestPermission();
       }
     }
     
+    // Показать уведомление
     function showNotification(title, body) {
       if (checkNotificationSupport() && Notification.permission === "granted") {
         new Notification(title, { body });
@@ -504,25 +497,34 @@
       }
     }
     
+    // Сохранение заметок в localStorage
     function saveNotes() {
       localStorage.setItem('notes', JSON.stringify(notes));
       updateNotesCounter();
     }
     
+    // Загрузка заметок из localStorage
     function loadNotes() {
       const savedNotes = localStorage.getItem('notes');
       if (savedNotes) {
-        notes = JSON.parse(savedNotes);
-        renderNotes();
+        try {
+          notes = JSON.parse(savedNotes);
+          renderNotes();
+        } catch (e) {
+          console.error("Ошибка загрузки заметок:", e);
+          notes = [];
+        }
       }
       updateNotesCounter();
     }
     
+    // Обновление счетчика заметок
     function updateNotesCounter() {
       notesCounter.textContent = notes.length;
       emptyState.style.display = notes.length ? 'none' : 'block';
     }
     
+    // Проверка напоминаний
     function checkReminders() {
       const now = new Date();
       
@@ -540,40 +542,48 @@
       });
     }
     
+    // Форматирование даты с учетом часового пояса
     function formatDate(dateString, timezone) {
-      const date = new Date(dateString);
-      return date.toLocaleString('ru-RU', {
-        timeZone: timezone,
-        day: '2-digit',
-        month: '2-digit',
-        year: 'numeric',
-        hour: '2-digit',
-        minute: '2-digit'
-      });
+      try {
+        const date = new Date(dateString);
+        return date.toLocaleString('ru-RU', {
+          timeZone: timezone,
+          day: '2-digit',
+          month: '2-digit',
+          year: 'numeric',
+          hour: '2-digit',
+          minute: '2-digit'
+        });
+      } catch (e) {
+        return "Неверная дата";
+      }
     }
     
+    // Получение дня недели
     function getDayOfWeek(dateString, timezone) {
-      const days = ['Воскресенье', 'Понедельник', 'Вторник', 'Среда', 'Четверг', 'Пятница', 'Суббота'];
-      const date = new Date(dateString);
-      const dayIndex = new Intl.DateTimeFormat('ru-RU', {
-        timeZone: timezone,
-        weekday: 'numeric'
-      }).format(date) % 7;
-      
-      return days[dayIndex];
+      try {
+        const days = ['Воскресенье', 'Понедельник', 'Вторник', 'Среда', 'Четверг', 'Пятница', 'Суббота'];
+        const date = new Date(dateString);
+        const dayIndex = date.getDay();
+        return days[dayIndex];
+      } catch (e) {
+        return "Неизвестный день";
+      }
     }
     
+    // Анимация появления заметки
     function animateNote(element) {
-      element.style.opacity = 0;
+      element.style.opacity = '0';
       element.style.transform = 'translateY(20px)';
       
       setTimeout(() => {
         element.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
-        element.style.opacity = 1;
+        element.style.opacity = '1';
         element.style.transform = 'translateY(0)';
       }, 10);
     }
     
+    // Копирование в буфер обмена
     function copyToClipboard(text) {
       navigator.clipboard.writeText(text).then(() => {
         showNotification("Cobalt Заметки", "Заметка скопирована в буфер обмена");
@@ -582,6 +592,7 @@
       });
     }
     
+    // Экспорт заметок в TXT
     function exportNotesToTxt() {
       if (notes.length === 0) {
         showNotification("Cobalt Заметки", "Нет заметок для экспорта");
@@ -601,7 +612,9 @@
         if (note.reminder) {
           txtContent += `Напоминание: ${formatDate(note.reminder, note.timezone)}\n`;
         }
-        txtContent += `Часовой пояс: ${noteTimezone.querySelector(`option[value="${note.timezone}"]`).text}\n`;
+        const timezoneOption = noteTimezone.querySelector(`option[value="${note.timezone}"]`);
+        const timezoneText = timezoneOption ? timezoneOption.text : note.timezone;
+        txtContent += `Часовой пояс: ${timezoneText}\n`;
         txtContent += `Создано: ${formatDate(note.timestamp, note.timezone)}\n\n`;
       });
       
@@ -619,6 +632,7 @@
       showNotification("Cobalt Заметки", `Экспортировано ${notes.length} заметок в TXT`);
     }
     
+    // Отображение заметок
     function renderNotes() {
       notesContainer.innerHTML = '';
       
@@ -629,6 +643,7 @@
       
       emptyState.style.display = 'none';
       
+      // Сортировка заметок: сначала с напоминаниями, затем по дате создания
       const sortedNotes = [...notes].sort((a, b) => {
         if (a.reminder && !b.reminder) return -1;
         if (!a.reminder && b.reminder) return 1;
@@ -688,7 +703,8 @@
         
         let timezoneHtml = '';
         if (note.timezone) {
-          const timezoneName = noteTimezone.querySelector(`option[value="${note.timezone}"]`).text;
+          const timezoneOption = noteTimezone.querySelector(`option[value="${note.timezone}"]`);
+          const timezoneName = timezoneOption ? timezoneOption.text : note.timezone;
           timezoneHtml = `
             <div class="timezone-badge">
               <i class="fas fa-clock mr-2"></i>
@@ -732,6 +748,7 @@
         animateNote(noteElement);
       });
       
+      // Добавление обработчиков событий для кнопок удаления и копирования
       document.querySelectorAll('.delete-btn').forEach(btn => {
         btn.addEventListener('click', function() {
           const id = this.getAttribute('data-id');
@@ -747,6 +764,7 @@
       });
     }
     
+    // Добавление новой заметки
     function addNote(isReminder = false) {
       const text = noteText.value.trim();
       
@@ -788,23 +806,30 @@
       saveNotes();
       renderNotes();
       
+      // Сброс полей формы
       noteText.value = '';
       noteLocation.value = '';
       noteNote.value = '';
       
       if (isReminder) {
         requestNotificationPermission();
+        showNotification("Cobalt Заметки", "Напоминание установлено!");
+      } else {
+        showNotification("Cobalt Заметки", "Заметка сохранена!");
       }
     }
     
+    // Удаление заметки
     function deleteNote(id) {
       if (confirm('Вы уверены, что хотите удалить эту заметку?')) {
         notes = notes.filter(note => note.id != id);
         saveNotes();
         renderNotes();
+        showNotification("Cobalt Заметки", "Заметка удалена");
       }
     }
     
+    // Копирование заметки
     function copyNote(id) {
       const note = notes.find(note => note.id == id);
       if (!note) return;
@@ -819,16 +844,29 @@
       copyToClipboard(textToCopy);
     }
     
+    // Инициализация при загрузке страницы
     document.addEventListener('DOMContentLoaded', function() {
       initDateTime();
       loadNotes();
       
+      // Добавление обработчиков событий
       addNoteBtn.addEventListener('click', () => addNote(false));
       addReminderBtn.addEventListener('click', () => addNote(true));
       exportAllBtn.addEventListener('click', exportNotesToTxt);
       
+      // Проверка напоминаний каждые 30 секунд
       setInterval(checkReminders, 30000);
       checkReminders();
+      
+      // Обработчик для скролла заголовка
+      window.addEventListener('scroll', function() {
+        const header = document.querySelector('header');
+        if (window.scrollY > 10) {
+          header.classList.add('scrolled');
+        } else {
+          header.classList.remove('scrolled');
+        }
+      });
     });
   </script>
 </body>
