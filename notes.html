@@ -15,7 +15,6 @@
             primary: '#0ea5e9',
             dark: '#0f172a',
             reminder: '#f59e0b',
-            minecraft: '#3CB043',
             location: '#8A2BE2',
             note: '#f97316'
           },
@@ -48,25 +47,6 @@
     
     .scrolled {
       box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
-    }
-    
-    .burger-line {
-      display: block;
-      height: 2px;
-      width: 25px;
-      background: white;
-      margin: 5px auto;
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-    
-    .mobile-menu {
-      max-height: 0;
-      overflow: hidden;
-      transition: max-height 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-    
-    .mobile-menu.open {
-      max-height: 300px;
     }
     
     .note-card {
@@ -107,17 +87,6 @@
     .btn-reminder:hover {
       transform: translateY(-3px);
       box-shadow: 0 6px 20px rgba(245, 158, 11, 0.5);
-    }
-    
-    .btn-minecraft {
-      background: linear-gradient(135deg, #3CB043, #2E8B57);
-      transition: all 0.3s ease;
-      box-shadow: 0 4px 15px rgba(60, 176, 67, 0.3);
-    }
-    
-    .btn-minecraft:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 6px 20px rgba(60, 176, 67, 0.5);
     }
     
     .note-form {
@@ -177,30 +146,6 @@
       font-weight: bold;
       margin-bottom: 0.5rem;
       color: #0ea5e9;
-    }
-    
-    @media (min-width: 768px) {
-      .desktop-menu {
-        display: flex;
-        gap: 20px;
-      }
-      .burger-btn-container {
-        display: none;
-      }
-    }
-    
-    @media (max-width: 767px) {
-      .desktop-menu {
-        display: none;
-      }
-      .burger-btn-container {
-        display: block;
-      }
-    }
-    
-    .minecraft-icon {
-      color: #3CB043;
-      margin-right: 12px;
     }
     
     .location-badge {
@@ -419,6 +364,15 @@
         margin-top: 0.5rem;
       }
     }
+
+    .home-icon {
+      transition: all 0.3s ease;
+    }
+
+    .home-icon:hover {
+      transform: scale(1.1);
+      color: #0ea5e9;
+    }
   </style>
 </head>
 <body class="bg-dark text-gray-200">
@@ -426,42 +380,14 @@
     <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
       <div class="flex items-center">
         <div class="w-10 h-10 rounded-full bg-primary flex items-center justify-center mr-3">
-          <i class="fas fa-sticky-note text-white"></i>
+          <i class="fas fa-globe text-white"></i>
         </div>
-        <h1 class="text-2xl font-bold text-white">Cobalt Заметки</h1>
+        <h1 class="text-2xl font-bold text-white">Cobalt Web</h1>
       </div>
       
-      <div class="hidden lg:flex space-x-8">
-        <a href="index.html" class="hover:text-primary transition-colors flex items-center">
-          <i class="fas fa-home mr-2"></i> Главная
-        </a> 
-        <a href="notes.html" class="hover:text-primary transition-colors flex items-center">
-          <i class="fas fa-sticky-note mr-2"></i> Заметки
-        </a>
-        <a href="https://t.me/sun_community_chat" class="hover:text-primary transition-colors flex items-center">
-          <i class="fas fa-users mr-2"></i> Сообщество
-        </a>
-      </div>
-      
-      <div class="block lg:hidden">
-        <button id="burgerBtn" class="text-white focus:outline-none z-50">
-          <div class="burger-line"></div>
-          <div class="burger-line"></div>
-          <div class="burger-line"></div>
-        </button>
-      </div>
-    </div>
-    
-    <div id="mobileMenu" class="mobile-menu bg-gray-900 lg:hidden">
-      <div class="flex flex-col px-6 py-4">
-        <a href="index.html" class="py-3 hover:text-primary transition-colors flex items-center">
-          <i class="fas fa-home mr-3 w-5"></i> Главная
-        </a> 
-        <a href="notes.html" class="py-3 hover:text-primary transition-colors flex items-center">
-          <i class="fas fa-sticky-note mr-3 w-5"></i> Заметки
-        </a>
-        <a href="https://t.me/sun_community_chat" class="py-3 hover:text-primary transition-colors flex items-center">
-          <i class="fas fa-users mr-3 w-5"></i> Сообщество
+      <div>
+        <a href="index.html" class="text-white hover:text-primary transition-colors flex items-center home-icon" title="На главную">
+          <i class="fas fa-home text-xl"></i>
         </a>
       </div>
     </div>
@@ -490,7 +416,7 @@
     <div class="max-w-4xl mx-auto">
       <div class="note-form">
         <h2 class="text-2xl font-bold mb-6 text-white flex items-center">
-          <i class="fas fa-plus-circle mr-3 text-primary"></i> Новая заметка Minecraft
+          <i class="fas fa-plus-circle mr-3 text-primary"></i> Новая заметка
         </h2>
         
         <div class="mb-6">
@@ -501,20 +427,20 @@
             id="noteText" 
             class="w-full form-input" 
             rows="3" 
-            placeholder="Например: Проверить ферму железных големов"
+            placeholder="Введите текст заметки"
           ></textarea>
         </div>
         
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
           <div>
             <label class="block text-gray-300 mb-2 flex items-center">
-              <i class="fas fa-map-marker-alt mr-2 text-primary"></i> Место в Minecraft
+              <i class="fas fa-map-marker-alt mr-2 text-primary"></i> Место
             </label>
             <input 
               type="text" 
               id="noteLocation" 
               class="w-full form-input" 
-              placeholder="Координаты или название"
+              placeholder="Местоположение"
             >
           </div>
           
@@ -569,10 +495,10 @@
               </button>
             </div>
             <div id="selectedIconContainer" class="selected-icon-preview hidden">
-              <i id="selectedIconPreview" class="fas fa-seedling text-xl minecraft-icon"></i>
+              <i id="selectedIconPreview" class="fas fa-sticky-note text-xl text-primary"></i>
               <div class="selected-icon-label">Вы выбрали этот значок</div>
             </div>
-            <input type="hidden" id="noteIcon" value="fas fa-seedling">
+            <input type="hidden" id="noteIcon" value="fas fa-sticky-note">
           </div>
           
           <div>
@@ -625,7 +551,7 @@
         
         <button 
           id="exportAllBtn" 
-          class="btn-minecraft export-btn rounded-lg font-medium text-white flex items-center"
+          class="btn-primary export-btn rounded-lg font-medium text-white flex items-center"
         >
           <i class="fas fa-download mr-2"></i> Экспорт TXT
         </button>
@@ -647,54 +573,6 @@
   </section>
 
   <script>
-    const burgerBtn = document.getElementById('burgerBtn');
-    const mobileMenu = document.getElementById('mobileMenu');
-    
-    function toggleMobileMenu() {
-      mobileMenu.classList.toggle('open');
-      
-      const lines = document.querySelectorAll('.burger-line');
-      if (mobileMenu.classList.contains('open')) {
-        lines[0].style.transform = 'translateY(7px) rotate(45deg)';
-        lines[1].style.opacity = '0';
-        lines[2].style.transform = 'translateY(-7px) rotate(-45deg)';
-      } else {
-        lines[0].style.transform = 'none';
-        lines[1].style.opacity = '1';
-        lines[2].style.transform = 'none';
-      }
-    }
-
-    burgerBtn.addEventListener('click', function(e) {
-      e.stopPropagation();
-      toggleMobileMenu();
-    });
-    
-    document.addEventListener('click', function(e) {
-      if (mobileMenu.classList.contains('open') && 
-          !mobileMenu.contains(e.target) && 
-          !burgerBtn.contains(e.target)) {
-        toggleMobileMenu();
-      }
-    });
-    
-    document.addEventListener('keydown', function(e) {
-      if (e.key === 'Escape' && mobileMenu.classList.contains('open')) {
-        toggleMobileMenu();
-      }
-    });
-
-    const menuItems = mobileMenu.querySelectorAll('a');
-    menuItems.forEach(item => {
-      item.addEventListener('click', function() {
-        setTimeout(() => {
-          if (mobileMenu.classList.contains('open')) {
-            toggleMobileMenu();
-          }
-        }, 300);
-      });
-    });
-
     window.addEventListener('scroll', function() {
       const header = document.querySelector('header');
       if (window.scrollY > 10) {
@@ -728,54 +606,50 @@
     
     let notes = [];
     
-    const minecraftIcons = [
-      'fas fa-seedling',
-      'fas fa-cow',
-      'fas fa-tree',
-      'fas fa-fire',
-      'fas fa-gem',
-      'fas fa-mountain',
-      'fas fa-water',
-      'fas fa-skull',
-      'fas fa-trophy',
+    const icons = [
+      'fas fa-sticky-note',
       'fas fa-book',
-      'fas fa-map',
-      'fas fa-compass',
-      'fas fa-torii-gate',
-      'fas fa-dragon',
-      'fas fa-moon',
-      'fas fa-sun',
+      'fas fa-pencil-alt',
+      'fas fa-tag',
+      'fas fa-bell',
+      'fas fa-map-marker-alt',
+      'fas fa-calendar',
+      'fas fa-clock',
       'fas fa-star',
-      'fas fa-bolt',
-      'fas fa-coins',
-      'fas fa-house',
-      'fas fa-cube',
-      'fas fa-dungeon',
-      'fas fa-cloud',
-      'fas fa-snowflake',
-      'fas fa-ghost',
-      'fas fa-wheat-alt',
-      'fas fa-feather',
-      'fas fa-shield'
+      'fas fa-flag',
+      'fas fa-check-circle',
+      'fas fa-exclamation-circle',
+      'fas fa-question-circle',
+      'fas fa-heart',
+      'fas fa-lightbulb',
+      'fas fa-paperclip',
+      'fas fa-link',
+      'fas fa-folder',
+      'fas fa-trash-alt',
+      'fas fa-archive',
+      'fas fa-at',
+      'fas fa-hashtag',
+      'fas fa-list',
+      'fas fa-code'
     ];
     
     function initIcons() {
       customIconGrid.innerHTML = '';
       
-      minecraftIcons.forEach(iconClass => {
+      icons.forEach(iconClass => {
         const iconItem = document.createElement('div');
         iconItem.className = 'custom-icon-item';
         iconItem.setAttribute('data-icon', iconClass);
         
         const iconElement = document.createElement('i');
-        iconElement.className = `${iconClass} minecraft-icon`;
+        iconElement.className = `${iconClass} text-primary`;
         
         iconItem.appendChild(iconElement);
         
         iconItem.addEventListener('click', function() {
           const selected = this.getAttribute('data-icon');
           noteIcon.value = selected;
-          selectedIconPreview.className = `${selected} text-xl minecraft-icon`;
+          selectedIconPreview.className = `${selected} text-xl text-primary`;
           selectedIconContainer.classList.remove('hidden');
           customIconModal.classList.remove('active');
         });
@@ -837,12 +711,12 @@
     }
     
     function saveNotes() {
-      localStorage.setItem('minecraftNotes', JSON.stringify(notes));
+      localStorage.setItem('notes', JSON.stringify(notes));
       updateNotesCounter();
     }
     
     function loadNotes() {
-      const savedNotes = localStorage.getItem('minecraftNotes');
+      const savedNotes = localStorage.getItem('notes');
       if (savedNotes) {
         notes = JSON.parse(savedNotes);
         renderNotes();
@@ -909,11 +783,11 @@
         return;
       }
       
-      let txtContent = "=== Cobalt Заметки для Minecraft ===\n";
+      let txtContent = "=== Cobalt Заметки ===\n";
       txtContent += `Экспортировано: ${new Date().toLocaleString('ru-RU')}\n`;
       txtContent += `Всего заметок: ${notes.length}\n\n`;
       
-      notes.forEach((note, index) => {
+      notes.forEach((note, index) {
         txtContent += `Заметка #${index + 1}\n`;
         txtContent += `--------------------------------\n`;
         txtContent += `Содержимое: ${note.text}\n`;
@@ -1022,7 +896,7 @@
           <div class="flex justify-between items-start">
             <div class="flex-1">
               <div class="flex items-center">
-                ${note.icon ? `<i class="${note.icon} minecraft-icon"></i>` : ''}
+                ${note.icon ? `<i class="${note.icon} text-primary"></i>` : ''}
                 <p class="whitespace-pre-line flex-1">${note.text}</p>
               </div>
               <div class="flex flex-wrap gap-2 mt-2">
