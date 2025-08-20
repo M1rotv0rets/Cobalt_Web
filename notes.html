@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Cobalt Заметки</title>
+  <title>Cobalt Web</title>
   <link rel="icon" href="Images/icon.png">
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -238,101 +238,12 @@
       transform: translateY(-2px);
     }
     
-    .custom-icon-modal {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0,0,0,0.7);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      z-index: 1001;
-      opacity: 0;
-      visibility: hidden;
-      transition: all 0.3s ease;
-    }
-    
-    .custom-icon-modal.active {
-      opacity: 1;
-      visibility: visible;
-    }
-    
-    .custom-icon-content {
-      background: #1e293b;
-      border-radius: 12px;
-      padding: 1.5rem;
-      width: 90%;
-      max-width: 500px;
-      border: 1px solid #0ea5e9;
-      max-height: 80vh;
-      overflow-y: auto;
-    }
-    
-    .custom-icon-grid {
-      display: grid;
-      grid-template-columns: repeat(6, 1fr);
-      gap: 0.5rem;
-      margin: 1rem 0;
-    }
-    
-    @media (max-width: 480px) {
-      .custom-icon-grid {
-        grid-template-columns: repeat(4, 1fr);
-      }
-    }
-    
-    .custom-icon-item {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 0.75rem;
-      border-radius: 8px;
-      background: #0f172a;
-      cursor: pointer;
-      transition: all 0.2s ease;
-      width: 60px;
-      height: 60px;
-      aspect-ratio: 1/1;
-    }
-    
-    .custom-icon-item i {
-      font-size: 1.5rem;
-    }
-    
-    .custom-icon-item:hover {
-      background: rgba(14, 165, 233, 0.2);
-      transform: translateY(-3px);
-    }
-    
-    .custom-icon-item.selected {
-      background: rgba(14, 165, 233, 0.3);
-      border: 1px solid #0ea5e9;
-    }
-    
     .reminder-box {
       background: rgba(245, 158, 11, 0.1);
       border: 1px solid rgba(245, 158, 11, 0.3);
       border-radius: 12px;
       padding: 1rem;
       margin-top: 1rem;
-    }
-    
-    .selected-icon-preview {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      margin-top: 10px;
-      padding: 8px 12px;
-      background: rgba(14, 165, 233, 0.1);
-      border-radius: 8px;
-      border: 1px dashed #0ea5e9;
-    }
-    
-    .selected-icon-label {
-      font-size: 0.85rem;
-      color: #7dd3fc;
     }
     
     .export-btn {
@@ -364,15 +275,6 @@
         margin-top: 0.5rem;
       }
     }
-
-    .home-icon {
-      transition: all 0.3s ease;
-    }
-
-    .home-icon:hover {
-      transform: scale(1.1);
-      color: #0ea5e9;
-    }
   </style>
 </head>
 <body class="bg-dark text-gray-200">
@@ -385,11 +287,9 @@
         <h1 class="text-2xl font-bold text-white">Cobalt Web</h1>
       </div>
       
-      <div>
-        <a href="index.html" class="text-white hover:text-primary transition-colors flex items-center home-icon" title="На главную">
-          <i class="fas fa-home text-xl"></i>
-        </a>
-      </div>
+      <a href="index.html" class="text-white hover:text-primary transition-colors flex items-center text-xl">
+        <i class="fas fa-home"></i>
+      </a>
     </div>
   </header>
 
@@ -398,18 +298,6 @@
       <i class="fas fa-bell mr-2"></i> Напоминание!
     </div>
     <div id="notificationContent">У вас запланировано событие</div>
-  </div>
-
-  <div id="customIconModal" class="custom-icon-modal">
-    <div class="custom-icon-content">
-      <h3 class="text-xl font-bold mb-4 text-white">Выберите значок</h3>
-      <div class="custom-icon-grid" id="customIconGrid"></div>
-      <div class="flex justify-end mt-4">
-        <button id="closeIconModal" class="px-4 py-2 rounded-lg bg-gray-700 text-white hover:bg-gray-600">
-          Закрыть
-        </button>
-      </div>
-    </div>
   </div>
 
   <section class="py-10 px-4 relative">
@@ -481,43 +369,22 @@
           </div>
         </div>
         
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-          <div>
-            <label class="block text-gray-300 mb-2 flex items-center">
-              <i class="fas fa-icons mr-2 text-primary"></i> Значок для заметки
-            </label>
-            <div class="flex">
-              <button 
-                id="chooseIconBtn" 
-                class="px-4 py-2 rounded-lg bg-primary/20 text-primary hover:bg-primary/30 w-full flex items-center justify-center"
-              >
-                <i class="fas fa-icons mr-2"></i> Выбрать значок
-              </button>
-            </div>
-            <div id="selectedIconContainer" class="selected-icon-preview hidden">
-              <i id="selectedIconPreview" class="fas fa-sticky-note text-xl text-primary"></i>
-              <div class="selected-icon-label">Вы выбрали этот значок</div>
-            </div>
-            <input type="hidden" id="noteIcon" value="fas fa-sticky-note">
-          </div>
-          
-          <div>
-            <label class="block text-gray-300 mb-2 flex items-center">
-              <i class="fas fa-globe mr-2 text-primary"></i> Часовой пояс
-            </label>
-            <select id="noteTimezone" class="w-full form-input">
-              <option value="Europe/Moscow">Москва (GMT+3)</option>
-              <option value="Europe/Kaliningrad">Калининград (GMT+2)</option>
-              <option value="Asia/Yekaterinburg">Екатеринбург (GMT+5)</option>
-              <option value="Asia/Omsk">Омск (GMT+6)</option>
-              <option value="Asia/Krasnoyarsk">Красноярск (GMT+7)</option>
-              <option value="Asia/Irkutsk">Иркутск (GMT+8)</option>
-              <option value="Asia/Yakutsk">Якутск (GMT+9)</option>
-              <option value="Asia/Vladivostok">Владивосток (GMT+10)</option>
-              <option value="Asia/Magadan">Магадан (GMT+11)</option>
-              <option value="Asia/Kamchatka">Камчатка (GMT+12)</option>
-            </select>
-          </div>
+        <div class="mb-6">
+          <label class="block text-gray-300 mb-2 flex items-center">
+            <i class="fas fa-globe mr-2 text-primary"></i> Часовой пояс
+          </label>
+          <select id="noteTimezone" class="w-full form-input">
+            <option value="Europe/Moscow">Москва (GMT+3)</option>
+            <option value="Europe/Kaliningrad">Калининград (GMT+2)</option>
+            <option value="Asia/Yekaterinburg">Екатеринбург (GMT+5)</option>
+            <option value="Asia/Omsk">Омск (GMT+6)</option>
+            <option value="Asia/Krasnoyarsk">Красноярск (GMT+7)</option>
+            <option value="Asia/Irkutsk">Иркутск (GMT+8)</option>
+            <option value="Asia/Yakutsk">Якутск (GMT+9)</option>
+            <option value="Asia/Vladivostok">Владивосток (GMT+10)</option>
+            <option value="Asia/Magadan">Магадан (GMT+11)</option>
+            <option value="Asia/Kamchatka">Камчатка (GMT+12)</option>
+          </select>
         </div>
         
         <div class="flex flex-wrap gap-3">
@@ -590,87 +457,14 @@
     const noteNote = document.getElementById('noteNote');
     const reminderDate = document.getElementById('reminderDate');
     const reminderTime = document.getElementById('reminderTime');
-    const noteIcon = document.getElementById('noteIcon');
     const noteTimezone = document.getElementById('noteTimezone');
     const addNoteBtn = document.getElementById('addNoteBtn');
     const addReminderBtn = document.getElementById('addReminderBtn');
     const exportAllBtn = document.getElementById('exportAllBtn');
     const notification = document.getElementById('notification');
     const notificationContent = document.getElementById('notificationContent');
-    const chooseIconBtn = document.getElementById('chooseIconBtn');
-    const customIconModal = document.getElementById('customIconModal');
-    const closeIconModal = document.getElementById('closeIconModal');
-    const customIconGrid = document.getElementById('customIconGrid');
-    const selectedIconContainer = document.getElementById('selectedIconContainer');
-    const selectedIconPreview = document.getElementById('selectedIconPreview');
     
     let notes = [];
-    
-    const icons = [
-      'fas fa-sticky-note',
-      'fas fa-book',
-      'fas fa-pencil-alt',
-      'fas fa-tag',
-      'fas fa-bell',
-      'fas fa-map-marker-alt',
-      'fas fa-calendar',
-      'fas fa-clock',
-      'fas fa-star',
-      'fas fa-flag',
-      'fas fa-check-circle',
-      'fas fa-exclamation-circle',
-      'fas fa-question-circle',
-      'fas fa-heart',
-      'fas fa-lightbulb',
-      'fas fa-paperclip',
-      'fas fa-link',
-      'fas fa-folder',
-      'fas fa-trash-alt',
-      'fas fa-archive',
-      'fas fa-at',
-      'fas fa-hashtag',
-      'fas fa-list',
-      'fas fa-code'
-    ];
-    
-    function initIcons() {
-      customIconGrid.innerHTML = '';
-      
-      icons.forEach(iconClass => {
-        const iconItem = document.createElement('div');
-        iconItem.className = 'custom-icon-item';
-        iconItem.setAttribute('data-icon', iconClass);
-        
-        const iconElement = document.createElement('i');
-        iconElement.className = `${iconClass} text-primary`;
-        
-        iconItem.appendChild(iconElement);
-        
-        iconItem.addEventListener('click', function() {
-          const selected = this.getAttribute('data-icon');
-          noteIcon.value = selected;
-          selectedIconPreview.className = `${selected} text-xl text-primary`;
-          selectedIconContainer.classList.remove('hidden');
-          customIconModal.classList.remove('active');
-        });
-        
-        customIconGrid.appendChild(iconItem);
-      });
-    }
-    
-    chooseIconBtn.addEventListener('click', function() {
-      customIconModal.classList.add('active');
-    });
-    
-    closeIconModal.addEventListener('click', function() {
-      customIconModal.classList.remove('active');
-    });
-    
-    customIconModal.addEventListener('click', function(e) {
-      if (e.target === customIconModal) {
-        customIconModal.classList.remove('active');
-      }
-    });
     
     function initDateTime() {
       const now = new Date();
@@ -758,6 +552,17 @@
       });
     }
     
+    function getDayOfWeek(dateString, timezone) {
+      const days = ['Воскресенье', 'Понедельник', 'Вторник', 'Среда', 'Четверг', 'Пятница', 'Суббота'];
+      const date = new Date(dateString);
+      const dayIndex = new Intl.DateTimeFormat('ru-RU', {
+        timeZone: timezone,
+        weekday: 'numeric'
+      }).format(date) % 7;
+      
+      return days[dayIndex];
+    }
+    
     function animateNote(element) {
       element.style.opacity = 0;
       element.style.transform = 'translateY(20px)';
@@ -787,7 +592,7 @@
       txtContent += `Экспортировано: ${new Date().toLocaleString('ru-RU')}\n`;
       txtContent += `Всего заметок: ${notes.length}\n\n`;
       
-      notes.forEach((note, index) {
+      notes.forEach((note, index) => {
         txtContent += `Заметка #${index + 1}\n`;
         txtContent += `--------------------------------\n`;
         txtContent += `Содержимое: ${note.text}\n`;
@@ -896,7 +701,7 @@
           <div class="flex justify-between items-start">
             <div class="flex-1">
               <div class="flex items-center">
-                ${note.icon ? `<i class="${note.icon} text-primary"></i>` : ''}
+                <i class="fas fa-sticky-note text-primary mr-2"></i>
                 <p class="whitespace-pre-line flex-1">${note.text}</p>
               </div>
               <div class="flex flex-wrap gap-2 mt-2">
@@ -908,7 +713,7 @@
             </div>
           </div>
           <div class="mt-4 text-xs text-gray-500">
-            ${formatDate(note.timestamp, note.timezone)}
+            ${formatDate(note.timestamp, note.timezone)} (${getDayOfWeek(note.timestamp, note.timezone)})
           </div>
           
           <div class="action-buttons">
@@ -973,7 +778,6 @@
         text,
         location: noteLocation.value.trim(),
         note: noteNote.value.trim(),
-        icon: noteIcon.value,
         timezone: noteTimezone.value,
         reminder: reminder ? reminder.toISOString() : null,
         notified: false,
@@ -1017,7 +821,6 @@
     
     document.addEventListener('DOMContentLoaded', function() {
       initDateTime();
-      initIcons();
       loadNotes();
       
       addNoteBtn.addEventListener('click', () => addNote(false));
