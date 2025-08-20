@@ -416,6 +416,18 @@
       display: none;
     }
     
+    .console-output {
+      background: #1a1a1a;
+      color: #00ff00;
+      padding: 15px;
+      border-radius: 8px;
+      font-family: monospace;
+      overflow-x: auto;
+      white-space: pre-wrap;
+      margin-top: 15px;
+      border: 1px solid #333;
+    }
+    
     @media (max-width: 769px) {
       .color-table {
         grid-template-columns: repeat(2, 1fr);
@@ -424,7 +436,7 @@
         grid-template-columns: repeat(2, 1fr);
       }
       .nav-links {
-        display: none;
+        display: none !important;
       }
       .mobile-menu {
         display: block;
@@ -631,28 +643,14 @@
             </button>
           </div>
           
-          <div class="preview-section">
-            <h3 class="text-xl font-bold mb-4 text-white">Предпросмотр</h3>
-            <div class="bg-gray-800 rounded-lg p-6 mb-6">
-              <div class="text-center mb-4">
-                <div class="text-2xl font-bold text-title mb-2" id="title-preview">Ваш Title</div>
-                <div class="text-lg text-gray-300" id="subtitle-preview">Ваш Subtitle</div>
-              </div>
-              <div class="text-sm text-gray-400">
-                Длительность: <span id="duration-preview">5</span> сек | 
-                Появление: <span id="fadein-preview">1</span> сек | 
-                Исчезновение: <span id="fadeout-preview">1</span> сек
-              </div>
-            </div>
-            
-            <div class="command-header">
-              <h3 class="text-xl font-bold text-white">Команда</h3>
-              <div class="copy-btn" data-copy="title-command">
-                <i class="fas fa-copy"></i>
-              </div>
-            </div>
-            <div class="relative bg-gray-800 rounded-lg p-6">
-              <pre class="overflow-x-auto command-placeholder" id="title-command">Здесь появится ваша команда</pre>
+          <div>
+            <h3 class="text-xl font-bold mb-4 text-white">Консоль команды</h3>
+            <div class="console-output" id="title-command">
+// Здесь появится сгенерированная команда
+// Пример:
+// /title @a times 20 100 20
+// /title @a title {"text":"Ваш заголовок"}
+// /title @a subtitle {"text":"Ваш подзаголовок"}
             </div>
           </div>
         </div>
@@ -706,23 +704,12 @@
             </button>
           </div>
           
-          <div class="preview-section">
-            <h3 class="text-xl font-bold mb-4 text-white">Предпросмотр</h3>
-            <div class="sign-preview mb-6">
-              <div class="sign-line" id="sign-preview1">Строка 1</div>
-              <div class="sign-line" id="sign-preview2">Строка 2</div>
-              <div class="sign-line" id="sign-preview3">Строка 3</div>
-              <div class="sign-line" id="sign-preview4">Строка 4</div>
-            </div>
-            
-            <div class="command-header">
-              <h3 class="text-xl font-bold text-white">Команда</h3>
-              <div class="copy-btn" data-copy="sign-command">
-                <i class="fas fa-copy"></i>
-              </div>
-            </div>
-            <div class="relative bg-gray-800 rounded-lg p-6">
-              <pre class="overflow-x-auto command-placeholder" id="sign-command">Здесь появится ваша команда</pre>
+          <div>
+            <h3 class="text-xl font-bold mb-4 text-white">Консоль команды</h3>
+            <div class="console-output" id="sign-command">
+// Здесь появится сгенерированная команда
+// Пример:
+// /give @p oak_sign{BlockEntityTag:{Text1:'{"text":"Строка 1"}',Text2:'{"text":"Строка 2"}',Text3:'{"text":"Строка 3"}',Text4:'{"text":"Строка 4"}'},display:{Name:'{"text":"Название таблички"}'}}
             </div>
           </div>
         </div>
@@ -776,32 +763,12 @@
             </button>
           </div>
           
-          <div class="preview-section">
-            <h3 class="text-xl font-bold mb-4 text-white">Предпросмотр</h3>
-            <div class="bg-gray-800 rounded-lg p-6 mb-6">
-              <div class="flex justify-between items-center mb-4">
-                <h4 class="text-xl font-bold" id="book-title-preview">Книга</h4>
-                <span class="text-sm text-gray-400" id="book-author-preview">Cobalt Книги</span>
-              </div>
-              
-              <div class="page-preview mb-4" id="book-content-preview">
-                Книга с инструментами
-              </div>
-              
-              <div class="flex justify-between items-center text-sm text-gray-400">
-                <div>Тип: <span id="book-copy-preview">Оригинал</span></div>
-                <div>Страница: <span id="book-page-preview">1</span> из <span id="book-total-pages">1</span></div>
-              </div>
-            </div>
-            
-            <div class="command-header">
-              <h3 class="text-xl font-bold text-white">Команда</h3>
-              <div class="copy-btn" data-copy="book-command">
-                <i class="fas fa-copy"></i>
-              </div>
-            </div>
-            <div class="relative bg-gray-800 rounded-lg p-6">
-              <pre class="overflow-x-auto command-placeholder" id="book-command">Здесь появится ваша команда</pre>
+          <div>
+            <h3 class="text-xl font-bold mb-4 text-white">Консоль команды</h3>
+            <div class="console-output" id="book-command">
+// Здесь появится сгенерированная команда
+// Пример:
+// /give @p written_book{pages:['{"text":"Содержание книги"}'],title:"Книга",author:"Cobalt Книги",generation:0}
             </div>
           </div>
         </div>
@@ -834,15 +801,12 @@
             </button>
           </div>
           
-          <div class="preview-section">
-            <div class="command-header">
-              <h3 class="text-xl font-bold text-white">Команда</h3>
-              <div class="copy-btn" data-copy="tellraw-json">
-                <i class="fas fa-copy"></i>
-              </div>
-            </div>
-            <div class="relative bg-gray-800 rounded-lg p-6">
-              <pre class="overflow-x-auto command-placeholder" id="tellraw-json">Здесь появится ваша команда</pre>
+          <div>
+            <h3 class="text-xl font-bold mb-4 text-white">Консоль команды</h3>
+            <div class="console-output" id="tellraw-json">
+// Здесь появится сгенерированная команда
+// Пример:
+// /tellraw @a {"text":"Добро пожаловать на сервер!"}
             </div>
           </div>
         </div>
@@ -912,25 +876,12 @@
             </button>
           </div>
           
-          <div class="preview-section">
-            <h3 class="text-xl font-bold mb-4 text-white">Предпросмотр MOTD</h3>
-            <div class="bg-gray-800 rounded-lg p-6 mb-6">
-              <div class="p-4 bg-gray-900 rounded mb-4">
-                <div class="text-center font-bold text-lg mb-2">Сервер Minecraft</div>
-                <div class="text-center" id="motd-preview">
-                  Добро пожаловать на сервер!
-                </div>
-              </div>
-            </div>
-            
-            <div class="command-header">
-              <h3 class="text-xl font-bold text-white">MOTD Код</h3>
-              <div class="copy-btn" data-copy="motd-code">
-                <i class="fas fa-copy"></i>
-              </div>
-            </div>
-            <div class="relative bg-gray-800 rounded-lg p-6">
-              <pre class="overflow-x-auto command-placeholder" id="motd-code">Здесь появится ваш код</pre>
+          <div>
+            <h3 class="text-xl font-bold mb-4 text-white">Консоль команды</h3>
+            <div class="console-output" id="motd-code">
+// Здесь появится сгенерированный код MOTD
+// Пример:
+// motd=Добро пожаловать на сервер!
             </div>
           </div>
         </div>
@@ -992,22 +943,12 @@
             </button>
           </div>
           
-          <div class="preview-section">
-            <h3 class="text-xl font-bold mb-4 text-white">Предпросмотр</h3>
-            <div class="bg-gray-800 rounded-lg p-6 mb-6">
-              <div class="p-4 bg-gray-700 rounded" id="styled-preview">
-                Пример текста
-              </div>
-            </div>
-            
-            <div class="command-header">
-              <h3 class="text-xl font-bold text-white">Сгенерированный текст</h3>
-              <div class="copy-btn" data-copy="styled-output">
-                <i class="fas fa-copy"></i>
-              </div>
-            </div>
-            <div class="relative bg-gray-800 rounded-lg p-6">
-              <pre class="overflow-x-auto command-placeholder" id="styled-output">Здесь появится ваш текст</pre>
+          <div>
+            <h3 class="text-xl font-bold mb-4 text-white">Консоль команды</h3>
+            <div class="console-output" id="styled-output">
+// Здесь появится сгенерированный текст
+// Пример:
+// §c§lПример текста
             </div>
           </div>
         </div>
@@ -1271,15 +1212,10 @@
       const fadeInTicks = fadeIn * 20;
       const fadeOutTicks = fadeOut * 20;
       
-      const command = `
-/title ${selector} times ${fadeInTicks} ${durationTicks} ${fadeOutTicks}
-/title ${selector} title {"text":"${title}"}
-/title ${selector} subtitle {"text":"${subtitle}"}
-      `.trim();
+      const command = `/title ${selector} times ${fadeInTicks} ${durationTicks} ${fadeOutTicks}\n/title ${selector} title {"text":"${title}"}\n/title ${selector} subtitle {"text":"${subtitle}"}`;
       
       const element = document.getElementById('title-command');
       element.textContent = command;
-      element.classList.remove('command-placeholder');
     }
     
     function generateSignCommand() {
@@ -1294,7 +1230,6 @@
       
       const element = document.getElementById('sign-command');
       element.textContent = command;
-      element.classList.remove('command-placeholder');
     }
     
     function generateBookCommand() {
@@ -1324,7 +1259,6 @@
       
       const element = document.getElementById('book-command');
       element.textContent = command;
-      element.classList.remove('command-placeholder');
     }
     
     function generateTellraw() {
@@ -1334,15 +1268,13 @@
       const command = `/tellraw ${selector} {"text":"${text}"}`;
       const element = document.getElementById('tellraw-json');
       element.textContent = command;
-      element.classList.remove('command-placeholder');
     }
     
     function generateMOTD() {
       const text = document.getElementById('motd-text').value || "Добро пожаловать";
       const formattedMOTD = text.replace(/\n/g, "\\n");
       const element = document.getElementById('motd-code');
-      element.textContent = formattedMOTD;
-      element.classList.remove('command-placeholder');
+      element.textContent = `motd=${formattedMOTD}`;
     }
     
     function generateStyledText() {
@@ -1364,7 +1296,6 @@
       
       const element = document.getElementById('styled-output');
       element.textContent = formattedText;
-      element.classList.remove('command-placeholder');
     }
     
     function copyToClipboard(text) {
