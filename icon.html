@@ -86,7 +86,7 @@
     }
     
     .icon-preview {
-      font-size: 5rem;
+      font-size: 512px; /* Увеличили размер предпросмотра до 512px */
       color: #0ea5e9;
       transition: all 0.3s ease;
       display: flex;
@@ -161,10 +161,6 @@
   <div class="min-h-screen flex items-center justify-center p-4 py-10">
     <div class="max-w-4xl w-full">
       <div class="icon-card p-8">
-        <h1 class="text-3xl font-bold text-white flex items-center justify-center mb-8">
-          <i class="fas fa-paint-brush mr-3"></i> <span class="cobalt-header">Генератор иконок</span>
-        </h1>
-        
         <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
           <div>
             <div class="mb-6">
@@ -192,18 +188,6 @@
               </label>
               <input type="color" id="iconColor" value="#0ea5e9" class="w-full h-10">
             </div>
-            
-            <div class="mb-6">
-              <label class="block text-gray-300 mb-2 flex items-center">
-                <i class="fas fa-expand mr-2 text-primary"></i> Размер иконки
-              </label>
-              <input type="range" id="iconSize" min="64" max="512" value="256" class="w-full h-2 bg-primary rounded-lg appearance-none cursor-pointer">
-              <div class="flex justify-between text-xs text-gray-400 px-1">
-                <span>64px</span>
-                <span>256px</span>
-                <span>512px</span>
-              </div>
-            </div>
           </div>
           
           <div>
@@ -211,7 +195,7 @@
               <label class="block text-gray-300 mb-2 flex items-center">
                 <i class="fas fa-eye mr-2 text-primary"></i> Предпросмотр
               </label>
-              <div class="bg-secondary rounded-xl p-8 flex items-center justify-center h-64">
+              <div class="bg-secondary rounded-xl p-8 flex items-center justify-center h-96">
                 <div class="preview-container">
                   <i class="fas fa-user icon-preview" id="previewIcon"></i>
                 </div>
@@ -240,7 +224,7 @@
             
             <button id="downloadButton" class="btn-primary px-6 py-3 rounded-lg font-medium text-white flex items-center justify-center w-full">
               <div class="loading"></div>
-              <i class="fas fa-download mr-2"></i> Скачать иконку
+              <i class="fas fa-download mr-2"></i> Скачать иконку (54px)
             </button>
           </div>
         </div>
@@ -257,7 +241,6 @@
       const copyButton = document.getElementById('copyButton');
       const downloadButton = document.getElementById('downloadButton');
       const iconColor = document.getElementById('iconColor');
-      const iconSize = document.getElementById('iconSize');
       const loading = document.querySelector('.loading');
       
       let currentFormat = 'png';
@@ -279,10 +262,6 @@
         previewIcon.style.color = this.value;
       });
       
-      iconSize.addEventListener('input', function() {
-        updateIconPreview();
-      });
-      
       copyButton.addEventListener('click', function() {
         iconText.select();
         document.execCommand('copy');
@@ -299,8 +278,8 @@
         loading.style.display = 'block';
         downloadButton.disabled = true;
         
-        const size = parseInt(iconSize.value);
-        const padding = Math.max(20, size / 10);
+        const size = 54; // Фиксированный размер 54px
+        const padding = Math.max(10, size / 8);
         
         const container = document.createElement('div');
         container.style.display = 'flex';
@@ -386,10 +365,7 @@
       
       function updateIconPreview() {
         currentIconName = iconText.value.trim() || 'user';
-        const size = Math.min(80, parseInt(iconSize.value) / 8);
-        
         previewIcon.className = `fas fa-${currentIconName} icon-preview`;
-        previewIcon.style.fontSize = `${size}px`;
         previewIcon.style.color = iconColor.value;
       }
       
