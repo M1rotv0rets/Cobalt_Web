@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Cobalt Web</title>
-  <link rel="icon" href="Images/icon.png">
+  <title>Cobalt Web - Генератор иконок</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🎨</text></svg>">
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <script>
@@ -86,7 +86,7 @@
     }
     
     .icon-preview {
-      font-size: 64px; /* Увеличили размер предпросмотра до 512px */
+      font-size: 512px;
       color: #0ea5e9;
       transition: all 0.3s ease;
       display: flex;
@@ -140,6 +140,17 @@
       justify-content: center;
       height: 100%;
     }
+    
+    .quality-option {
+      display: flex;
+      align-items: center;
+      margin-bottom: 0.5rem;
+      cursor: pointer;
+    }
+    
+    .quality-option input {
+      margin-right: 0.5rem;
+    }
   </style>
 </head>
 <body class="bg-dark text-gray-200">
@@ -188,6 +199,26 @@
               </label>
               <input type="color" id="iconColor" value="#0ea5e9" class="w-full h-10">
             </div>
+
+            <div class="mb-6">
+              <label class="block text-gray-300 mb-2 flex items-center">
+                <i class="fas fa-brush mr-2 text-primary"></i> Качество изображения
+              </label>
+              <div class="bg-secondary p-4 rounded-lg">
+                <div class="quality-option">
+                  <input type="radio" id="quality-high" name="quality" value="2" checked>
+                  <label for="quality-high">Высокое (2x)</label>
+                </div>
+                <div class="quality-option">
+                  <input type="radio" id="quality-veryhigh" name="quality" value="3">
+                  <label for="quality-veryhigh">Очень высокое (3x)</label>
+                </div>
+                <div class="quality-option">
+                  <input type="radio" id="quality-ultra" name="quality" value="4">
+                  <label for="quality-ultra">Ультра (4x) - для больших иконок</label>
+                </div>
+              </div>
+            </div>
           </div>
           
           <div>
@@ -224,7 +255,7 @@
             
             <button id="downloadButton" class="btn-primary px-6 py-3 rounded-lg font-medium text-white flex items-center justify-center w-full">
               <div class="loading"></div>
-              <i class="fas fa-download mr-2"></i> Скачать иконку
+              <i class="fas fa-download mr-2"></i> Скачать иконку (54px)
             </button>
           </div>
         </div>
@@ -242,9 +273,18 @@
       const downloadButton = document.getElementById('downloadButton');
       const iconColor = document.getElementById('iconColor');
       const loading = document.querySelector('.loading');
+      const qualityOptions = document.querySelectorAll('input[name="quality"]');
       
       let currentFormat = 'png';
       let currentIconName = 'user';
+      let currentQuality = 2;
+      
+      // Слушатели для выбора качества
+      qualityOptions.forEach(option => {
+        option.addEventListener('change', function() {
+          currentQuality = parseInt(this.value);
+        });
+      });
       
       iconText.addEventListener('input', function() {
         updateIconPreview();
@@ -278,8 +318,8 @@
         loading.style.display = 'block';
         downloadButton.disabled = true;
         
-        const size = 20; // Фиксированный размер 54px
-        const padding = Math.max(10, size / 8);
+        const size = 54; // Фиксированный размер 54px
+        const padding = 15; // Фиксированный отступ
         
         const container = document.createElement('div');
         container.style.display = 'flex';
@@ -287,7 +327,7 @@
         container.style.justifyContent = 'center';
         container.style.width = `${size + padding * 2}px`;
         container.style.height = `${size + padding * 2}px`;
-        container.style.backgroundColor = '#ffffff'; // Белый фон
+        container.style.backgroundColor = '#ffffff';
         container.style.padding = `${padding}px`;
         
         const iconClone = previewIcon.cloneNode(true);
@@ -298,22 +338,39 @@
         document.body.appendChild(container);
         
         if (currentFormat !== 'svg') {
+          // Улучшенные настройки для html2canvas
           html2canvas(container, {
-            backgroundColor: '#ffffff', // Белый фон
-            scale: 2,
+            backgroundColor: '#ffffff',
+            scale: currentQuality, // Используем выбранное качество
             width: size + padding * 2,
             height: size + padding * 2,
+            logging: false,
+            useCORS: true,
+            allowTaint: true,
             onclone: function(clonedDoc, element) {
               element.style.display = 'flex';
+              // Применяем дополнительные стили для улучшения качества
+              const icon = element.querySelector('i');
+              if (icon) {
+                icon.style.textRendering = 'geometricPrecision';
+                icon.style.webkitFontSmoothing = 'antialiased';
+                icon.style.mozOsxFontSmoothing = 'grayscale';
+              }
             }
           }).then(canvas => {
             const link = document.createElement('a');
             link.download = `icon-${currentIconName}-${size}x${size}.${currentFormat}`;
             
             if (currentFormat === 'jpg') {
-              link.href = canvas.toDataURL('image/jpeg', 0.9);
+              link.href = canvas.toDataURL('image/jpeg', 1.0); // Максимальное качество для JPG
             } else if (currentFormat === 'webp') {
-              link.href = canvas.toDataURL('image/webp', 0.9);
+              // Проверяем поддержку WebP
+              try {
+                link.href = canvas.toDataURL('image/webp', 1.0);
+              } catch (e) {
+                alert('Ваш браузер не поддерживает создание WebP изображений. Используйте PNG или JPG.');
+                link.href = canvas.toDataURL('image/png');
+              }
             } else {
               link.href = canvas.toDataURL('image/png');
             }
@@ -329,6 +386,7 @@
             document.body.removeChild(container);
           });
         } else {
+          // SVG рендеринг с улучшенными параметрами
           const svgContent = `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="0 0 ${size} ${size}">
             <rect width="100%" height="100%" fill="white"/>
             <style>
@@ -340,9 +398,10 @@
                 font-weight: 400;
                 dominant-baseline: middle; 
                 text-anchor: middle;
+                text-rendering: geometricPrecision;
               }
             </style>
-            <text x="50%" y="50%">${getIconUnicode()}</text>
+            <text x="50%" y="52%">${getIconUnicode()}</text>
           </svg>`;
           
           const svgBlob = new Blob([svgContent], {type: 'image/svg+xml'});
@@ -386,7 +445,13 @@
           'check': '&#xf00c;',
           'times': '&#xf00d;',
           'lock': '&#xf023;',
-          'unlock': '&#xf09c;'
+          'unlock': '&#xf09c;',
+          'github': '&#xf09b;',
+          'twitter': '&#xf099;',
+          'facebook': '&#xf09a;',
+          'instagram': '&#xf16d;',
+          'linkedin': '&#xf0e1;',
+          'youtube': '&#xf167;'
         };
         
         return iconMap[currentIconName] || '&#xf059;';
