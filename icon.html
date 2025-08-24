@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Cobalt Web - Генератор иконок</title>
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🎨</text></svg>">
+  <title>Cobalt Web</title>
+  <link rel="icon" href="Images/icon.png">
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <script>
@@ -86,7 +86,7 @@
     }
     
     .icon-preview {
-      font-size: 512px; /* Увеличили размер предпросмотра до 512px */
+      font-size: 64px; /* Увеличили размер предпросмотра до 512px */
       color: #0ea5e9;
       transition: all 0.3s ease;
       display: flex;
@@ -224,7 +224,7 @@
             
             <button id="downloadButton" class="btn-primary px-6 py-3 rounded-lg font-medium text-white flex items-center justify-center w-full">
               <div class="loading"></div>
-              <i class="fas fa-download mr-2"></i> Скачать иконку (54px)
+              <i class="fas fa-download mr-2"></i> Скачать иконку
             </button>
           </div>
         </div>
@@ -278,7 +278,7 @@
         loading.style.display = 'block';
         downloadButton.disabled = true;
         
-        const size = 54; // Фиксированный размер 54px
+        const size = 20; // Фиксированный размер 54px
         const padding = Math.max(10, size / 8);
         
         const container = document.createElement('div');
