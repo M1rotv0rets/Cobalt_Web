@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Cobalt Web</title>
-  <link rel="icon" href="Images/icon.png">
+  <title>Cobalt Web - Генератор иконок</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🎨</text></svg>">
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <script>
@@ -28,6 +28,19 @@
       background: linear-gradient(135deg, #0f172a, #1e293b);
       color: #f1f5f9;
       min-height: 100vh;
+    }
+    
+    .sticky-header {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      transition: all 0.4s ease;
+      backdrop-filter: blur(10px);
+      background: rgba(15, 23, 42, 0.85);
+    }
+    
+    .scrolled {
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
     }
     
     .icon-card {
@@ -76,6 +89,10 @@
       font-size: 5rem;
       color: #0ea5e9;
       transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
     }
     
     .input-field {
@@ -116,95 +133,116 @@
       font-weight: 700;
       text-shadow: 0 2px 4px rgba(14, 165, 233, 0.3);
     }
+    
+    .preview-container {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+    }
   </style>
 </head>
-<body class="bg-dark text-gray-200 min-h-screen flex items-center justify-center p-4">
-  <div class="max-w-4xl w-full">
-    <div class="icon-card p-8">
-      <div class="flex items-center justify-between mb-8">
-        <h1 class="text-3xl font-bold text-white flex items-center">
-          <i class="fas fa-paint-brush mr-3"></i> <span class="cobalt-header">Cobalt Web</span>
-        </h1>
-        <a href="#" class="text-white hover:text-primary transition-colors flex items-center text-xl">
-          <i class="fas fa-home"></i>
-        </a>
+<body class="bg-dark text-gray-200">
+  <header class="sticky-header">
+    <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+      <div class="flex items-center">
+        <div class="w-10 h-10 rounded-full bg-primary flex items-center justify-center mr-3">
+          <i class="fas fa-globe text-white"></i>
+        </div>
+        <h1 class="text-2xl font-bold text-white">Cobalt Web</h1>
       </div>
       
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-        <div>
-          <div class="mb-6">
-            <label class="block text-gray-300 mb-2 flex items-center">
-              <i class="fas fa-font mr-2 text-primary"></i> Введите название иконки
-            </label>
-            <div class="relative">
-              <input 
-                type="text" 
-                id="iconText" 
-                class="input-field" 
-                placeholder="Введите название иконки (например: user)"
-                value="user"
-              >
-              <button id="copyButton" class="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-primary">
-                <i class="fas fa-copy"></i>
-              </button>
-            </div>
-            <p class="text-sm text-gray-400 mt-2">Используйте названия иконок из Font Awesome</p>
-          </div>
-          
-          <div class="mb-6">
-            <label class="block text-gray-300 mb-2 flex items-center">
-              <i class="fas fa-palette mr-2 text-primary"></i> Цвет иконки
-            </label>
-            <input type="color" id="iconColor" value="#0ea5e9" class="w-full h-10">
-          </div>
-          
-          <div class="mb-6">
-            <label class="block text-gray-300 mb-2 flex items-center">
-              <i class="fas fa-expand mr-2 text-primary"></i> Размер иконки
-            </label>
-            <input type="range" id="iconSize" min="64" max="512" value="256" class="w-full h-2 bg-primary rounded-lg appearance-none cursor-pointer">
-            <div class="flex justify-between text-xs text-gray-400 px-1">
-              <span>64px</span>
-              <span>256px</span>
-              <span>512px</span>
-            </div>
-          </div>
-        </div>
+      <a href="#" class="text-white hover:text-primary transition-colors flex items-center text-xl">
+        <i class="fas fa-home"></i>
+      </a>
+    </div>
+  </header>
+
+  <div class="min-h-screen flex items-center justify-center p-4 py-10">
+    <div class="max-w-4xl w-full">
+      <div class="icon-card p-8">
+        <h1 class="text-3xl font-bold text-white flex items-center justify-center mb-8">
+          <i class="fas fa-paint-brush mr-3"></i> <span class="cobalt-header">Генератор иконок</span>
+        </h1>
         
-        <div>
-          <div class="mb-6">
-            <label class="block text-gray-300 mb-2 flex items-center">
-              <i class="fas fa-eye mr-2 text-primary"></i> Предпросмотр
-            </label>
-            <div class="bg-secondary rounded-xl p-8 flex items-center justify-center h-64">
-              <i class="fas fa-user icon-preview" id="previewIcon"></i>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div>
+            <div class="mb-6">
+              <label class="block text-gray-300 mb-2 flex items-center">
+                <i class="fas fa-font mr-2 text-primary"></i> Введите название иконки
+              </label>
+              <div class="relative">
+                <input 
+                  type="text" 
+                  id="iconText" 
+                  class="input-field" 
+                  placeholder="Введите название иконки (например: user)"
+                  value="user"
+                >
+                <button id="copyButton" class="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-primary">
+                  <i class="fas fa-copy"></i>
+                </button>
+              </div>
+              <p class="text-sm text-gray-400 mt-2">Используйте названия иконок из Font Awesome</p>
+            </div>
+            
+            <div class="mb-6">
+              <label class="block text-gray-300 mb-2 flex items-center">
+                <i class="fas fa-palette mr-2 text-primary"></i> Цвет иконки
+              </label>
+              <input type="color" id="iconColor" value="#0ea5e9" class="w-full h-10">
+            </div>
+            
+            <div class="mb-6">
+              <label class="block text-gray-300 mb-2 flex items-center">
+                <i class="fas fa-expand mr-2 text-primary"></i> Размер иконки
+              </label>
+              <input type="range" id="iconSize" min="64" max="512" value="256" class="w-full h-2 bg-primary rounded-lg appearance-none cursor-pointer">
+              <div class="flex justify-between text-xs text-gray-400 px-1">
+                <span>64px</span>
+                <span>256px</span>
+                <span>512px</span>
+              </div>
             </div>
           </div>
           
-          <div class="mb-6">
-            <label class="block text-gray-300 mb-2 flex items-center">
-              <i class="fas fa-download mr-2 text-primary"></i> Скачать в формате
-            </label>
-            <div class="flex flex-wrap">
-              <div class="format-badge active" data-format="png">
-                <i class="fas fa-image mr-2"></i> PNG
-              </div>
-              <div class="format-badge" data-format="jpg">
-                <i class="fas fa-file-image mr-2"></i> JPG
-              </div>
-              <div class="format-badge" data-format="webp">
-                <i class="fas fa-project-diagram mr-2"></i> WEBP
-              </div>
-              <div class="format-badge" data-format="svg">
-                <i class="fas fa-file-code mr-2"></i> SVG
+          <div>
+            <div class="mb-6">
+              <label class="block text-gray-300 mb-2 flex items-center">
+                <i class="fas fa-eye mr-2 text-primary"></i> Предпросмотр
+              </label>
+              <div class="bg-secondary rounded-xl p-8 flex items-center justify-center h-64">
+                <div class="preview-container">
+                  <i class="fas fa-user icon-preview" id="previewIcon"></i>
+                </div>
               </div>
             </div>
+            
+            <div class="mb-6">
+              <label class="block text-gray-300 mb-2 flex items-center">
+                <i class="fas fa-download mr-2 text-primary"></i> Скачать в формате
+              </label>
+              <div class="flex flex-wrap">
+                <div class="format-badge active" data-format="png">
+                  <i class="fas fa-image mr-2"></i> PNG
+                </div>
+                <div class="format-badge" data-format="jpg">
+                  <i class="fas fa-file-image mr-2"></i> JPG
+                </div>
+                <div class="format-badge" data-format="webp">
+                  <i class="fas fa-project-diagram mr-2"></i> WEBP
+                </div>
+                <div class="format-badge" data-format="svg">
+                  <i class="fas fa-file-code mr-2"></i> SVG
+                </div>
+              </div>
+            </div>
+            
+            <button id="downloadButton" class="btn-primary px-6 py-3 rounded-lg font-medium text-white flex items-center justify-center w-full">
+              <div class="loading"></div>
+              <i class="fas fa-download mr-2"></i> Скачать иконку
+            </button>
           </div>
-          
-          <button id="downloadButton" class="btn-primary px-6 py-3 rounded-lg font-medium text-white flex items-center justify-center w-full">
-            <div class="loading"></div>
-            <i class="fas fa-download mr-2"></i> Скачать иконку
-          </button>
         </div>
       </div>
     </div>
@@ -270,7 +308,7 @@
         container.style.justifyContent = 'center';
         container.style.width = `${size + padding * 2}px`;
         container.style.height = `${size + padding * 2}px`;
-        container.style.backgroundColor = '#1e293b';
+        container.style.backgroundColor = '#ffffff'; // Белый фон
         container.style.padding = `${padding}px`;
         
         const iconClone = previewIcon.cloneNode(true);
@@ -282,7 +320,7 @@
         
         if (currentFormat !== 'svg') {
           html2canvas(container, {
-            backgroundColor: null,
+            backgroundColor: '#ffffff', // Белый фон
             scale: 2,
             width: size + padding * 2,
             height: size + padding * 2,
@@ -313,6 +351,7 @@
           });
         } else {
           const svgContent = `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="0 0 ${size} ${size}">
+            <rect width="100%" height="100%" fill="white"/>
             <style>
               @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css');
               text { 
@@ -378,6 +417,16 @@
       }
       
       updateIconPreview();
+      
+      // Добавляем обработчик скролла для header
+      window.addEventListener('scroll', function() {
+        const header = document.querySelector('header');
+        if (window.scrollY > 10) {
+          header.classList.add('scrolled');
+        } else {
+          header.classList.remove('scrolled');
+        }
+      });
     });
   </script>
 </body>
