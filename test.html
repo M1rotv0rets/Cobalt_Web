@@ -3,11 +3,10 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Coxpahить - Иконка</title>
-  <link rel="icon" href="Images/icon.png">
+  <title>Генератор иконок</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🎨</text></svg>">
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
   <script>
     tailwind.config = {
       theme: {
@@ -15,12 +14,7 @@
           colors: {
             primary: '#0ea5e9',
             dark: '#0f172a',
-            reminder: '#f59e0b',
-            location: '#8A2BE2',
-            note: '#f97316'
-          },
-          animation: {
-            'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite'
+            secondary: '#1e293b'
           }
         }
       }
@@ -31,23 +25,9 @@
     
     body {
       font-family: 'Montserrat', sans-serif;
-      scroll-behavior: smooth;
       background: linear-gradient(135deg, #0f172a, #1e293b);
       color: #f1f5f9;
       min-height: 100vh;
-    }
-    
-    .sticky-header {
-      position: sticky;
-      top: 0;
-      z-index: 50;
-      transition: all 0.4s ease;
-      backdrop-filter: blur(10px);
-      background: rgba(15, 23, 42, 0.85);
-    }
-    
-    .scrolled {
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
     }
     
     .icon-card {
@@ -55,28 +35,22 @@
       border: 1px solid rgba(14, 165, 233, 0.2);
       border-radius: 12px;
       overflow: hidden;
-      position: relative;
       transition: transform 0.3s ease, box-shadow 0.3s ease;
     }
     
     .icon-card:hover {
-      transform: translateY(-8px);
+      transform: translateY(-5px);
       box-shadow: 0 10px 25px -5px rgba(14, 165, 233, 0.3);
     }
     
     .btn-primary {
       background: linear-gradient(135deg, #0ea5e9, #0284c7);
       transition: all 0.3s ease;
-      box-shadow: 0 4px 15px rgba(2, 132, 199, 0.3);
     }
     
     .btn-primary:hover {
-      transform: translateY(-3px);
+      transform: translateY(-2px);
       box-shadow: 0 6px 20px rgba(2, 132, 199, 0.5);
-    }
-    
-    .btn-primary:active {
-      transform: translateY(1px);
     }
     
     .format-badge {
@@ -88,150 +62,325 @@
       border-radius: 8px;
       margin-right: 0.5rem;
       margin-bottom: 0.5rem;
-      font-size: 0.9rem;
       border: 1px solid rgba(14, 165, 233, 0.3);
+      cursor: pointer;
+      transition: all 0.2s ease;
     }
     
-    .notification {
-      position: fixed;
-      top: 20px;
-      right: 20px;
-      background: rgba(30, 41, 59, 0.95);
-      color: white;
-      padding: 1rem 2rem;
+    .format-badge:hover, .format-badge.active {
+      background: rgba(14, 165, 233, 0.4);
+      transform: translateY(-2px);
+    }
+    
+    .style-option {
+      padding: 0.75rem;
       border-radius: 8px;
-      border-left: 4px solid #0ea5e9;
-      box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-      transform: translateX(120%);
-      transition: transform 0.4s ease;
-      z-index: 1000;
-      max-width: 350px;
+      background: rgba(30, 41, 59, 0.5);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s ease;
     }
     
-    .notification.show {
-      transform: translateX(0);
+    .style-option:hover, .style-option.active {
+      border-color: #0ea5e9;
+      background: rgba(14, 165, 233, 0.2);
+      transform: translateY(-2px);
     }
     
-    .notification-title {
-      display: flex;
-      align-items: center;
-      font-weight: bold;
-      margin-bottom: 0.5rem;
+    .icon-preview {
+      font-size: 5rem;
       color: #0ea5e9;
+      transition: all 0.3s ease;
+    }
+    
+    .input-field {
+      background: rgba(15, 23, 42, 0.6);
+      border: 1px solid rgba(14, 165, 233, 0.3);
+      color: white;
+      padding: 0.75rem 1rem;
+      border-radius: 8px;
+      transition: all 0.3s ease;
+      width: 100%;
+    }
+    
+    .input-field:focus {
+      outline: none;
+      border-color: #0ea5e9;
+      box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.3);
+    }
+    
+    .loading {
+      display: none;
+      width: 20px;
+      height: 20px;
+      border: 3px solid rgba(255,255,255,0.3);
+      border-radius: 50%;
+      border-top-color: #fff;
+      animation: spin 1s ease-in-out infinite;
+      margin-right: 10px;
+    }
+    
+    @keyframes spin {
+      to { transform: rotate(360deg); }
     }
   </style>
 </head>
-<body class="bg-dark text-gray-200">
-  <header class="sticky-header">
-    <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
-      <div class="flex items-center">
-        <div class="w-10 h-10 rounded-full bg-primary flex items-center justify-center mr-3">
-          <i class="fas fa-globe text-white"></i>
-        </div>
-        <h1 class="text-2xl font-bold text-white">Cobalt Web</h1>
+<body class="bg-dark text-gray-200 min-h-screen flex items-center justify-center p-4">
+  <div class="max-w-4xl w-full">
+    <div class="icon-card p-8">
+      <div class="flex items-center justify-between mb-8">
+        <h1 class="text-2xl font-bold text-white flex items-center">
+          <i class="fas fa-icons mr-3 text-primary"></i> Генератор иконок
+        </h1>
+        <a href="#" class="text-white hover:text-primary transition-colors flex items-center text-xl">
+          <i class="fas fa-home"></i>
+        </a>
       </div>
       
-      <a href="index.html" class="text-white hover:text-primary transition-colors flex items-center text-xl">
-        <i class="fas fa-home"></i>
-      </a>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div>
+          <div class="mb-6">
+            <label class="block text-gray-300 mb-2 flex items-center">
+              <i class="fas fa-font mr-2 text-primary"></i> Введите название иконки
+            </label>
+            <div class="relative">
+              <input 
+                type="text" 
+                id="iconText" 
+                class="input-field" 
+                placeholder="Введите название иконки (например: user)"
+                value="user"
+              >
+              <button id="copyButton" class="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-primary">
+                <i class="fas fa-copy"></i>
+              </button>
+            </div>
+            <p class="text-sm text-gray-400 mt-2">Используйте названия иконок из Font Awesome</p>
+          </div>
+          
+          <div class="mb-6">
+            <label class="block text-gray-300 mb-2 flex items-center">
+              <i class="fas fa-paint-brush mr-2 text-primary"></i> Стиль иконки
+            </label>
+            <div class="grid grid-cols-2 gap-3">
+              <div class="style-option active" data-style="solid">
+                <i class="fas fa-user icon-preview"></i>
+                <p class="mt-2">Заполненный</p>
+              </div>
+              <div class="style-option" data-style="bold">
+                <i class="fas fa-user icon-preview" style="font-weight: 600;"></i>
+                <p class="mt-2">Жирный</p>
+              </div>
+              <div class="style-option" data-style="light">
+                <i class="fas fa-user icon-preview" style="font-weight: 300;"></i>
+                <p class="mt-2">Тонкий</p>
+              </div>
+              <div class="style-option" data-style="regular">
+                <i class="far fa-user icon-preview"></i>
+                <p class="mt-2">Контур</p>
+              </div>
+            </div>
+          </div>
+          
+          <div class="mb-6">
+            <label class="block text-gray-300 mb-2 flex items-center">
+              <i class="fas fa-palette mr-2 text-primary"></i> Цвет иконки
+            </label>
+            <input type="color" id="iconColor" value="#0ea5e9" class="w-full h-10">
+          </div>
+        </div>
+        
+        <div>
+          <div class="mb-6">
+            <label class="block text-gray-300 mb-2 flex items-center">
+              <i class="fas fa-eye mr-2 text-primary"></i> Предпросмотр
+            </label>
+            <div class="bg-secondary rounded-xl p-8 flex items-center justify-center h-64">
+              <i class="fas fa-user icon-preview" id="previewIcon"></i>
+            </div>
+          </div>
+          
+          <div class="mb-6">
+            <label class="block text-gray-300 mb-2 flex items-center">
+              <i class="fas fa-download mr-2 text-primary"></i> Скачать в формате
+            </label>
+            <div class="flex flex-wrap">
+              <div class="format-badge active" data-format="png">
+                <i class="fas fa-image mr-2"></i> PNG
+              </div>
+              <div class="format-badge" data-format="jpg">
+                <i class="fas fa-file-image mr-2"></i> JPG
+              </div>
+              <div class="format-badge" data-format="webp">
+                <i class="fas fa-project-diagram mr-2"></i> WEBP
+              </div>
+              <div class="format-badge" data-format="svg">
+                <i class="fas fa-file-code mr-2"></i> SVG
+              </div>
+            </div>
+          </div>
+          
+          <button id="downloadButton" class="btn-primary px-6 py-3 rounded-lg font-medium text-white flex items-center justify-center w-full">
+            <div class="loading"></div>
+            <i class="fas fa-download mr-2"></i> Скачать иконку
+          </button>
+        </div>
+      </div>
     </div>
-  </header>
-
-  <div id="notification" class="notification">
-    <div class="notification-title">
-      <i class="fas fa-check-circle mr-2"></i> Успех!
+    
+    <div class="mt-8 text-center text-gray-400 text-sm">
+      <p>© 2023 Генератор иконок. Все права защищены.</p>
     </div>
-    <div id="notificationContent">Действие выполнено успешно</div>
   </div>
 
-  <section class="py-10 px-4 relative">
-    <div class="max-w-4xl mx-auto">
-      <div class="icon-card p-8 mb-8">
-        <h1 class="text-3xl font-bold text-white mb-2">Coxpahить</h1>
-        
-        <div class="flex items-center text-xl text-gray-300 mb-6">
-          <span class="mr-2">«vicons»</span>
-          <span class="text-2xl">🌬</span>
-          <span class="ml-2">Need help to start?</span>
-        </div>
-        
-        <div class="mb-6 p-4 bg-slate-800 rounded-lg">
-          <h3 class="text-lg font-semibold text-white mb-2">User free interface icon</h3>
-          <p class="text-gray-400">Released: 1.0.0</p>
-        </div>
-        
-        <div class="flex justify-center my-8">
-          <div class="w-32 h-32 rounded-xl bg-primary/20 flex items-center justify-center">
-            <i class="fi fi-rr-user text-5xl text-primary"></i>
-          </div>
-        </div>
-        
-        <div class="flex flex-wrap gap-4 mb-8">
-          <button class="btn-primary px-6 py-3 rounded-lg font-medium text-white flex items-center">
-            <i class="fas fa-copy mr-2"></i> Скопировать в PNG
-          </button>
-          
-          <button class="px-6 py-3 rounded-lg font-medium text-white flex items-center border border-primary/30 bg-slate-800/50 hover:bg-slate-800 transition-colors">
-            <i class="fas fa-share-alt mr-2"></i> Поделиться
-          </button>
-        </div>
-        
-        <div class="border-t border-slate-700 pt-6">
-          <h3 class="text-lg font-semibold text-white mb-4">Доступные форматы:</h3>
-          <div class="flex flex-wrap">
-            <span class="format-badge">
-              <i class="fas fa-image mr-2"></i> PNG
-            </span>
-            <span class="format-badge">
-              <i class="fas fa-project-diagram mr-2"></i> SVG
-            </span>
-            <span class="format-badge">
-              <i class="fab fa-android mr-2"></i> Android
-            </span>
-            <span class="format-badge">
-              <i class="fab fa-apple mr-2"></i> iOS
-            </span>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
+  <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
   <script>
-    // Функция для показа уведомлений
-    function showNotification(message) {
-      const notification = document.getElementById('notification');
-      const notificationContent = document.getElementById('notificationContent');
-      
-      notificationContent.textContent = message;
-      notification.classList.add('show');
-      
-      setTimeout(() => {
-        notification.classList.remove('show');
-      }, 3000);
-    }
-    
-    // Добавляем обработчики событий для кнопок
     document.addEventListener('DOMContentLoaded', function() {
-      const copyButton = document.querySelector('.btn-primary');
-      const shareButton = document.querySelector('.bg-slate-800\\/50');
+      const iconText = document.getElementById('iconText');
+      const previewIcon = document.getElementById('previewIcon');
+      const styleOptions = document.querySelectorAll('.style-option');
+      const formatBadges = document.querySelectorAll('.format-badge');
+      const copyButton = document.getElementById('copyButton');
+      const downloadButton = document.getElementById('downloadButton');
+      const iconColor = document.getElementById('iconColor');
+      const loading = document.querySelector('.loading');
       
+      let currentStyle = 'solid';
+      let currentFormat = 'png';
+      let currentIconName = 'user';
+      
+      // Обновление предпросмотра при изменении текста
+      iconText.addEventListener('input', function() {
+        updateIconPreview();
+      });
+      
+      // Выбор стиля иконки
+      styleOptions.forEach(option => {
+        option.addEventListener('click', function() {
+          styleOptions.forEach(opt => opt.classList.remove('active'));
+          this.classList.add('active');
+          currentStyle = this.getAttribute('data-style');
+          updateIconPreview();
+        });
+      });
+      
+      // Выбор формата
+      formatBadges.forEach(badge => {
+        badge.addEventListener('click', function() {
+          formatBadges.forEach(b => b.classList.remove('active'));
+          this.classList.add('active');
+          currentFormat = this.getAttribute('data-format');
+        });
+      });
+      
+      // Изменение цвета
+      iconColor.addEventListener('input', function() {
+        previewIcon.style.color = this.value;
+      });
+      
+      // Копирование текста
       copyButton.addEventListener('click', function() {
-        showNotification('Иконка скопирована в формате PNG');
+        iconText.select();
+        document.execCommand('copy');
+        
+        const originalIcon = this.innerHTML;
+        this.innerHTML = '<i class="fas fa-check"></i>';
+        
+        setTimeout(() => {
+          this.innerHTML = originalIcon;
+        }, 2000);
       });
       
-      shareButton.addEventListener('click', function() {
-        showNotification('Ссылка для分享 скопирована в буфер обмена');
-      });
-      
-      window.addEventListener('scroll', function() {
-        const header = document.querySelector('header');
-        if (window.scrollY > 10) {
-          header.classList.add('scrolled');
+      // Скачивание иконки
+      downloadButton.addEventListener('click', function() {
+        loading.style.display = 'block';
+        
+        // Создаем контейнер для иконки с правильными стилями
+        const container = document.createElement('div');
+        container.style.display = 'inline-block';
+        container.style.padding = '20px';
+        container.style.backgroundColor = '#1e293b';
+        
+        const iconClone = previewIcon.cloneNode(true);
+        iconClone.style.fontSize = '128px';
+        iconClone.style.color = iconColor.value;
+        container.appendChild(iconClone);
+        
+        document.body.appendChild(container);
+        
+        // Используем html2canvas для растровых форматов
+        if (currentFormat !== 'svg') {
+          html2canvas(container, {
+            backgroundColor: null,
+            scale: 2,
+            onclone: function(clonedDoc, element) {
+              element.style.display = 'inline-block';
+            }
+          }).then(canvas => {
+            const link = document.createElement('a');
+            link.download = `icon-${currentIconName}.${currentFormat}`;
+            link.href = canvas.toDataURL(`image/${currentFormat}`);
+            link.click();
+            document.body.removeChild(container);
+            loading.style.display = 'none';
+          });
         } else {
-          header.classList.remove('scrolled');
+          // Для SVG создаем data URI
+          const svgContent = `<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
+            <style>text { font-family: 'Font Awesome 6 Free'; font-size: 400px; fill: ${iconColor.value}; }</style>
+            <text x="256" y="380" text-anchor="middle">${getIconUnicode()}</text>
+          </svg>`;
+          
+          const svgBlob = new Blob([svgContent], {type: 'image/svg+xml'});
+          const svgUrl = URL.createObjectURL(svgBlob);
+          
+          const link = document.createElement('a');
+          link.download = `icon-${currentIconName}.svg`;
+          link.href = svgUrl;
+          link.click();
+          
+          document.body.removeChild(container);
+          loading.style.display = 'none';
         }
       });
+      
+      // Функция обновления предпросмотра иконки
+      function updateIconPreview() {
+        currentIconName = iconText.value.trim() || 'user';
+        
+        // Определяем префикс стиля
+        let stylePrefix = 'fas';
+        if (currentStyle === 'regular') stylePrefix = 'far';
+        else if (currentStyle === 'light') stylePrefix = 'fal';
+        else if (currentStyle === 'bold') stylePrefix = 'fas';
+        else stylePrefix = 'fas';
+        
+        // Устанавливаем новый класс
+        previewIcon.className = `${stylePrefix} fa-${currentIconName} icon-preview`;
+        
+        // Устанавливаем толщину шрифта
+        if (currentStyle === 'bold') {
+          previewIcon.style.fontWeight = '600';
+        } else if (currentStyle === 'light') {
+          previewIcon.style.fontWeight = '300';
+        } else {
+          previewIcon.style.fontWeight = 'normal';
+        }
+        
+        // Устанавливаем цвет
+        previewIcon.style.color = iconColor.value;
+      }
+      
+      // Функция получения Unicode иконки (упрощенная версия)
+      function getIconUnicode() {
+        // В реальном приложении здесь должен быть mapping названий иконок на Unicode
+        // Для демонстрации возвращаем вопрос
+        return '&#xf059;';
+      }
+      
+      // Инициализация
+      updateIconPreview();
     });
   </script>
 </body>
