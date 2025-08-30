@@ -41,39 +41,11 @@
       background: linear-gradient(135deg, #0f172a, #1e293b);
       color: #f1f5f9;
     }
-    
-    .sticky-header {
-      position: sticky;
-      top: 0;
-      z-index: 50;
-      transition: all 0.4s ease;
-      backdrop-filter: blur(10px);
-      background: rgba(15, 23, 42, 0.85);
-    }
-    
+  
     .scrolled {
       box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
     }
-    
-    .burger-line {
-      display: block;
-      height: 2px;
-      width: 25px;
-      background: white;
-      margin: 5px auto;
-      transition: all 0.3s ease;
-    }
-    
-    .mobile-menu {
-      max-height: 0;
-      overflow: hidden;
-      transition: max-height 0.5s ease-out;
-    }
-    
-    .mobile-menu.open {
-      max-height: 300px;
-    }
-    
+
     .feature-card {
       transition: transform 0.3s ease, box-shadow 0.3s ease;
       background: linear-gradient(145deg, #1e293b, #0f172a);
@@ -346,22 +318,6 @@
       margin-bottom: 1rem;
     }
   </style>
-</head>
-<body class="bg-dark text-gray-200">
-  <header class="sticky-header">
-    <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
-      <div class="flex items-center">
-        <div class="w-10 h-10 rounded-full bg-primary flex items-center justify-center mr-3">
-          <i class="fas fa-globe text-white"></i>
-        </div>
-        <h1 class="text-2xl font-bold text-white">Cobalt Web</h1>
-      </div>
-      
-      <a href="index.html" class="hover:text-primary transition-colors flex items-center text-xl">
-        <i class="fas fa-home"></i>
-      </a>
-    </div>
-  </header>
 
   <section class="py-16 px-4 relative">
     <div class="absolute top-0 left-0 w-full h-32 bg-gradient-to-b from-dark to-transparent z-0"></div>
@@ -373,10 +329,10 @@
               <h3 class="text-xl font-bold mb-4 text-white">Библиотека Cobalt</h3>
               <div class="flex flex-wrap justify-center gap-4">
                 <a href="read_books.html" class="btn-download text-white py-3 px-6 rounded-lg text-base font-semibold">
-                  <i class="fas fa-book mr-2"></i>Подготовка книги
+                  <i class="fas fa-wrench tool-icon mr-2"></i>Подготовка книги
                 </a>
-                <a href="tools_books.html" class="btn-download text-white py-3 px-6 rounded-lg text-base font-semibold">
-                  <i class="fas fa-wrench tool-icon mr-2"></i>Книжные инструменты
+                <a href="https://t.me/sun_community_chat/10053" class="btn-download text-white py-3 px-6 rounded-lg text-base font-semibold">
+                  <i class="fas fa-book mr-2"></i>Предложить книгу
                 </a>
               </div>
             </div>
